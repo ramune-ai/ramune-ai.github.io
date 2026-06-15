@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あい 🌈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#3b2a4a;--paper:#fff7fb;--bubble:#ffffff;
+    --pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;
+    --lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, #ffe0f2 0, transparent 38%),
+      radial-gradient(circle at 88% 4%, #e2e0ff 0, transparent 40%),
+      radial-gradient(circle at 50% 100%, #d6f7ff 0, transparent 45%),
+      var(--paper);
+    min-height:100vh;overflow-x:hidden;
+  }
+  .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.45}
+  @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
+  .sh-ring{border:2.5px solid var(--c);border-radius:50%}
+  .sh-sq{border:2.5px solid var(--c)}
+  .sh-dia{border:2.5px solid var(--c);transform:rotate(45deg)}
+  .sh-tri{background:none!important;border:none!important;position:relative}
+  .sh-tri::after{content:"";position:absolute;inset:0;background:var(--c);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 2 L22 20 L2 20 Z' fill='none' stroke='black' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 2 L22 20 L2 20 Z' fill='none' stroke='black' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+  .sh-plus{position:relative}
+  .sh-plus::before,.sh-plus::after{content:"";position:absolute;background:var(--c);border-radius:2px}
+  .sh-plus::before{left:50%;top:0;width:2.5px;height:100%;transform:translateX(-50%)}
+  .sh-plus::after{top:50%;left:0;height:2.5px;width:100%;transform:translateY(-50%)}
+  .sh-hex{border:2.5px solid var(--c);border-radius:4px;transform:rotate(30deg)}
+  @media(prefers-reduced-motion:reduce){.sky i{animation:none;display:none}}
+
+  .menubtn{position:fixed;top:16px;right:16px;z-index:30;width:46px;height:46px;border:none;cursor:pointer;
+    background:#fff;border-radius:14px;box-shadow:0 5px 14px var(--shadow);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px}
+  .menubtn span{width:22px;height:2.6px;background:var(--grape);border-radius:2px;transition:.25s}
+  .menubtn.open span:nth-child(1){transform:translateY(7.6px) rotate(45deg)}
+  .menubtn.open span:nth-child(2){opacity:0}
+  .menubtn.open span:nth-child(3){transform:translateY(-7.6px) rotate(-45deg)}
+  .drawer{position:fixed;inset:0;z-index:25;background:rgba(59,42,74,.32);opacity:0;pointer-events:none;transition:.25s}
+  .drawer.open{opacity:1;pointer-events:auto}
+  .panel{position:absolute;top:0;right:0;height:100%;width:min(78vw,300px);background:var(--paper);
+    box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(100%);transition:.28s cubic-bezier(.4,0,.2,1);
+    padding:74px 20px 30px;overflow-y:auto}
+  .drawer.open .panel{transform:translateX(0)}
+  .panel a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font-weight:700;
+    padding:15px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1rem}
+  .panel a .e{font-size:1.3rem}
+
+  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:0 22px 70px}
+
+  header{text-align:center;padding:54px 0 8px}
+  .avatar{width:96px;height:96px;border-radius:50%;margin:0 auto 14px;
+    background:linear-gradient(135deg,var(--pink),var(--grape),var(--sky));
+    display:flex;align-items:center;justify-content:center;font-size:2.8rem;
+    box-shadow:0 10px 26px var(--shadow);border:4px solid #fff}
+  h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(1.9rem,7vw,2.6rem);line-height:1.1;margin-bottom:8px;
+    background:linear-gradient(100deg,var(--pink),var(--tangerine),var(--lemon),var(--mint),var(--sky),var(--grape));
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite}
+  @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+  .bio{font-size:.95rem;font-weight:500;color:#7a6790;line-height:1.6;max-width:24ch;margin:0 auto}
+  .bio b{color:var(--pink)}
+
+  .sns{display:flex;justify-content:center;gap:14px;margin:22px 0 8px}
+  .sns a{width:56px;height:56px;border-radius:17px;display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;color:#fff;text-decoration:none;box-shadow:0 7px 16px var(--shadow);
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
+  .sns a:hover{transform:translateY(-5px) rotate(-4deg)}
+  .sns a.coming{opacity:.5;pointer-events:none}
+  .b-x{background:#111}
+  .b-ig{background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf)}
+  .b-tt{background:#111}
+  .b-yt{background:#ff2d2d}
+
+  .seclabel{font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;margin:34px 4px 14px;display:flex;align-items:center;gap:10px}
+  .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,var(--grape),transparent)}
+  /* centered section label (with lines both sides) */
+  .seclabel.center{justify-content:center;color:var(--pink)}
+  .seclabel.center::before,.seclabel.center::after{content:"";flex:1;max-width:70px;height:3px;border-radius:99px;background:none}
+  .seclabel.center::before{background:linear-gradient(90deg,transparent,var(--pink))}
+  .seclabel.center::after{background:linear-gradient(90deg,var(--pink),transparent)}
+
+  /* big banner shared by YouTube MV and Games */
+  .banner{display:flex;align-items:center;gap:14px;text-decoration:none;border-radius:20px;padding:16px 20px;
+    transition:transform .12s,box-shadow .12s}
+  .banner .bic{font-size:1.8rem}
+  .banner .tx{flex:1}
+  .banner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;display:block}
+  .banner .tx small{font-size:.78rem;opacity:.92}
+  .banner .chip{font-size:.66rem;font-weight:900;padding:3px 9px;border-radius:99px}
+
+  .ytbanner{color:#fff;background:linear-gradient(100deg,#ff5b6e,#ff2d2d);box-shadow:0 8px 0 #d62a3a;animation:ytpulse 2.6s ease-in-out infinite}
+  .ytbanner:active{transform:translateY(6px);box-shadow:0 2px 0 #d62a3a;animation:none}
+  .ytbanner .chip{background:#fff;color:#ff2d2d}
+  @keyframes ytpulse{0%,100%{box-shadow:0 8px 0 #d62a3a,0 0 0 0 rgba(255,45,45,.35)}50%{box-shadow:0 8px 0 #d62a3a,0 0 0 9px rgba(255,45,45,0)}}
+  @media(prefers-reduced-motion:reduce){.ytbanner{animation:none}}
+
+  .gamebanner{color:#fff;background:linear-gradient(100deg,var(--grape),var(--sky));box-shadow:0 8px 0 #7c5fd6}
+  .gamebanner:active{transform:translateY(6px);box-shadow:0 2px 0 #7c5fd6}
+  .gamebanner .chip{background:#fff;color:var(--grape)}
+
+  .list{display:flex;flex-direction:column;gap:12px}
+  .row{display:flex;align-items:center;gap:13px;background:var(--bubble);border-radius:18px;padding:11px;
+    border:2px solid #fff;box-shadow:0 7px 18px var(--shadow);
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s}
+  .row:hover{transform:translateY(-4px);box-shadow:0 13px 28px var(--shadow)}
+  .jacket{position:relative;flex:0 0 auto;width:64px;height:64px;border-radius:13px;overflow:hidden}
+  .jacket img{width:100%;height:100%;object-fit:cover}
+  .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+  .ph.c1{background:linear-gradient(135deg,var(--sky),var(--grape))}
+  .ph.c2{background:linear-gradient(135deg,var(--pink),var(--lemon))}
+  .ph.c3{background:linear-gradient(135deg,var(--mint),var(--sky))}
+  .ph.c4{background:linear-gradient(135deg,var(--grape),var(--pink))}
+  .info{flex:1;min-width:0}
+  .ttl{font-family:'Mochiy Pop One',sans-serif;font-size:.95rem;line-height:1.3;margin-bottom:7px}
+  .actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .listen{font-size:.74rem;font-weight:700;text-decoration:none;color:var(--grape);background:#f1edff;padding:6px 12px;border-radius:99px;display:inline-flex;gap:4px;align-items:center}
+  .yt{position:relative;font-size:.78rem;font-weight:700;text-decoration:none;color:#fff;
+    background:linear-gradient(100deg,#ff5b6e,#ff2d2d);padding:6px 13px;border-radius:99px;
+    display:inline-flex;gap:6px;align-items:center;box-shadow:0 3px 0 #d62a3a}
+  .yt:active{transform:translateY(2px);box-shadow:0 1px 0 #d62a3a}
+  .yt .mv{font-size:.58rem;background:#fff;color:#ff2d2d;font-weight:900;padding:1px 5px;border-radius:99px}
+  .mini{font-size:.72rem;font-weight:700;text-decoration:none;color:#9a89ad}
+  .mini:hover{color:var(--pink)}
+  .listen.coming,.yt.coming{background:#f1eef5;color:#a99cb8;box-shadow:none}
+  .yt.coming .mv{background:#fff;color:#a99cb8}
+  .listen.coming,.yt.coming,.mini.coming{pointer-events:none}
+  .mini.coming{color:#cabdd8}
+
+  footer{text-align:center;margin-top:46px;color:#9a89ad;font-size:.85rem;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="sky" id="sky" aria-hidden="true"></div>
+
+<button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
+<div class="drawer" id="drawer">
+  <nav class="panel">
+    <a href="games.html"><span class="e">🎮</span>個人開発ゲーム</a>
+    <a href="#music"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="#work"><span class="e">💼</span>お仕事はこちら</a>
+  </nav>
+</div>
+
+<div class="wrap">
+  <!-- 1. intro -->
+  <header>
+    <div class="avatar">🌈</div>
+    <h1>あい</h1>
+    <p class="bio">ゲームも音楽も、ぜんぶ自分とAIで。<br><b>AI × あい × 愛 × アイ</b> 🎀</p>
+  </header>
+
+  <!-- 2. SNS (4 incl. YouTube) -->
+  <div class="sns">
+    <a class="b-x coming" href="#" aria-label="X">𝕏</a>
+    <a class="b-ig coming" href="#" aria-label="Instagram">📷</a>
+    <a class="b-tt coming" href="#" aria-label="TikTok">🎵</a>
+    <a class="b-yt coming" href="#" aria-label="YouTube">▶</a>
+  </div>
+
+  <!-- 3. YouTube MV banner -->
+  <a class="banner ytbanner" href="#" style="margin-top:30px">
+    <span class="bic">▶</span>
+    <span class="tx"><b>YouTubeでMVを観る</b><small>新作ミュージックビデオ公開中！</small></span>
+    <span class="chip">▶ 観る</span>
+  </a>
+
+  <!-- 4. Games banner (one, same size) -->
+  <a class="banner gamebanner" href="games.html" style="margin-top:14px">
+    <span class="bic">🎮</span>
+    <span class="tx"><b>自作ゲームを見る</b><small>AIと作ったオリジナルゲーム集</small></span>
+    <span class="chip">▶ 遊べる</span>
+  </a>
+
+  <!-- 5. music -->
+  <h2 class="seclabel center" id="music">♬ 自作オリジナル曲 ♬</h2>
+  <div class="list">
+
+    <article class="row">
+      <div class="jacket"><div class="ph c1">🐱</div></div>
+      <div class="info">
+        <h3 class="ttl">2026 ドラえもん誕生</h3>
+        <div class="actions">
+          <a class="listen coming" href="#">▶ 試聴</a>
+          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
+          <a class="mini coming" href="#">Spotify</a>
+          <a class="mini coming" href="#">Apple</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="jacket"><div class="ph c2">🤖</div></div>
+      <div class="info">
+        <h3 class="ttl">I'm AI♡</h3>
+        <div class="actions">
+          <a class="listen coming" href="#">▶ 試聴</a>
+          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
+          <a class="mini coming" href="#">Spotify</a>
+          <a class="mini coming" href="#">Apple</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="jacket"><div class="ph c3">⏱️</div></div>
+      <div class="info">
+        <h3 class="ttl">圧倒的タイパ大優勝</h3>
+        <div class="actions">
+          <a class="listen coming" href="#">▶ 試聴</a>
+          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
+          <a class="mini coming" href="#">Spotify</a>
+          <a class="mini coming" href="#">Apple</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="jacket"><div class="ph c4">🎻</div></div>
+      <div class="info">
+        <h3 class="ttl">AI三銃士を連れてきたよ</h3>
+        <div class="actions">
+          <a class="listen coming" href="#">▶ 試聴</a>
+          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
+          <a class="mini coming" href="#">Spotify</a>
+          <a class="mini coming" href="#">Apple</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- work -->
+  <h2 class="seclabel" id="work">💼 お仕事はこちら</h2>
+  <a class="banner gamebanner" style="background:linear-gradient(100deg,var(--pink),var(--tangerine));box-shadow:0 8px 0 #e07a4a" href="#">
+    <span class="bic">💼</span>
+    <span class="tx"><b>お仕事のご依頼</b><small>お気軽にご連絡ください</small></span>
+    <span class="chip" style="color:var(--tangerine)">MAIL</span>
+  </a>
+
+  <footer>あい 🌈 / AI × 完全セルフ創作</footer>
+</div>
+
+<script>
+  const sky=document.getElementById('sky');
+  const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
+  const colors=['#ff7ec0','#9d7bff','#5ec8ff','#67e6c2','#ffd84d','#ff9a52'];
+  for(let n=0;n<18;n++){
+    const el=document.createElement('i');
+    const kind=shapes[Math.floor(Math.random()*shapes.length)];
+    el.className=kind;
+    el.style.setProperty('--c', colors[Math.floor(Math.random()*colors.length)]);
+    const size=14+Math.random()*28;el.style.width=size+'px';el.style.height=size+'px';
+    el.style.left=Math.random()*100+'vw';
+    const dur=12+Math.random()*14;
+    el.style.animationDuration=dur+'s';
+    el.style.animationDelay=(-Math.random()*dur)+'s';
+    sky.appendChild(el);
+  }
+  const mb=document.getElementById('menubtn'), dr=document.getElementById('drawer');
+  function toggle(){mb.classList.toggle('open');dr.classList.toggle('open');}
+  mb.addEventListener('click',toggle);
+  dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
+  // close menu when a link is tapped
+  dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
+</script>
+</body>
+</html>
