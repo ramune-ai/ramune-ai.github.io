@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- iOS Safariの上部バーまで背景色をなじませる -->
-<meta name="theme-color" content="#fce9f4">
+<meta name="theme-color" content="#ffe0f2">
 <title>らむね あい 🌈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,13 +13,12 @@
     --ink:#3b2a4a;--paper:#fff7fb;--bubble:#ffffff;
     --pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;
     --lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28);
-    /* 見出し用の濃いめ虹。パステル背景でも読めるように彩度と明度を落としてある */
     --rainbow:linear-gradient(100deg,#ea4f9e,#ef7b2a,#e0aa00,#17b894,#2f9fd8,#7c5fd6);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;background:#fce9f4}
+  /* overscroll(ラバーバンド)領域も背景トップと同じピンクにして継ぎ目を消す */
+  html{scroll-behavior:smooth;background:#ffe0f2}
   body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
-  /* 背景は固定レイヤーで敷く。iOSでも上下端に白が出ない */
   body::before{content:"";position:fixed;inset:0;z-index:-1;
     background:
       radial-gradient(circle at 12% 8%, #ffe0f2 0, transparent 38%),
@@ -71,12 +69,10 @@
   h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(1.65rem,6vw,2.1rem);line-height:1.15;margin-bottom:9px;
     background:var(--rainbow);background-size:300% 100%;
     -webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite;
-    /* 白いフチ＋やわらかい影で、背景や浮遊シェイプに文字が埋もれないようにする */
     filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 2px 4px rgba(120,90,160,.18))}
   @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
   .bio{font-size:1.06rem;font-weight:700;color:#6a5a7a;line-height:1.65;margin:0 auto}
   .bio b{color:#e0559d}
-  .tags-line{font-size:.85rem;font-weight:700;color:#8d7ba3;line-height:1.7;margin:9px auto 0}
 
   .sns{display:flex;justify-content:center;gap:13px;margin:18px 0 0}
   .sns a{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;
@@ -89,46 +85,95 @@
   .b-tt{background:#010101}
   .b-yt{background:#ff0000}
 
-  .seclabel{font-family:'Mochiy Pop One',sans-serif;font-size:1.12rem;margin:28px 4px 12px;display:flex;align-items:center;gap:10px}
-  .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#d9c6ff,transparent)}
-
-  /* --- お知らせ：見出し2行＋補足1行。更新日は右上のリボンに --- */
-  .statuscard{margin-top:18px;border-radius:20px;padding:14px 16px 14px;background:#fff;border:2.5px dashed #ffb3d9;
-    box-shadow:0 8px 22px var(--shadow);position:relative;overflow:hidden}
-  .upd{position:absolute;top:-1px;right:-1px;font-size:.66rem;font-weight:900;letter-spacing:.03em;
-    color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:6px 13px 6px 16px;border-radius:0 18px 0 14px}
-  .statuscard h2{font-family:'Mochiy Pop One',sans-serif;font-size:1.02rem;margin-bottom:6px;line-height:1.5}
-  .statuscard h2::before{content:"";float:right;width:118px;height:1.2em}
+  /* --- お知らせ：右上カドにバッジがポチッと乗る --- */
+  .statuscard{margin-top:20px;border-radius:20px;padding:16px 16px 14px;background:#fff;border:2.5px dashed #ffb3d9;
+    box-shadow:0 8px 22px var(--shadow);position:relative}
+  .upd{position:absolute;top:-14px;right:14px;font-size:.78rem;font-weight:900;letter-spacing:.02em;
+    color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:7px 16px;border-radius:99px;
+    box-shadow:0 4px 10px rgba(157,123,255,.35);transform:rotate(3deg)}
+  .statuscard h2{font-family:'Mochiy Pop One',sans-serif;font-size:1.02rem;margin:8px 0 6px;line-height:1.5}
   .statuscard p{font-size:.88rem;color:#6a5a7a;line-height:1.6}
 
-  /* --- バナー：パステル地＋濃い文字 --- */
+  /* --- セクション見出し --- */
+  .seclabel{display:flex;align-items:baseline;gap:9px;margin:34px 2px 14px}
+  .seclabel .en{font-family:'Mochiy Pop One',sans-serif;font-size:1.3rem;letter-spacing:.02em}
+  .seclabel .ja{font-size:.85rem;font-weight:700;color:#8d7ba3}
+  .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#e6d9ff,transparent)}
+  #music .en{color:#c0397a}
+  #game .en{color:#6b46c1}
+  #daily .en{color:#b8621f}
+  #work .en{color:#0f7a63}
+
+  /* --- MUSIC: 横スワイプの歌詞カードデッキ --- */
+  .deckwrap{position:relative}
+  .deck{display:flex;align-items:flex-start;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 10px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .deck::-webkit-scrollbar{display:none}
+  .lcard{flex:0 0 82%;max-width:340px;scroll-snap-align:center;background:#fff;border-radius:22px;
+    padding:20px 20px 18px;box-shadow:0 10px 24px var(--shadow);border:3px solid #ffdaee;position:relative}
+  .lcard .num{font-family:'Mochiy Pop One',sans-serif;font-size:1.15rem;color:#c0397a;opacity:.5}
+  .lcard .stat{float:right;font-size:.68rem;font-weight:700;padding:4px 11px;border-radius:99px;background:#e2fbf3;color:#0d8168}
+  .lcard .lyric{clear:both;margin-top:12px;font-size:.98rem;line-height:1.85;color:var(--ink);font-weight:700;
+    white-space:pre-wrap;border-left:3px solid #ffdaee;padding-left:13px}
+  .lcard .teaser{margin-top:14px;font-size:.74rem;font-weight:700;color:#c78ab0}
+  .deckcount{text-align:center;font-size:.78rem;font-weight:700;color:#a99cb8;margin-top:2px}
+  .deckhint{text-align:center;font-size:.78rem;font-weight:700;color:#c78ab0;margin-top:8px}
+
+  /* --- GAME: カード（games.htmlと同デザイン） --- */
+  .gcard{background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 12px 26px var(--shadow);border:3px solid #fff;
+    position:relative;margin-top:16px}
+  .gcard.soon{filter:saturate(.75)}
+  .gribbon{position:absolute;top:14px;right:-32px;transform:rotate(38deg);background:var(--grape);color:#fff;
+    font-weight:700;font-size:.72rem;padding:4px 40px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+  .gmedia{position:relative;aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .gmedia video,.gmedia img{width:100%;height:100%;object-fit:cover}
+  .gph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;font-weight:700}
+  .gph.madori{background:linear-gradient(135deg,var(--sky),var(--grape))}
+  .gph.abc{background:linear-gradient(135deg,var(--pink),var(--tangerine))}
+  .gph .big{font-size:1.9rem;font-family:'Mochiy Pop One',sans-serif;text-shadow:0 2px 6px rgba(0,0,0,.25)}
+  .gph small{font-size:.76rem;opacity:.95;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .gbody{padding:16px 18px 18px}
+  .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.15rem;margin-bottom:6px}
+  .gtags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
+  .gtag{font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:99px;background:#ffe8f4;color:#e0559d}
+  .gtag.b{background:#e6f0ff;color:#2f8ec4}
+  .gtag.c{background:#e2fbf3;color:#0d8168}
+  .gdesc{font-size:.9rem;line-height:1.7;color:#6a5a7a;margin-bottom:14px}
+  .gplay{display:inline-flex;align-items:center;gap:6px;font-family:'Mochiy Pop One',sans-serif;font-size:.95rem;
+    text-decoration:none;color:#c0397a;padding:11px 22px;border-radius:99px;
+    background:linear-gradient(100deg,#ffdaee,#e8d8ff);border:2.5px solid #fff;box-shadow:0 6px 0 #f3b7d7;
+    transition:transform .12s,box-shadow .12s}
+  .gplay:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
+  .gplay.disabled{background:#efeaf5;color:#a99cb8;box-shadow:0 6px 0 #ddd4e8;cursor:not-allowed;pointer-events:none}
+
+  /* --- DAILY: 横スクロールのミニギャラリー --- */
+  .gallerystrip{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 4px;margin-top:14px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .gallerystrip::-webkit-scrollbar{display:none}
+  .gtile{flex:0 0 128px;aspect-ratio:1/1;border-radius:18px;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:6px;color:#fff;font-weight:700;box-shadow:0 8px 18px var(--shadow);border:3px solid #fff}
+  .gtile span.emoji{font-size:1.8rem}
+  .gtile span.lbl{font-size:.74rem;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .gtile.art{background:linear-gradient(135deg,var(--pink),var(--grape))}
+  .gtile.resin{background:linear-gradient(135deg,var(--sky),var(--mint))}
+  .gtile.life{background:linear-gradient(135deg,var(--lemon),var(--tangerine))}
+  .gtile.dance{background:linear-gradient(135deg,var(--grape),var(--sky))}
+  .igmore{display:flex;align-items:center;justify-content:center;text-decoration:none;color:#c2185b;font-weight:700;
+    font-size:.82rem;text-align:center;line-height:1.4;gap:4px}
+
+  /* --- WORK --- */
   .banner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:14px 14px;
-    transition:transform .12s,box-shadow .12s;margin-top:12px;border:2.5px solid #fff}
+    transition:transform .12s,box-shadow .12s;margin-top:14px;border:2.5px solid #fff;
+    background:linear-gradient(100deg,#d3f6ea,#d6edff);color:#0f7a63;box-shadow:0 7px 0 #a5e3d1}
+  .banner:active{transform:translateY(5px);box-shadow:0 2px 0 #a5e3d1}
   .banner .bic{font-size:1.6rem;flex:0 0 auto}
   .banner .tx{flex:1;min-width:0}
-  .banner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;display:block;line-height:1.3;white-space:nowrap}
+  .banner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;display:block;line-height:1.3}
   .banner .tx small{font-size:.8rem;display:block;margin-top:3px;line-height:1.4;opacity:.85}
-  .banner .chip{font-size:.68rem;font-weight:900;padding:5px 10px;border-radius:99px;white-space:nowrap;flex:0 0 auto;background:#fff}
-
-  .gamebanner{background:linear-gradient(100deg,#e4dcff,#d6ecff);color:#6b46c1;box-shadow:0 7px 0 #cbb8f2}
-  .gamebanner:active{transform:translateY(5px);box-shadow:0 2px 0 #cbb8f2}
-  .gamebanner .chip{color:#6b46c1}
-
-  .musicbanner{background:linear-gradient(100deg,#ffdaee,#e8d8ff);color:#c0397a;box-shadow:0 7px 0 #f3b7d7}
-  .musicbanner:active{transform:translateY(5px);box-shadow:0 2px 0 #f3b7d7}
-  .musicbanner .chip{color:#c0397a}
-
-  .gallerybanner{background:linear-gradient(100deg,#fff0c6,#ffdcc7);color:#b8621f;box-shadow:0 7px 0 #f6d29c}
-  .gallerybanner:active{transform:translateY(5px);box-shadow:0 2px 0 #f6d29c}
-  .gallerybanner .chip{color:#b8621f}
-
-  .workbanner{background:linear-gradient(100deg,#d3f6ea,#d6edff);color:#0f7a63;box-shadow:0 7px 0 #a5e3d1}
-  .workbanner:active{transform:translateY(5px);box-shadow:0 2px 0 #a5e3d1}
-  .workbanner .chip{color:#0f7a63}
-
+  .banner .chip{font-size:.68rem;font-weight:900;padding:5px 10px;border-radius:99px;white-space:nowrap;flex:0 0 auto;background:#fff;color:#0f7a63}
   .worknote{margin-top:11px;font-size:.85rem;font-weight:700;color:#8d7ba3;line-height:1.75;text-align:center}
 
-  footer{text-align:center;margin-top:40px;color:#9a89ad;font-size:.9rem;line-height:1.8}
+  footer{text-align:center;margin-top:44px;color:#9a89ad;font-size:.9rem;line-height:1.8}
 </style>
 </head>
 <body>
@@ -137,10 +182,10 @@
 <button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
 <div class="drawer" id="drawer">
   <nav class="panel">
-    <a href="games.html"><span class="e">🎮</span>ゲームのへや</a>
-    <a href="music.html"><span class="e">🎶</span>音楽のへや</a>
-    <a href="gallery.html"><span class="e">🎨</span>日常のへや</a>
-    <a href="#work"><span class="e">💌</span>お仕事のへや</a>
+    <a href="#music"><span class="e">🎶</span>音楽</a>
+    <a href="#game"><span class="e">🎮</span>ゲーム</a>
+    <a href="#daily"><span class="e">🎨</span>日常</a>
+    <a href="#work"><span class="e">💌</span>お仕事</a>
   </nav>
 </div>
 
@@ -150,7 +195,6 @@
     <div class="avatar">🌈</div>
     <h1>らむね あい</h1>
     <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🌈🫧<br>ジャンル問わず、作りたいものを🤍</p>
-    <p class="tags-line">作詞曲・AI音楽／ゲーム・アプリ個人開発／フルイドアート・レジン</p>
   </header>
 
   <!-- 2. SNS -->
@@ -169,37 +213,63 @@
     </a>
   </div>
 
-  <!-- 3. お知らせ（更新したら日付とテキストを書き換えてください） -->
+  <!-- 3. お知らせ -->
   <div class="statuscard">
     <span class="upd">2026.8.29 更新</span>
     <h2>楽曲12曲、REC中🎶<br>MVは2026年10月から順次公開！</h2>
-    <p>歌詞のさきどりを音楽のへやで公開中👀</p>
+    <p>歌詞の一部を先取り公開中👇</p>
   </div>
 
-  <!-- 4. 作品のへや -->
-  <a class="banner gamebanner" href="games.html">
-    <span class="bic">🎮</span>
-    <span class="tx"><b>ゲームのへや</b><small>いま遊べるオリジナルゲーム</small></span>
-    <span class="chip">▶ 遊べる</span>
-  </a>
+  <!-- 4. MUSIC -->
+  <h2 class="seclabel" id="music"><span class="en">♪ MUSIC</span><span class="ja">音楽</span></h2>
+  <div class="deckwrap">
+    <div class="deck" id="deck"></div>
+  </div>
+  <div class="deckcount" id="deckcount">1 / 11</div>
+  <div class="deckhint">👉 スワイプしてめくってね</div>
 
-  <a class="banner musicbanner" href="music.html">
-    <span class="bic">🎶</span>
-    <span class="tx"><b>音楽のへや</b><small>歌詞のさきどり公開中</small></span>
-    <span class="chip">歌詞公開中</span>
-  </a>
+  <!-- 5. GAME -->
+  <h2 class="seclabel" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
 
-  <a class="banner gallerybanner" href="gallery.html">
-    <span class="bic">🎨</span>
-    <span class="tx"><b>日常のへや</b><small>アート・レジン・日常</small></span>
-    <span class="chip">たまに更新</span>
-  </a>
+  <article class="gcard">
+    <div class="gmedia">
+      <!-- 動画ができたら .gph を消して <video src="madori.mp4" autoplay muted loop playsinline poster="madori.jpg"></video> -->
+      <div class="gph madori"><span class="big">間取りすと</span><small>▶ ここにプレイ動画が入ります</small></div>
+    </div>
+    <div class="gbody">
+      <h3 class="gttl">間取りすと</h3>
+      <div class="gtags"><span class="gtag">パズル</span><span class="gtag b">間取り</span><span class="gtag c">ブラウザ</span></div>
+      <p class="gdesc">部屋をならべて理想のお部屋を完成させる、間取りパズル。ガチャで出る物件の条件を読みながら、ぴったりハマる配置を探そう。</p>
+      <a class="gplay" href="https://ramune-ai.github.io/madori-st/">▶ あそぶ</a>
+    </div>
+  </article>
 
-  <!-- 5. work -->
-  <h2 class="seclabel" id="work">💌 お仕事のへや</h2>
-  <a class="banner workbanner" id="workbtn" href="#" style="margin-top:0">
+  <article class="gcard soon">
+    <div class="gribbon">準備中</div>
+    <div class="gmedia"><div class="gph abc"><span class="big">ABC雪合戦</span><small>▶ ここにプレイ動画が入ります</small></div></div>
+    <div class="gbody">
+      <h3 class="gttl">ABC雪合戦</h3>
+      <div class="gtags"><span class="gtag">バトル</span><span class="gtag b">アクション</span><span class="gtag c">対戦</span></div>
+      <p class="gdesc">アルファベットを投げ合う、見たことのない雪合戦バトル。今あそべるように準備中。公開をおたのしみに！</p>
+      <span class="gplay disabled">🚧 もうすぐ公開</span>
+    </div>
+  </article>
+
+  <!-- 6. DAILY -->
+  <h2 class="seclabel" id="daily"><span class="en">🎨 DAILY</span><span class="ja">日常</span></h2>
+  <div class="gallerystrip">
+    <div class="gtile art"><span class="emoji">🎨</span><span class="lbl">フルイドアート</span></div>
+    <div class="gtile resin"><span class="emoji">💍</span><span class="lbl">レジン</span></div>
+    <div class="gtile life"><span class="emoji">🧁</span><span class="lbl">日常</span></div>
+    <div class="gtile dance"><span class="emoji">💃</span><span class="lbl">ダンス</span></div>
+    <a class="igmore" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener">もっと見る<br>→ Instagram</a>
+  </div>
+
+  <!-- 7. WORK -->
+  <h2 class="seclabel" id="work"><span class="en">💌 WORK</span><span class="ja">お仕事</span></h2>
+  <a class="banner" id="workbtn" href="#">
     <span class="bic">💌</span>
-    <span class="tx"><b>お仕事のへや</b><small>ご依頼はこちらから</small></span>
+    <span class="tx"><b>お仕事のご依頼</b><small>ご依頼はこちらから</small></span>
     <span class="chip">お問い合わせ</span>
   </a>
   <p class="worknote">きちんとしたご依頼はこちらからお願いします📩<br>かるいお仕事のご相談は、SNSのDMでも大歓迎です🫶</p>
@@ -208,11 +278,55 @@
 </div>
 
 <script>
-  /* ★ Googleフォームを作ったら、下の "" の中にフォームのURLを貼るだけで切り替わります。
-     空のままだと、メールアプリが開く動作になります（メアドはHTMLに書かず、ここで組み立てているので
-     迷惑メール業者のロボットには拾われません）。 */
-  const WORK_FORM_URL = "";
+  /* ★ 曲を増やすときはこの配列に { lyric:`...` } を追加するだけでOK。
+     MVが公開されたら released:true と youtubeId:"xxxx" を追加すると、
+     そのカードが自動でYouTube埋め込みに切り替わります（下のrender処理参照）。 */
+  const songs=[
+    {lyric:`信じられなかった\nこんな日が来るなんて\nドラえもんの世界が\n現実になっちゃった！`},
+    {lyric:`振って！振って！\nサイリウム！\nもっと！もっと！\n高くして！\n優勝！優勝！\n圧倒的タイパ！\nコスパじゃ測れない！\n大優勝！`},
+    {lyric:`AI×あい×愛×アイ\n（AI！あい！愛！アイ！）\n∞のトキメキクリエイター\nI'm Ai♡`},
+    {lyric:`「え・え・え、AI三銃士を連れてきたよ。」\n「え、AI三銃士？」\n「相談の専門家〜？chatGPT！」\n「結論からいうね。👉それ、正解」\n「画像の専門家〜？Gemini！」\n「めちゃくちゃかっこいいですね！鳥肌立ちました！」\n「コーディング、スキルなど長文処理の専門家〜？Claude！」\n「こんばんは、夜更かしさん。」\n＼３人合わせて！最強AI三銃士★／`},
+    {lyric:`ド・パ・ミン （Hey！！！）\nチ・シ・リョウ （Hey！！！）\nド・パ・ミン （Hey！！）\nチ・シ・リョウ （Hey！！！）\n回せ回せ ガチャ回せ〜！！！\n生成しまくり 神曲出まくり～！！！（作りまくり～！！）`},
+    {lyric:`ずっとしまってた　小さな宝物\n見ないふりしてた　ふたをそっと開けて\n透き通るわたしの色　あぁ\nこのままでいいんだ`},
+    {lyric:`むいてないなあって思いながら\nなぜか 諦められなかった\n何度転んでも立ち上がって\nその強さが 自信になった`},
+    {lyric:`天塩にかけた\nオリジナルお花畑！\nお気に入りのおもちゃ\nもってきてね！\nパスキーは え・が・お！\n\nよ・よ・ようこそ！\n夢のおもちゃガーデンへ！（WOW！)`},
+    {lyric:`喉につかえた願い事\n一年に一度逢えるなんて\nずるいよ　織姫と彦星`},
+    {lyric:`ずっと全力ダイスキ発信しちゃうから！\n予防線も保険も置き忘れるくらいでちょうどいい！\n心の殻なんて熱で溶かしちゃうよ！\n（いいよー！）\n明るい未来はこれからでしょ！\n(Yeah! !)\nとびっきりの夢見よ！\n(Foooo! !)`},
+    {lyric:`理想論だと笑えばいい\nくだらないって決めればいい\n誰かが作った物差しで\n僕を測れるわけがない`},
+  ];
 
+  const deck=document.getElementById('deck');
+  songs.forEach((s,i)=>{
+    const el=document.createElement('article');
+    el.className='lcard';
+    const num=String(i+1).padStart(2,'0');
+    if(s.released && s.youtubeId){
+      el.innerHTML=`
+        <span class="num">${num}</span><span class="stat" style="background:#ffe0f2;color:#c0397a">MV公開中</span>
+        <div style="clear:both;margin-top:12px;border-radius:14px;overflow:hidden;aspect-ratio:16/9">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${s.youtubeId}" title="MV" frameborder="0"
+            allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>`;
+    }else{
+      el.innerHTML=`
+        <span class="num">${num}</span><span class="stat">REC・MV制作中</span>
+        <blockquote class="lyric">${s.lyric}</blockquote>
+        <p class="teaser">🔒 タイトルと音源は公開までひみつ</p>`;
+    }
+    deck.appendChild(el);
+  });
+
+  const deckcount=document.getElementById('deckcount');
+  function updateCount(){
+    const cardW=deck.firstElementChild.getBoundingClientRect().width + 14;
+    const idx=Math.round(deck.scrollLeft/cardW);
+    deckcount.textContent=(Math.min(idx+1,songs.length))+' / '+songs.length;
+  }
+  deck.addEventListener('scroll',()=>{ window.requestAnimationFrame(updateCount); },{passive:true});
+  updateCount();
+
+  /* お仕事ボタン：Googleフォームを作ったらここにURLを貼ると自動で切り替わります */
+  const WORK_FORM_URL = "";
   const workbtn=document.getElementById('workbtn');
   if(WORK_FORM_URL){
     workbtn.href=WORK_FORM_URL;
