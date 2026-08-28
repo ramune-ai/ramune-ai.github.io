@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日常ゾーン 🎨</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#3b2a4a;--paper:#fff7fb;--bubble:#fff;--pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;--lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);
+    background:radial-gradient(circle at 12% 8%,#ffe0f2 0,transparent 38%),radial-gradient(circle at 88% 4%,#e2e0ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#d6f7ff 0,transparent 45%),var(--paper);
+    min-height:100vh;overflow-x:hidden}
+  .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.45}
+  @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
+  .sh-ring{border:2.5px solid var(--c);border-radius:50%}
+  .sh-sq{border:2.5px solid var(--c)}
+  .sh-dia{border:2.5px solid var(--c);transform:rotate(45deg)}
+  .sh-tri{width:0!important;height:0!important;border-left:13px solid transparent;border-right:13px solid transparent;border-bottom:22px solid var(--c);background:transparent}
+  .sh-plus{position:relative}
+  .sh-plus::before,.sh-plus::after{content:"";position:absolute;background:var(--c);border-radius:2px}
+  .sh-plus::before{left:50%;top:0;width:2.5px;height:100%;transform:translateX(-50%)}
+  .sh-plus::after{top:50%;left:0;height:2.5px;width:100%;transform:translateY(-50%)}
+  .sh-hex{border:2.5px solid var(--c);border-radius:4px;transform:rotate(30deg)}
+  @media(prefers-reduced-motion:reduce){.sky i{animation:none;display:none}}
+
+  .menubtn{position:fixed;top:16px;right:16px;z-index:30;width:46px;height:46px;border:none;cursor:pointer;
+    background:#fff;border-radius:14px;box-shadow:0 5px 14px var(--shadow);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px}
+  .menubtn span{width:22px;height:2.6px;background:var(--grape);border-radius:2px;transition:.25s}
+  .menubtn.open span:nth-child(1){transform:translateY(7.6px) rotate(45deg)}
+  .menubtn.open span:nth-child(2){opacity:0}
+  .menubtn.open span:nth-child(3){transform:translateY(-7.6px) rotate(-45deg)}
+  .drawer{position:fixed;inset:0;z-index:25;background:rgba(59,42,74,.32);opacity:0;pointer-events:none;transition:.25s}
+  .drawer.open{opacity:1;pointer-events:auto}
+  .panel{position:absolute;top:0;right:0;height:100%;width:min(78vw,300px);background:var(--paper);
+    box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(100%);transition:.28s cubic-bezier(.4,0,.2,1);
+    padding:74px 20px 30px;overflow-y:auto}
+  .drawer.open .panel{transform:translateX(0)}
+  .panel a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font-weight:700;
+    padding:15px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1rem}
+  .panel a .e{font-size:1.3rem}
+
+  .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 22px 80px}
+  .back{display:inline-flex;align-items:center;gap:6px;margin-top:24px;text-decoration:none;font-weight:700;color:var(--grape);background:#fff;padding:9px 16px;border-radius:99px;box-shadow:0 4px 0 var(--shadow)}
+  .back:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow)}
+  header{text-align:center;padding:30px 0 10px}
+  .badge{display:inline-block;font-size:.82rem;letter-spacing:.12em;background:#fff;border:2px solid var(--tangerine);color:var(--tangerine);padding:6px 16px;border-radius:999px;font-weight:700;box-shadow:0 4px 0 var(--shadow)}
+  h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(2.2rem,7vw,3.6rem);line-height:1.15;margin:20px 0 10px;
+    background:linear-gradient(100deg,var(--lemon),var(--tangerine),var(--pink),var(--grape));
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite}
+  @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+  .tagline{font-size:clamp(1rem,2.6vw,1.12rem);font-weight:500;color:#7a6790;max-width:40ch;margin:0 auto;line-height:1.8}
+
+  .igbanner{display:flex;align-items:center;gap:14px;text-decoration:none;border-radius:20px;padding:16px 20px;
+    color:#fff;background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf);box-shadow:0 8px 0 #a02a72;
+    margin:28px 0;transition:transform .12s,box-shadow .12s}
+  .igbanner:active{transform:translateY(6px);box-shadow:0 2px 0 #a02a72}
+  .igbanner .bic{font-size:1.8rem}
+  .igbanner .tx{flex:1}
+  .igbanner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;display:block}
+  .igbanner .tx small{font-size:.78rem;opacity:.92}
+  .igbanner .chip{font-size:.66rem;font-weight:900;padding:3px 9px;border-radius:99px;background:#fff;color:#d62976}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;margin-top:14px}
+  .card{background:var(--bubble);border-radius:24px;overflow:hidden;box-shadow:0 10px 26px var(--shadow);border:3px solid #fff;position:relative}
+  .ribbon{position:absolute;top:14px;right:-32px;transform:rotate(38deg);color:#fff;font-weight:700;font-size:.72rem;padding:4px 40px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.15)}
+  .media{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#fff;font-weight:700}
+  .media .big{font-size:2.4rem}
+  .media small{font-size:.76rem;opacity:.9;text-align:center;padding:0 14px}
+  .c-art{background:linear-gradient(135deg,var(--pink),var(--grape))}
+  .c-resin{background:linear-gradient(135deg,var(--sky),var(--mint))}
+  .c-daily{background:linear-gradient(135deg,var(--lemon),var(--tangerine))}
+  .c-dance{background:linear-gradient(135deg,var(--grape),var(--sky))}
+  .cardttl{padding:14px 16px 16px;font-family:'Mochiy Pop One',sans-serif;font-size:.95rem;text-align:center}
+
+  footer{text-align:center;margin-top:70px;color:#9a89ad;font-size:.9rem;line-height:1.9}
+</style>
+</head>
+<body>
+<div class="sky" id="sky" aria-hidden="true"></div>
+
+<button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
+<div class="drawer" id="drawer">
+  <nav class="panel">
+    <a href="games.html"><span class="e">🎮</span>個人開発ゲーム</a>
+    <a href="music.html"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="gallery.html"><span class="e">🎨</span>日常ゾーン</a>
+    <a href="index.html#work"><span class="e">💼</span>お仕事はこちら</a>
+  </nav>
+</div>
+
+<div class="wrap">
+  <a class="back" href="index.html">← トップへもどる</a>
+  <header>
+    <span class="badge">アート・レジン・日常</span>
+    <h1>日常ゾーン</h1>
+    <p class="tagline">フルイドアート、レジン（イヤリングから雀卓の盤面まで）、お菓子作り、筋トレ、ファッション、ダンス…<br>気分のままに作ったものを、気が向いたときに置いていく場所です。</p>
+  </header>
+
+  <a class="igbanner" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener">
+    <span class="bic">📷</span>
+    <span class="tx"><b>毎日の投稿はInstagramで</b><small>ここは特にお気に入りの作品だけを飾るコーナー</small></span>
+    <span class="chip">見に行く</span>
+  </a>
+
+  <div class="grid">
+    <article class="card">
+      <div class="ribbon" style="background:var(--pink)">準備中</div>
+      <div class="media c-art"><span class="big">🎨</span><small>フルイドアート作品、ここに並びます</small></div>
+      <div class="cardttl">フルイドアート</div>
+    </article>
+    <article class="card">
+      <div class="ribbon" style="background:var(--sky)">準備中</div>
+      <div class="media c-resin"><span class="big">💍</span><small>イヤリング〜雀卓の盤面まで</small></div>
+      <div class="cardttl">レジン</div>
+    </article>
+    <article class="card">
+      <div class="ribbon" style="background:var(--tangerine)">準備中</div>
+      <div class="media c-daily"><span class="big">🧁</span><small>お菓子作り・筋トレ・ファッションなど</small></div>
+      <div class="cardttl">日常</div>
+    </article>
+    <article class="card">
+      <div class="ribbon" style="background:var(--grape)">準備中</div>
+      <div class="media c-dance"><span class="big">💃</span><small>いつか被写体としても</small></div>
+      <div class="cardttl">ダンス</div>
+    </article>
+  </div>
+
+  <footer>つくった人：らむね あい 🌈<br>創作を全部置けるアカウントにしたい。</footer>
+</div>
+
+<script>
+  const sky=document.getElementById('sky');
+  const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
+  const colors=['#ff7ec0','#9d7bff','#5ec8ff','#67e6c2','#ffd84d','#ff9a52'];
+  for(let n=0;n<18;n++){
+    const el=document.createElement('i');
+    const kind=shapes[Math.floor(Math.random()*shapes.length)];
+    el.className=kind;
+    el.style.setProperty('--c',colors[Math.floor(Math.random()*colors.length)]);
+    if(kind!=='sh-tri'){const s=14+Math.random()*28;el.style.width=s+'px';el.style.height=s+'px';}
+    el.style.left=Math.random()*100+'vw';
+    const dur=12+Math.random()*14;el.style.animationDuration=dur+'s';el.style.animationDelay=(-Math.random()*dur)+'s';
+    sky.appendChild(el);
+  }
+  const mb=document.getElementById('menubtn'), dr=document.getElementById('drawer');
+  function toggle(){mb.classList.toggle('open');dr.classList.toggle('open');}
+  mb.addEventListener('click',toggle);
+  dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
+  dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
+</script>
+</body>
+</html>

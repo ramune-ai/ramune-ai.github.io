@@ -61,10 +61,38 @@
   .play:active{transform:translateY(5px);box-shadow:0 2px 0 #c79bff}
   .play.disabled{background:#cfc6da;box-shadow:0 7px 0 #b3a9c2;cursor:not-allowed;pointer-events:none}
   footer{text-align:center;margin-top:70px;color:#9a89ad;font-size:.9rem;line-height:1.9}
+
+  .menubtn{position:fixed;top:16px;right:16px;z-index:30;width:46px;height:46px;border:none;cursor:pointer;
+    background:#fff;border-radius:14px;box-shadow:0 5px 14px var(--shadow);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:5px}
+  .menubtn span{width:22px;height:2.6px;background:var(--grape);border-radius:2px;transition:.25s}
+  .menubtn.open span:nth-child(1){transform:translateY(7.6px) rotate(45deg)}
+  .menubtn.open span:nth-child(2){opacity:0}
+  .menubtn.open span:nth-child(3){transform:translateY(-7.6px) rotate(-45deg)}
+  .drawer{position:fixed;inset:0;z-index:25;background:rgba(59,42,74,.32);opacity:0;pointer-events:none;transition:.25s}
+  .drawer.open{opacity:1;pointer-events:auto}
+  .panel{position:absolute;top:0;right:0;height:100%;width:min(78vw,300px);background:var(--paper);
+    box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(100%);transition:.28s cubic-bezier(.4,0,.2,1);
+    padding:74px 20px 30px;overflow-y:auto}
+  .drawer.open .panel{transform:translateX(0)}
+  .panel a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font-weight:700;
+    padding:15px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1rem}
+  .panel a .e{font-size:1.3rem}
 </style>
 </head>
 <body>
 <div class="sky" id="sky" aria-hidden="true"></div>
+
+<button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
+<div class="drawer" id="drawer">
+  <nav class="panel">
+    <a href="games.html"><span class="e">🎮</span>個人開発ゲーム</a>
+    <a href="music.html"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="gallery.html"><span class="e">🎨</span>日常ゾーン</a>
+    <a href="index.html#work"><span class="e">💼</span>お仕事はこちら</a>
+  </nav>
+</div>
+
 <div class="wrap">
   <a class="back" href="index.html">← トップへもどる</a>
   <header>
@@ -115,6 +143,11 @@
     const dur=12+Math.random()*14;el.style.animationDuration=dur+'s';el.style.animationDelay=(-Math.random()*dur)+'s';
     sky.appendChild(el);
   }
+  const mb=document.getElementById('menubtn'), dr=document.getElementById('drawer');
+  function toggle(){mb.classList.toggle('open');dr.classList.toggle('open');}
+  mb.addEventListener('click',toggle);
+  dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
+  dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
 </script>
 </body>
 </html>

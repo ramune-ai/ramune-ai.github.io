@@ -86,58 +86,50 @@
 
   .seclabel{font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;margin:34px 4px 14px;display:flex;align-items:center;gap:10px}
   .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,var(--grape),transparent)}
-  /* centered section label (with lines both sides) */
   .seclabel.center{justify-content:center;color:var(--pink)}
   .seclabel.center::before,.seclabel.center::after{content:"";flex:1;max-width:70px;height:3px;border-radius:99px;background:none}
   .seclabel.center::before{background:linear-gradient(90deg,transparent,var(--pink))}
   .seclabel.center::after{background:linear-gradient(90deg,var(--pink),transparent)}
 
-  /* big banner shared by YouTube MV and Games */
+  /* status card: what's cooking right now */
+  .statuscard{margin-top:30px;border-radius:22px;padding:20px 22px;background:#fff;border:2.5px dashed var(--pink);
+    box-shadow:0 8px 22px var(--shadow);position:relative;overflow:hidden}
+  .statuscard::before{content:"🎬 NOW MAKING";position:absolute;top:-1px;right:-1px;font-size:.62rem;font-weight:900;
+    letter-spacing:.06em;color:#fff;background:linear-gradient(100deg,var(--pink),var(--grape));padding:6px 14px 6px 18px;
+    border-radius:0 20px 0 16px}
+  .statuscard h2{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;margin-bottom:10px;padding-right:80px;line-height:1.5}
+  .statuscard p{font-size:.86rem;color:#7a6790;line-height:1.75}
+  .statuscard .bar{margin-top:14px;height:10px;border-radius:99px;background:#f1edff;overflow:hidden}
+  .statuscard .bar i{display:block;height:100%;width:70%;border-radius:99px;
+    background:linear-gradient(90deg,var(--pink),var(--grape));animation:barsheen 2.4s ease-in-out infinite}
+  @keyframes barsheen{0%,100%{opacity:1}50%{opacity:.72}}
+  .statuscard .barlabel{display:flex;justify-content:space-between;font-size:.7rem;font-weight:700;color:#a99cb8;margin-top:6px}
+  @media(prefers-reduced-motion:reduce){.statuscard .bar i{animation:none}}
+
+  /* shared banner look, used by all pillar/section links */
   .banner{display:flex;align-items:center;gap:14px;text-decoration:none;border-radius:20px;padding:16px 20px;
-    transition:transform .12s,box-shadow .12s}
+    transition:transform .12s,box-shadow .12s;margin-top:14px}
   .banner .bic{font-size:1.8rem}
   .banner .tx{flex:1}
   .banner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;display:block}
   .banner .tx small{font-size:.78rem;opacity:.92}
   .banner .chip{font-size:.66rem;font-weight:900;padding:3px 9px;border-radius:99px}
 
-  .ytbanner{color:#fff;background:linear-gradient(100deg,#ff5b6e,#ff2d2d);box-shadow:0 8px 0 #d62a3a;animation:ytpulse 2.6s ease-in-out infinite}
-  .ytbanner:active{transform:translateY(6px);box-shadow:0 2px 0 #d62a3a;animation:none}
-  .ytbanner .chip{background:#fff;color:#ff2d2d}
-  @keyframes ytpulse{0%,100%{box-shadow:0 8px 0 #d62a3a,0 0 0 0 rgba(255,45,45,.35)}50%{box-shadow:0 8px 0 #d62a3a,0 0 0 9px rgba(255,45,45,0)}}
-  @media(prefers-reduced-motion:reduce){.ytbanner{animation:none}}
-
   .gamebanner{color:#fff;background:linear-gradient(100deg,var(--grape),var(--sky));box-shadow:0 8px 0 #7c5fd6}
   .gamebanner:active{transform:translateY(6px);box-shadow:0 2px 0 #7c5fd6}
   .gamebanner .chip{background:#fff;color:var(--grape)}
 
-  .list{display:flex;flex-direction:column;gap:12px}
-  .row{display:flex;align-items:center;gap:13px;background:var(--bubble);border-radius:18px;padding:11px;
-    border:2px solid #fff;box-shadow:0 7px 18px var(--shadow);
-    transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s}
-  .row:hover{transform:translateY(-4px);box-shadow:0 13px 28px var(--shadow)}
-  .jacket{position:relative;flex:0 0 auto;width:64px;height:64px;border-radius:13px;overflow:hidden}
-  .jacket img{width:100%;height:100%;object-fit:cover}
-  .ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
-  .ph.c1{background:linear-gradient(135deg,var(--sky),var(--grape))}
-  .ph.c2{background:linear-gradient(135deg,var(--pink),var(--lemon))}
-  .ph.c3{background:linear-gradient(135deg,var(--mint),var(--sky))}
-  .ph.c4{background:linear-gradient(135deg,var(--grape),var(--pink))}
-  .info{flex:1;min-width:0}
-  .ttl{font-family:'Mochiy Pop One',sans-serif;font-size:.95rem;line-height:1.3;margin-bottom:7px}
-  .actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-  .listen{font-size:.74rem;font-weight:700;text-decoration:none;color:var(--grape);background:#f1edff;padding:6px 12px;border-radius:99px;display:inline-flex;gap:4px;align-items:center}
-  .yt{position:relative;font-size:.78rem;font-weight:700;text-decoration:none;color:#fff;
-    background:linear-gradient(100deg,#ff5b6e,#ff2d2d);padding:6px 13px;border-radius:99px;
-    display:inline-flex;gap:6px;align-items:center;box-shadow:0 3px 0 #d62a3a}
-  .yt:active{transform:translateY(2px);box-shadow:0 1px 0 #d62a3a}
-  .yt .mv{font-size:.58rem;background:#fff;color:#ff2d2d;font-weight:900;padding:1px 5px;border-radius:99px}
-  .mini{font-size:.72rem;font-weight:700;text-decoration:none;color:#9a89ad}
-  .mini:hover{color:var(--pink)}
-  .listen.coming,.yt.coming{background:#f1eef5;color:#a99cb8;box-shadow:none}
-  .yt.coming .mv{background:#fff;color:#a99cb8}
-  .listen.coming,.yt.coming,.mini.coming{pointer-events:none}
-  .mini.coming{color:#cabdd8}
+  .musicbanner{color:#fff;background:linear-gradient(100deg,var(--mint),var(--sky));box-shadow:0 8px 0 #3fb89a}
+  .musicbanner:active{transform:translateY(6px);box-shadow:0 2px 0 #3fb89a}
+  .musicbanner .chip{background:#fff;color:#1bbf95}
+
+  .gallerybanner{color:#fff;background:linear-gradient(100deg,var(--lemon),var(--tangerine));box-shadow:0 8px 0 #e0932e}
+  .gallerybanner:active{transform:translateY(6px);box-shadow:0 2px 0 #e0932e}
+  .gallerybanner .chip{background:#fff;color:#e0932e}
+
+  .workbanner{color:#fff;background:linear-gradient(100deg,var(--pink),var(--tangerine));box-shadow:0 8px 0 #e07a4a}
+  .workbanner:active{transform:translateY(6px);box-shadow:0 2px 0 #e07a4a}
+  .workbanner .chip{background:#fff;color:var(--tangerine)}
 
   footer{text-align:center;margin-top:46px;color:#9a89ad;font-size:.85rem;line-height:1.8}
 </style>
@@ -149,7 +141,8 @@
 <div class="drawer" id="drawer">
   <nav class="panel">
     <a href="games.html"><span class="e">🎮</span>個人開発ゲーム</a>
-    <a href="#music"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="music.html"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="gallery.html"><span class="e">🎨</span>日常ゾーン</a>
     <a href="#work"><span class="e">💼</span>お仕事はこちら</a>
   </nav>
 </div>
@@ -163,7 +156,7 @@
     <p class="tags-line">作詞曲・AI音楽／ゲーム・アプリ個人開発／フルイドアート・レジン</p>
   </header>
 
-  <!-- 2. SNS (4 incl. YouTube) -->
+  <!-- 2. SNS -->
   <div class="sns">
     <a class="b-x" href="https://x.com/ramune_aiai" target="_blank" rel="noopener" aria-label="X">𝕏</a>
     <a class="b-ig" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
@@ -171,84 +164,40 @@
     <a class="b-yt" href="https://www.youtube.com/@ramune_aiai" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
   </div>
 
-  <!-- 3. YouTube MV banner -->
-  <a class="banner ytbanner" href="#" style="margin-top:30px">
-    <span class="bic">▶</span>
-    <span class="tx"><b>YouTubeでMVを観る</b><small>新作ミュージックビデオ公開中！</small></span>
-    <span class="chip">▶ 観る</span>
-  </a>
+  <!-- 3. いま制作中カード -->
+  <div class="statuscard">
+    <h2>楽曲12曲、ほぼ完成🎶<br>レコーディング＆MV制作中！</h2>
+    <p>作詞はぜんぶ自分で。歌ってMVにして、2026年10月ごろから順次お披露目していきます。歌詞のさきどりは音楽ページでちょっとだけ公開中👀</p>
+    <div class="bar"><i></i></div>
+    <div class="barlabel"><span>作詞・作曲</span><span>REC・MV制作中</span></div>
+  </div>
 
-  <!-- 4. Games banner (one, same size) -->
-  <a class="banner gamebanner" href="games.html" style="margin-top:14px">
+  <!-- 4. 2本柱：ゲーム／音楽 -->
+  <a class="banner gamebanner" href="games.html">
     <span class="bic">🎮</span>
     <span class="tx"><b>自作ゲームを見る</b><small>AIと作ったオリジナルゲーム集</small></span>
     <span class="chip">▶ 遊べる</span>
   </a>
 
-  <!-- 5. music -->
-  <h2 class="seclabel center" id="music">♬ 自作オリジナル曲 ♬</h2>
-  <div class="list">
+  <a class="banner musicbanner" href="music.html">
+    <span class="bic">🎶</span>
+    <span class="tx"><b>制作中の楽曲を見る</b><small>歌詞のさきどり公開中</small></span>
+    <span class="chip">歌詞公開中</span>
+  </a>
 
-    <article class="row">
-      <div class="jacket"><div class="ph c1">🐱</div></div>
-      <div class="info">
-        <h3 class="ttl">2026 ドラえもん誕生</h3>
-        <div class="actions">
-          <a class="listen coming" href="#">▶ 試聴</a>
-          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
-          <a class="mini coming" href="#">Spotify</a>
-          <a class="mini coming" href="#">Apple</a>
-        </div>
-      </div>
-    </article>
+  <!-- 5. 日常ゾーン -->
+  <a class="banner gallerybanner" href="gallery.html">
+    <span class="bic">🎨</span>
+    <span class="tx"><b>日常ゾーン</b><small>アート・レジン・日々の創作</small></span>
+    <span class="chip">たまに更新</span>
+  </a>
 
-    <article class="row">
-      <div class="jacket"><div class="ph c2">🤖</div></div>
-      <div class="info">
-        <h3 class="ttl">I'm AI♡</h3>
-        <div class="actions">
-          <a class="listen coming" href="#">▶ 試聴</a>
-          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
-          <a class="mini coming" href="#">Spotify</a>
-          <a class="mini coming" href="#">Apple</a>
-        </div>
-      </div>
-    </article>
-
-    <article class="row">
-      <div class="jacket"><div class="ph c3">⏱️</div></div>
-      <div class="info">
-        <h3 class="ttl">圧倒的タイパ大優勝</h3>
-        <div class="actions">
-          <a class="listen coming" href="#">▶ 試聴</a>
-          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
-          <a class="mini coming" href="#">Spotify</a>
-          <a class="mini coming" href="#">Apple</a>
-        </div>
-      </div>
-    </article>
-
-    <article class="row">
-      <div class="jacket"><div class="ph c4">🎻</div></div>
-      <div class="info">
-        <h3 class="ttl">AI三銃士を連れてきたよ</h3>
-        <div class="actions">
-          <a class="listen coming" href="#">▶ 試聴</a>
-          <a class="yt coming" href="#">▶ YouTube <span class="mv">MV</span></a>
-          <a class="mini coming" href="#">Spotify</a>
-          <a class="mini coming" href="#">Apple</a>
-        </div>
-      </div>
-    </article>
-
-  </div>
-
-  <!-- work -->
-  <h2 class="seclabel" id="work">💼 お仕事はこちら</h2>
-  <a class="banner gamebanner" style="background:linear-gradient(100deg,var(--pink),var(--tangerine));box-shadow:0 8px 0 #e07a4a" href="#">
+  <!-- 6. work -->
+  <h2 class="seclabel" id="work" style="margin-top:34px">💼 お仕事はこちら</h2>
+  <a class="banner workbanner" href="#">
     <span class="bic">💼</span>
     <span class="tx"><b>お仕事のご依頼</b><small>お気軽にご連絡ください</small></span>
-    <span class="chip" style="color:var(--tangerine)">MAIL</span>
+    <span class="chip">MAIL</span>
   </a>
 
   <footer>らむね あい 🌈｜創作<br>創作しないと頭パンクしちゃうタイプです</footer>
@@ -274,7 +223,6 @@
   function toggle(){mb.classList.toggle('open');dr.classList.toggle('open');}
   mb.addEventListener('click',toggle);
   dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
-  // close menu when a link is tapped
   dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
 </script>
 </body>
