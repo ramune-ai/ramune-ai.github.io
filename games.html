@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>あいのゲームたち 🎮</title>
+<title>ゲームゾーン 🎮</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#3b2a4a;--paper:#fff7fb;--bubble:#fff;--pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;--lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28)}
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);
+  html{scroll-behavior:smooth;min-height:100%;
     background:radial-gradient(circle at 12% 8%,#ffe0f2 0,transparent 38%),radial-gradient(circle at 88% 4%,#e2e0ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#d6f7ff 0,transparent 45%),var(--paper);
-    min-height:100vh;overflow-x:hidden}
+    background-attachment:fixed;background-repeat:no-repeat}
+  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
   .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.45}
   @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
@@ -57,9 +57,9 @@
   .tag.b{background:#e6f0ff;color:#2f8ec4}
   .tag.c{background:#e2fbf3;color:#0d8168}
   .desc{font-size:1.02rem;line-height:1.8;color:#6a5a7a;margin-bottom:18px}
-  .play{display:inline-flex;align-items:center;gap:8px;font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;text-decoration:none;color:#fff;padding:14px 28px;border-radius:99px;background:linear-gradient(100deg,#ee5ba6,#8257f0);box-shadow:0 7px 0 #7048d8;transition:transform .12s,box-shadow .12s;text-shadow:0 1px 3px rgba(0,0,0,.22)}
-  .play:active{transform:translateY(5px);box-shadow:0 2px 0 #7048d8}
-  .play.disabled{background:#cfc6da;box-shadow:0 7px 0 #b3a9c2;cursor:not-allowed;pointer-events:none}
+  .play{display:inline-flex;align-items:center;gap:8px;font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;text-decoration:none;color:#c0397a;padding:14px 28px;border-radius:99px;background:linear-gradient(100deg,#ffdaee,#e8d8ff);border:2.5px solid #fff;box-shadow:0 7px 0 #f3b7d7;transition:transform .12s,box-shadow .12s}
+  .play:active{transform:translateY(5px);box-shadow:0 2px 0 #f3b7d7}
+  .play.disabled{background:#efeaf5;color:#a99cb8;box-shadow:0 7px 0 #ddd4e8;cursor:not-allowed;pointer-events:none}
   footer{text-align:center;margin-top:70px;color:#9a89ad;font-size:.9rem;line-height:1.9}
 
   .menubtn{position:fixed;top:16px;right:16px;z-index:30;width:46px;height:46px;border:none;cursor:pointer;
@@ -86,10 +86,10 @@
 <button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
 <div class="drawer" id="drawer">
   <nav class="panel">
-    <a href="games.html"><span class="e">🎮</span>個人開発ゲーム</a>
-    <a href="music.html"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="games.html"><span class="e">🎮</span>ゲームゾーン</a>
+    <a href="music.html"><span class="e">🎶</span>ミュージックゾーン</a>
     <a href="gallery.html"><span class="e">🎨</span>日常ゾーン</a>
-    <a href="index.html#work"><span class="e">💼</span>お仕事はこちら</a>
+    <a href="index.html#work"><span class="e">💌</span>おしごとゾーン</a>
   </nav>
 </div>
 
@@ -97,7 +97,7 @@
   <a class="back" href="index.html">← トップへもどる</a>
   <header>
     <span class="badge">AI × 完全セルフ創作</span>
-    <h1>あいのゲームたち</h1>
+    <h1>ゲームゾーン</h1>
     <p class="tagline">コードは書けないけど、<b>つくりたい</b>は止まらない。<br>AIと一緒に生まれた、世界にまだなかった遊び。</p>
   </header>
   <div class="grid">

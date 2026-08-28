@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>自作オリジナル曲 🎶</title>
+<title>ミュージックゾーン 🎶</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--ink:#3b2a4a;--paper:#fff7fb;--bubble:#fff;--pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;--lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28)}
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);
+  html{scroll-behavior:smooth;min-height:100%;
     background:radial-gradient(circle at 12% 8%,#ffe0f2 0,transparent 38%),radial-gradient(circle at 88% 4%,#e2e0ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#d6f7ff 0,transparent 45%),var(--paper);
-    min-height:100vh;overflow-x:hidden}
+    background-attachment:fixed;background-repeat:no-repeat}
+  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
   .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.45}
   @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
@@ -79,10 +79,10 @@
 <button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
 <div class="drawer" id="drawer">
   <nav class="panel">
-    <a href="games.html"><span class="e">🎮</span>個人開発ゲーム</a>
-    <a href="music.html"><span class="e">🎶</span>自作オリジナル曲</a>
+    <a href="games.html"><span class="e">🎮</span>ゲームゾーン</a>
+    <a href="music.html"><span class="e">🎶</span>ミュージックゾーン</a>
     <a href="gallery.html"><span class="e">🎨</span>日常ゾーン</a>
-    <a href="index.html#work"><span class="e">💼</span>お仕事はこちら</a>
+    <a href="index.html#work"><span class="e">💌</span>おしごとゾーン</a>
   </nav>
 </div>
 
@@ -90,7 +90,7 @@
   <a class="back" href="index.html">← トップへもどる</a>
   <header>
     <span class="badge">作詞ぜんぶ自作 × AI音楽</span>
-    <h1>自作オリジナル曲</h1>
+    <h1>ミュージックゾーン</h1>
     <p class="tagline">レコーディングとMV制作、のんびりだけどコツコツ進行中。<br><b>2026年10月ごろ</b>から順次お披露目予定！</p>
     <p class="note">※ タイトル・音源・曲順は公開までひみつです。歌詞の一部だけ先出し中。今後も曲は増えていきます。</p>
   </header>
