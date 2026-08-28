@@ -46,7 +46,7 @@
   .panel a .e{font-size:1.3rem}
 
   .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 22px 80px}
-  .back{display:inline-flex;align-items:center;gap:6px;margin-top:24px;text-decoration:none;font-weight:700;color:var(--grape);background:#fff;padding:9px 16px;border-radius:99px;box-shadow:0 4px 0 var(--shadow)}
+  .back{display:inline-flex;align-items:center;gap:6px;margin-top:20px;text-decoration:none;font-weight:700;font-size:1rem;color:#7048d8;background:#fff;padding:11px 18px;border-radius:99px;box-shadow:0 4px 0 var(--shadow)}
   .back:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow)}
   header{text-align:center;padding:30px 0 10px}
   .badge{display:inline-block;font-size:.82rem;letter-spacing:.12em;background:#fff;border:2px solid var(--tangerine);color:var(--tangerine);padding:6px 16px;border-radius:999px;font-weight:700;box-shadow:0 4px 0 var(--shadow)}
@@ -54,29 +54,31 @@
     background:linear-gradient(100deg,var(--lemon),var(--tangerine),var(--pink),var(--grape));
     background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite}
   @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
-  .tagline{font-size:clamp(1rem,2.6vw,1.12rem);font-weight:500;color:#7a6790;max-width:40ch;margin:0 auto;line-height:1.8}
+  .tagline{font-size:clamp(1.02rem,2.8vw,1.16rem);font-weight:700;color:#6a5a7a;max-width:42ch;margin:0 auto;line-height:1.75}
 
-  .igbanner{display:flex;align-items:center;gap:14px;text-decoration:none;border-radius:20px;padding:16px 20px;
-    color:#fff;background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf);box-shadow:0 8px 0 #a02a72;
-    margin:28px 0;transition:transform .12s,box-shadow .12s}
-  .igbanner:active{transform:translateY(6px);box-shadow:0 2px 0 #a02a72}
-  .igbanner .bic{font-size:1.8rem}
-  .igbanner .tx{flex:1}
-  .igbanner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;display:block}
-  .igbanner .tx small{font-size:.78rem;opacity:.92}
-  .igbanner .chip{font-size:.66rem;font-weight:900;padding:3px 9px;border-radius:99px;background:#fff;color:#d62976}
+  .igbanner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:14px 14px;
+    color:#fff;background:linear-gradient(45deg,#e8a33d,#e0632c,#c2185b,#7b2fa8);box-shadow:0 7px 0 #8e2260;
+    margin:26px 0;transition:transform .12s,box-shadow .12s;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .igbanner:active{transform:translateY(5px);box-shadow:0 2px 0 #8e2260}
+  .igbanner .bic{flex:0 0 auto;display:flex;text-shadow:none}
+  .igbanner .bic svg{width:27px;height:27px;fill:currentColor;display:block}
+  .igbanner .tx{flex:1;min-width:0}
+  .igbanner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;display:block;line-height:1.3}
+  .igbanner .tx small{font-size:.8rem;opacity:.95;display:block;margin-top:3px;line-height:1.4}
+  .igbanner .chip{font-size:.68rem;font-weight:900;padding:5px 9px;border-radius:99px;background:#fff;color:#c2185b;white-space:nowrap;flex:0 0 auto;text-shadow:none}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;margin-top:14px}
+  /* 2 across on phones so more is visible per screen */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-top:14px}
   .card{background:var(--bubble);border-radius:24px;overflow:hidden;box-shadow:0 10px 26px var(--shadow);border:3px solid #fff;position:relative}
   .ribbon{position:absolute;top:14px;right:-32px;transform:rotate(38deg);color:#fff;font-weight:700;font-size:.72rem;padding:4px 40px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.15)}
   .media{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#fff;font-weight:700}
-  .media .big{font-size:2.4rem}
-  .media small{font-size:.76rem;opacity:.9;text-align:center;padding:0 14px}
+  .media .big{font-size:2.5rem}
+  .media small{font-size:.82rem;opacity:.95;text-align:center;padding:0 14px;line-height:1.5;text-shadow:0 1px 3px rgba(0,0,0,.25)}
   .c-art{background:linear-gradient(135deg,var(--pink),var(--grape))}
   .c-resin{background:linear-gradient(135deg,var(--sky),var(--mint))}
   .c-daily{background:linear-gradient(135deg,var(--lemon),var(--tangerine))}
   .c-dance{background:linear-gradient(135deg,var(--grape),var(--sky))}
-  .cardttl{padding:14px 16px 16px;font-family:'Mochiy Pop One',sans-serif;font-size:.95rem;text-align:center}
+  .cardttl{padding:14px 16px 16px;font-family:'Mochiy Pop One',sans-serif;font-size:1.05rem;text-align:center}
 
   footer{text-align:center;margin-top:70px;color:#9a89ad;font-size:.9rem;line-height:1.9}
 </style>
@@ -99,12 +101,12 @@
   <header>
     <span class="badge">アート・レジン・日常</span>
     <h1>日常ゾーン</h1>
-    <p class="tagline">フルイドアート、レジン（イヤリングから雀卓の盤面まで）、お菓子作り、筋トレ、ファッション、ダンス…<br>気分のままに作ったものを、気が向いたときに置いていく場所です。</p>
+    <p class="tagline">フルイドアート、レジン、お菓子作り、筋トレ、ファッション、ダンス…<br>気分のままに作ったものを置いていく場所です。</p>
   </header>
 
   <a class="igbanner" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener">
-    <span class="bic">📷</span>
-    <span class="tx"><b>毎日の投稿はInstagramで</b><small>ここは特にお気に入りの作品だけを飾るコーナー</small></span>
+    <span class="bic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></span>
+    <span class="tx"><b>Instagramで毎日更新</b><small>ここはお気に入りだけの特設コーナー</small></span>
     <span class="chip">見に行く</span>
   </a>
 
