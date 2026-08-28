@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- iOS Safariの上部バーまで背景色をなじませる -->
+<meta name="theme-color" content="#fce9f4">
 <title>らむね あい 🌈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,19 +14,19 @@
     --ink:#3b2a4a;--paper:#fff7fb;--bubble:#ffffff;
     --pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;
     --lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28);
+    /* 見出し用の濃いめ虹。パステル背景でも読めるように彩度と明度を落としてある */
+    --rainbow:linear-gradient(100deg,#ea4f9e,#ef7b2a,#e0aa00,#17b894,#2f9fd8,#7c5fd6);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  /* 背景は html に固定で敷く。これでスクロールの上下端で白が出ない */
-  html{
-    scroll-behavior:smooth;min-height:100%;
+  html{scroll-behavior:smooth;background:#fce9f4}
+  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
+  /* 背景は固定レイヤーで敷く。iOSでも上下端に白が出ない */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;
     background:
       radial-gradient(circle at 12% 8%, #ffe0f2 0, transparent 38%),
       radial-gradient(circle at 88% 4%, #e2e0ff 0, transparent 40%),
       radial-gradient(circle at 50% 100%, #d6f7ff 0, transparent 45%),
-      var(--paper);
-    background-attachment:fixed;background-repeat:no-repeat;
-  }
-  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
+      var(--paper)}
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
   .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.4}
   @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
@@ -67,8 +69,10 @@
     display:flex;align-items:center;justify-content:center;font-size:2.4rem;
     box-shadow:0 10px 26px var(--shadow);border:4px solid #fff}
   h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(1.65rem,6vw,2.1rem);line-height:1.15;margin-bottom:9px;
-    background:linear-gradient(100deg,var(--pink),var(--tangerine),var(--lemon),var(--mint),var(--sky),var(--grape));
-    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite}
+    background:var(--rainbow);background-size:300% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite;
+    /* 白いフチ＋やわらかい影で、背景や浮遊シェイプに文字が埋もれないようにする */
+    filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 2px 4px rgba(120,90,160,.18))}
   @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
   .bio{font-size:1.06rem;font-weight:700;color:#6a5a7a;line-height:1.65;margin:0 auto}
   .bio b{color:#e0559d}
@@ -88,18 +92,16 @@
   .seclabel{font-family:'Mochiy Pop One',sans-serif;font-size:1.12rem;margin:28px 4px 12px;display:flex;align-items:center;gap:10px}
   .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#d9c6ff,transparent)}
 
-  /* --- お知らせ：見出し2行＋補足1行＋更新日。進行バーなし --- */
-  .statuscard{margin-top:18px;border-radius:20px;padding:14px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
+  /* --- お知らせ：見出し2行＋補足1行。更新日は右上のリボンに --- */
+  .statuscard{margin-top:18px;border-radius:20px;padding:14px 16px 14px;background:#fff;border:2.5px dashed #ffb3d9;
     box-shadow:0 8px 22px var(--shadow);position:relative;overflow:hidden}
-  .statuscard::before{content:"🎬 NOW MAKING";position:absolute;top:-1px;right:-1px;font-size:.6rem;font-weight:900;
-    letter-spacing:.05em;color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:5px 12px 5px 15px;
-    border-radius:0 18px 0 14px}
+  .upd{position:absolute;top:-1px;right:-1px;font-size:.66rem;font-weight:900;letter-spacing:.03em;
+    color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:6px 13px 6px 16px;border-radius:0 18px 0 14px}
   .statuscard h2{font-family:'Mochiy Pop One',sans-serif;font-size:1.02rem;margin-bottom:6px;line-height:1.5}
-  .statuscard h2::before{content:"";float:right;width:100px;height:1.2em}
+  .statuscard h2::before{content:"";float:right;width:118px;height:1.2em}
   .statuscard p{font-size:.88rem;color:#6a5a7a;line-height:1.6}
-  .statuscard .date{margin-top:9px;font-size:.74rem;font-weight:700;color:#a99cb8;text-align:right}
 
-  /* --- バナー：パステル地＋濃い文字（白文字をやめて読みやすさとゆめかわを両立） --- */
+  /* --- バナー：パステル地＋濃い文字 --- */
   .banner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:14px 14px;
     transition:transform .12s,box-shadow .12s;margin-top:12px;border:2.5px solid #fff}
   .banner .bic{font-size:1.6rem;flex:0 0 auto}
@@ -135,10 +137,10 @@
 <button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
 <div class="drawer" id="drawer">
   <nav class="panel">
-    <a href="games.html"><span class="e">🎮</span>ゲームゾーン</a>
-    <a href="music.html"><span class="e">🎶</span>ミュージックゾーン</a>
-    <a href="gallery.html"><span class="e">🎨</span>日常ゾーン</a>
-    <a href="#work"><span class="e">💌</span>おしごとゾーン</a>
+    <a href="games.html"><span class="e">🎮</span>ゲームのへや</a>
+    <a href="music.html"><span class="e">🎶</span>音楽のへや</a>
+    <a href="gallery.html"><span class="e">🎨</span>日常のへや</a>
+    <a href="#work"><span class="e">💌</span>お仕事のへや</a>
   </nav>
 </div>
 
@@ -167,40 +169,40 @@
     </a>
   </div>
 
-  <!-- 3. お知らせ -->
+  <!-- 3. お知らせ（更新したら日付とテキストを書き換えてください） -->
   <div class="statuscard">
-    <h2>楽曲12曲、REC中🎶<br>MVは2026年10月ごろ公開！</h2>
-    <p>歌詞のさきどりをミュージックゾーンで公開中👀</p>
-    <div class="date">2026年8月29日 更新</div>
+    <span class="upd">2026.8.29 更新</span>
+    <h2>楽曲12曲、REC中🎶<br>MVは2026年10月から順次公開！</h2>
+    <p>歌詞のさきどりを音楽のへやで公開中👀</p>
   </div>
 
-  <!-- 4. ゾーン -->
+  <!-- 4. 作品のへや -->
   <a class="banner gamebanner" href="games.html">
     <span class="bic">🎮</span>
-    <span class="tx"><b>ゲームゾーン</b><small>いま遊べるオリジナルゲーム</small></span>
+    <span class="tx"><b>ゲームのへや</b><small>いま遊べるオリジナルゲーム</small></span>
     <span class="chip">▶ 遊べる</span>
   </a>
 
   <a class="banner musicbanner" href="music.html">
     <span class="bic">🎶</span>
-    <span class="tx"><b>ミュージックゾーン</b><small>歌詞のさきどり公開中</small></span>
+    <span class="tx"><b>音楽のへや</b><small>歌詞のさきどり公開中</small></span>
     <span class="chip">歌詞公開中</span>
   </a>
 
   <a class="banner gallerybanner" href="gallery.html">
     <span class="bic">🎨</span>
-    <span class="tx"><b>日常ゾーン</b><small>アート・レジン・日常</small></span>
+    <span class="tx"><b>日常のへや</b><small>アート・レジン・日常</small></span>
     <span class="chip">たまに更新</span>
   </a>
 
   <!-- 5. work -->
-  <h2 class="seclabel" id="work">💌 おしごとゾーン</h2>
+  <h2 class="seclabel" id="work">💌 お仕事のへや</h2>
   <a class="banner workbanner" id="workbtn" href="#" style="margin-top:0">
     <span class="bic">💌</span>
-    <span class="tx"><b>おしごとゾーン</b><small>ご依頼はこちらから</small></span>
+    <span class="tx"><b>お仕事のへや</b><small>ご依頼はこちらから</small></span>
     <span class="chip">お問い合わせ</span>
   </a>
-  <p class="worknote">お仕事のご依頼はこちらからお願いします📩<br>かるい感想やちょっとした絡みは、SNSのDMでも大歓迎です🫶</p>
+  <p class="worknote">きちんとしたご依頼はこちらからお願いします📩<br>かるいお仕事のご相談は、SNSのDMでも大歓迎です🫶</p>
 
   <footer>らむね あい 🌈｜創作<br>創作しないと頭パンクしちゃうタイプです</footer>
 </div>

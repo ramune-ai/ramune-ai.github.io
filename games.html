@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ゲームゾーン 🎮</title>
+<meta name="theme-color" content="#fce9f4">
+<title>ゲームのへや 🎮</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{--ink:#3b2a4a;--paper:#fff7fb;--bubble:#fff;--pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;--lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28)}
+  :root{--ink:#3b2a4a;--paper:#fff7fb;--bubble:#fff;--pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;--lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28);--rainbow:linear-gradient(100deg,#ea4f9e,#ef7b2a,#e0aa00,#17b894,#2f9fd8,#7c5fd6)}
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth;min-height:100%;
-    background:radial-gradient(circle at 12% 8%,#ffe0f2 0,transparent 38%),radial-gradient(circle at 88% 4%,#e2e0ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#d6f7ff 0,transparent 45%),var(--paper);
-    background-attachment:fixed;background-repeat:no-repeat}
+  html{scroll-behavior:smooth;background:#fce9f4}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;
+    background:radial-gradient(circle at 12% 8%,#ffe0f2 0,transparent 38%),radial-gradient(circle at 88% 4%,#e2e0ff 0,transparent 40%),radial-gradient(circle at 50% 100%,#d6f7ff 0,transparent 45%),var(--paper)}
   body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
   .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.45}
@@ -30,15 +31,16 @@
   .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 22px 80px}
   .back{display:inline-flex;align-items:center;gap:6px;margin-top:20px;text-decoration:none;font-weight:700;font-size:1rem;color:#7048d8;background:#fff;padding:11px 18px;border-radius:99px;box-shadow:0 4px 0 var(--shadow)}
   .back:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shadow)}
-  header{text-align:center;padding:30px 0 24px}
+  header{text-align:center;padding:30px 0 6px}
   .badge{display:inline-block;font-size:.88rem;letter-spacing:.1em;background:#fff;border:2px solid var(--grape);color:#7048d8;padding:7px 17px;border-radius:999px;font-weight:700;box-shadow:0 4px 0 var(--shadow)}
   h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(2.4rem,7vw,4.2rem);line-height:1.15;margin:20px 0 10px;
-    background:linear-gradient(100deg,var(--pink),var(--tangerine),var(--lemon),var(--mint),var(--sky),var(--grape));
-    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite}
+    background:var(--rainbow);
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite;
+    filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 2px 4px rgba(120,90,160,.18))}
   @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
   .tagline{font-size:clamp(1.02rem,2.8vw,1.18rem);font-weight:700;color:#6a5a7a;max-width:36ch;margin:0 auto;line-height:1.75}
   .tagline b{color:var(--pink)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;margin-top:30px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;margin-top:16px}
   .card{background:var(--bubble);border-radius:28px;overflow:hidden;box-shadow:0 12px 30px var(--shadow);border:3px solid #fff;transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;position:relative}
   .card:hover{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 20px 44px var(--shadow)}
   .card.soon{filter:saturate(.7)}
@@ -96,9 +98,8 @@
 <div class="wrap">
   <a class="back" href="index.html">← トップへもどる</a>
   <header>
-    <span class="badge">AI × 完全セルフ創作</span>
-    <h1>ゲームゾーン</h1>
-    <p class="tagline">コードは書けないけど、<b>つくりたい</b>は止まらない。<br>AIと一緒に生まれた、世界にまだなかった遊び。</p>
+    <h1>ゲームのへや</h1>
+    <p class="tagline">コードは書けないけど、<b>つくりたい</b>は止まらない。AIと一緒に生まれた、世界にまだなかった遊び。</p>
   </header>
   <div class="grid">
 
