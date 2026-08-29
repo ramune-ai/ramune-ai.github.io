@@ -54,8 +54,11 @@
   /* --- 上部バー：モバイルは[SNS｜☰]、PCは[ロゴ｜リンク｜SNS] --- */
   .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;
     padding:8px 12px;padding-top:calc(8px + var(--safe-top));
-    background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    border-bottom:1.5px solid #ffd9ee}
+    /* ★透け感はここで決まる★ 白の不透明度を上げすぎると下のコンテンツが見えなくなる。
+       .55前後＋強めのぼかしで「すりガラス越しに写真が流れる」感じになる */
+    background:rgba(255,255,255,.55);
+    backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);
+    border-bottom:1.5px solid rgba(255,217,238,.8)}
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
   .topbar .tnlogo .lg-1{color:var(--soda)} .topbar .tnlogo .lg-2{color:var(--candy)}
@@ -161,8 +164,10 @@
      写真タイルと同じ白フチ・角丸・影で、同じ棚の仲間に見えるようにしてある --- */
   /* 写真の段と同じくドラッグでスライドできる（触っても止まらない） */
   .ticker{overflow:hidden;position:relative;padding:4px 0 12px;cursor:grab;touch-action:pan-y}
+  /* translateZ / backface は、写真の段と同じくスマホのチカつき対策 */
   .tickrow{display:flex;width:max-content;align-items:flex-start;gap:12px;
-    animation:scrollL 56s linear infinite;will-change:transform}
+    animation:scrollL 56s linear infinite;will-change:transform;
+    transform:translateZ(0);backface-visibility:hidden}
   @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
   @media(min-width:860px){.tickrow{gap:16px}}
 
@@ -172,10 +177,10 @@
     font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
     font-size:1.05rem;line-height:1.2;color:#e0559d;white-space:nowrap;
     background:#fff;border:2.5px solid #fff;border-radius:16px;
-    padding:13px 20px 9px;box-shadow:var(--card-shadow);
-    -webkit-tap-highlight-color:transparent;
+    padding:13px 20px 9px;box-shadow:0 5px 16px rgba(168,140,205,.16);
+    -webkit-tap-highlight-color:transparent;backface-visibility:hidden;
     transition:transform .18s cubic-bezier(.34,1.56,.64,1),color .15s}
-  .bubble:hover,.bubble:active{transform:translateY(-4px) rotate(-1.5deg);color:#c0397a}
+  .bubble:hover,.bubble:active{transform:translateY(-5px);color:#c0397a}
   /* 吹き出しのしっぽ（白い三角を下にちょこんと）。影は付けず、浮いて見えないようにする */
   .bubble::after{content:"";position:absolute;left:26px;bottom:-8px;
     width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;
@@ -204,10 +209,14 @@
   .statuscard p{font-size:.88rem;color:#6a5a7a;line-height:1.55}
 
   /* --- セクション見出し --- */
-  .seclabel{display:flex;align-items:baseline;gap:9px;margin:26px 2px 12px}
+  /* 見出しは中央。両側に細い線が伸びる形 */
+  .seclabel{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:26px 2px 12px}
   .seclabel .en{font-family:'Mochiy Pop One',sans-serif;font-size:1.3rem;letter-spacing:.02em}
   .seclabel .ja{font-size:.85rem;font-weight:700;color:#8d7ba3}
-  .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#e6d9ff,transparent)}
+  .seclabel::before,.seclabel::after{content:"";flex:1;max-width:180px;height:3px;border-radius:99px;
+    align-self:center}
+  .seclabel::before{background:linear-gradient(90deg,transparent,#e6d9ff)}
+  .seclabel::after{background:linear-gradient(90deg,#e6d9ff,transparent)}
   #music .en{color:#c0397a}
   #game .en{color:#6b46c1}
   #about .en{color:#b8621f}
@@ -241,23 +250,15 @@
     box-shadow:var(--card-shadow);transition:transform .15s,background .15s}
   .morebtn:hover{transform:translateY(-2px);background:#fff6fb}
 
-  /* PCは画面が広いので、切らずに全部並べる（グリッド）。
-     曲は多いので最初の6曲だけ見せて、「もっと見る」で残りを展開する */
+  /* PCは1段3件のグリッド。MUSICは4曲目以降を「ぜんぶ見る」にしまう */
   @media(min-width:860px){
     .shelf{display:grid;gap:20px;overflow:visible;padding:2px;scroll-snap-type:none}
-    .shelf#deck{grid-template-columns:repeat(3,1fr)}
-    /* ゲームは2作品なので2列。中央寄せにして空きスロットを作らない */
-    .shelf#gameshelf{grid-template-columns:repeat(2,1fr);max-width:1120px;margin:0 auto}
+    /* MUSIC・GAMEとも1段3件。それを超える分は「ぜんぶ見る」にしまう */
+    .shelf#deck,.shelf#gameshelf{grid-template-columns:repeat(3,1fr)}
     .shelf .lcard,.shelf .gcard{flex:none;max-width:none;width:auto}
     .shelfnav{display:none}
-    .shelf#deck:not(.expanded) .lcard:nth-child(n+7){display:none}
+    .shelf#deck:not(.expanded) .lcard:nth-child(n+4){display:none}
     .morebtn{display:block}
-  }
-
-  /* 超ワイド画面ではMUSICを4列にして、カードが大きくなりすぎないようにする */
-  @media(min-width:1800px){
-    .shelf#deck{grid-template-columns:repeat(4,1fr)}
-    .shelf#gameshelf{max-width:1300px}
   }
 
   /* --- MUSIC カード：将来のYouTube埋め込みを基準に高さを固定 --- */
@@ -357,8 +358,8 @@
     .statuscard h2{font-size:1.3rem;line-height:1.6}
     .statuscard p{font-size:1.02rem}
     .upd{font-size:1rem;padding:9px 20px;top:-18px}
-    .lcard{padding:20px 22px;border-radius:24px}
-    .lbody{height:180px}
+    .lcard{padding:26px 28px;border-radius:26px}
+    .lbody{height:240px}
     .lcard .lyric{font-size:1.08rem;line-height:1.9}
     .lcard .num{font-size:1.3rem}
     .lcard .stat{font-size:.76rem;padding:5px 13px}
@@ -599,7 +600,7 @@
 
   /* PCグリッドの「もっと見る／とじる」。曲が6曲以下なら出さない */
   (function(){
-    const VISIBLE=6;
+    const VISIBLE=3;
     const btn=document.getElementById('moresongs');
     const shelf=document.getElementById('deck');
     if(!btn||!shelf) return;
@@ -834,9 +835,8 @@
   }
 
   /* ★浮遊する幾何学シェイプ★
-     いまは一時的にオフ（画面上下バーの透過を確認するため）。
-     戻したいときは下の SHOW_SHAPES を true にするだけでOK。 */
-  const SHOW_SHAPES = false;
+     消したいときは false にするだけでOK（透過とは無関係なので通常は true のまま）。 */
+  const SHOW_SHAPES = true;
 
   const sky=document.getElementById('sky');
   const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
