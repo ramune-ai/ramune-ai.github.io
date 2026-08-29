@@ -70,21 +70,7 @@
 
   .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 18px 40px}
 
-  header{text-align:center;padding:8px 0 0}
-
-  /* --- ヒーロー：マスコットが漂い、まわりを歌詞のかけらが浮遊する --- */
-  .herostage{position:relative;height:220px;margin:0 auto;overflow:hidden}
-  .mascot{position:absolute;left:50%;bottom:0;height:210px;width:auto;
-    transform:translateX(-50%);filter:drop-shadow(0 14px 20px var(--shadow));
-    animation:bob 4.5s ease-in-out infinite}
-  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
-  .lyricfloat{position:absolute;inset:0;pointer-events:none}
-  .lyricbit{position:absolute;pointer-events:auto;cursor:pointer;white-space:nowrap;
-    font-size:.78rem;font-weight:700;color:#c0397a;background:#fffefc;
-    border:1.5px solid #ffdaee;padding:6px 13px;border-radius:99px;box-shadow:0 5px 12px var(--shadow);
-    animation:floatup linear infinite;text-decoration:none}
-  @keyframes floatup{0%{transform:translateY(20px);opacity:0}10%{opacity:1}88%{opacity:1}100%{transform:translateY(-230px);opacity:0}}
-  @media(prefers-reduced-motion:reduce){.mascot{animation:none}.lyricbit{animation:none;display:none}}
+  header{text-align:center;padding:20px 0 0}
 
   h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(1.65rem,6vw,2.1rem);line-height:1.15;margin-bottom:8px;
     background:var(--rainbow);background-size:300% 100%;
@@ -105,6 +91,19 @@
   .b-tt{background:#010101}
   .b-yt{background:#ff0000}
 
+  /* --- ヒーロー：作品と歌詞が流れる棚（雲のように3段） --- */
+  .marquee{margin-top:16px;display:flex;flex-direction:column;gap:10px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+  .mrow{display:flex;gap:10px;width:max-content;animation:scrollx linear infinite}
+  .mrow.rev{animation-direction:reverse}
+  @keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.mrow{animation:none}}
+  .mtile{flex:0 0 auto;width:76px;height:76px;border-radius:16px;overflow:hidden;
+    box-shadow:0 6px 14px var(--shadow);border:2.5px solid #fff;background:#f1edff;text-decoration:none}
+  .mtile img{width:100%;height:100%;object-fit:cover;display:block}
+  .mword{flex:0 0 auto;height:76px;display:flex;align-items:center;white-space:nowrap;
+    font-size:.8rem;font-weight:700;color:#c0397a;background:#fffefc;
+    border:2px solid #ffdaee;padding:0 16px;border-radius:20px;box-shadow:0 6px 14px var(--shadow);text-decoration:none}
+
   /* --- お知らせ --- */
   .statuscard{margin-top:22px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
     box-shadow:0 8px 22px var(--shadow);position:relative}
@@ -121,7 +120,7 @@
   .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#e6d9ff,transparent)}
   #music .en{color:#c0397a}
   #game .en{color:#6b46c1}
-  #daily .en{color:#b8621f}
+  #about .en{color:#b8621f}
   #work .en{color:#0f7a63}
 
   /* --- 画面に入ったらふわっと現れる（控えめ） --- */
@@ -181,19 +180,13 @@
   .gplay:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
   .gplay.disabled{background:#efeaf5;color:#a99cb8;box-shadow:0 6px 0 #ddd4e8;cursor:not-allowed;pointer-events:none}
 
-  /* --- DAILY：実物の写真タイル --- */
-  .ptile{flex:0 0 124px;aspect-ratio:1/1;border-radius:18px;position:relative;overflow:hidden;
-    box-shadow:0 8px 18px var(--shadow);border:3px solid #fff;background:#f1edff}
-  .ptile img{width:100%;height:100%;object-fit:cover;display:block}
-  .ptile .tag{position:absolute;left:6px;bottom:6px;font-size:.64rem;font-weight:700;color:#fff;
-    background:rgba(59,42,74,.55);padding:3px 9px;border-radius:99px;backdrop-filter:blur(2px)}
-  .igmore{flex:0 0 auto;display:flex;align-items:center;justify-content:center;text-decoration:none;color:#c2185b;
-    font-weight:700;font-size:.82rem;text-align:center;line-height:1.4;padding:0 8px}
-
   /* --- ABOUT：マニフェスト --- */
   .about{margin-top:16px;text-align:center;padding:6px 8px 4px}
   .about p{font-size:1rem;font-weight:700;color:#6a5a7a;line-height:2}
   .about .accent{color:#e0559d}
+  .about .igline{display:inline-flex;align-items:center;gap:6px;margin-top:14px;text-decoration:none;
+    color:#c2185b;font-weight:700;font-size:.86rem;background:#fff0f8;padding:8px 18px;border-radius:99px;
+    box-shadow:0 4px 10px var(--shadow)}
 
   /* --- WORK --- */
   .banner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:14px 14px;
@@ -218,7 +211,7 @@
   <nav class="panel">
     <a href="#music"><span class="e">🎶</span>音楽</a>
     <a href="#game"><span class="e">🎮</span>ゲーム</a>
-    <a href="#daily"><span class="e">🎨</span>日常</a>
+    <a href="#about"><span class="e">🌷</span>わたしのこと</a>
     <a href="#work"><span class="e">💌</span>お仕事</a>
   </nav>
 </div>
@@ -226,13 +219,12 @@
 <div class="wrap">
   <!-- 1. intro -->
   <header>
-    <div class="herostage">
-      <div class="lyricfloat" id="lyricfloat"></div>
-      <img class="mascot" src="assets/web/mascot.png" alt="らむね あい のマスコットキャラクター">
-    </div>
     <h1>らむね あい</h1>
     <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🌈🫧<br>ジャンル問わず、作りたいものを🤍</p>
   </header>
+
+  <!-- 作品と歌詞が流れる棚 -->
+  <div class="marquee" id="marquee"></div>
 
   <!-- 2. SNS -->
   <div class="sns">
@@ -259,13 +251,13 @@
 
   <!-- 4. MUSIC -->
   <h2 class="seclabel reveal" id="music"><span class="en">♪ MUSIC</span><span class="ja">音楽</span></h2>
-  <div class="shelf" id="deck"></div>
+  <div class="shelf reveal" id="deck"></div>
   <div class="shelfnav"><span class="shelfcount" id="deckcount">1 / 11</span></div>
   <div class="shelfhint">👉 スワイプしてめくってね</div>
 
   <!-- 5. GAME -->
   <h2 class="seclabel reveal" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
-  <div class="shelf" id="gameshelf">
+  <div class="shelf reveal" id="gameshelf">
 
     <article class="gcard">
       <div class="gmedia">
@@ -294,23 +286,20 @@
   </div>
   <div class="shelfnav"><span class="shelfcount" id="gamecount">1 / 2</span></div>
 
-  <!-- 6. DAILY -->
-  <h2 class="seclabel reveal" id="daily"><span class="en">🎨 DAILY</span><span class="ja">日常</span></h2>
-  <div class="shelf" id="dailyshelf"></div>
-  <div class="shelfnav"><span class="shelfcount" id="dailycount">1 / 25</span></div>
-
   <!-- ABOUT -->
+  <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT</span><span class="ja">わたしのこと</span></h2>
   <div class="about reveal">
     <p>創作しないと、<span class="accent">頭パンクしちゃう</span>タイプです。<br>
     音楽もゲームもアートも、ジャンルはバラバラだけど、<br>
     ぜんぶ「カワイイ＆夢」でつながってる。<br>
     ここは、わたしの作品がぜんぶ集まる<br>
     創作のお花畑です🌷</p>
+    <a class="igline" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener">📷 日常の写真はInstagramで</a>
   </div>
 
   <!-- 7. WORK -->
   <h2 class="seclabel reveal" id="work"><span class="en">💌 WORK</span><span class="ja">お仕事</span></h2>
-  <a class="banner" id="workbtn" href="#">
+  <a class="banner reveal" id="workbtn" href="#">
     <span class="bic">💌</span>
     <span class="tx"><b>お仕事のご依頼</b><small>ご相談はこちらから</small></span>
     <span class="chip">お問い合わせ</span>
@@ -377,65 +366,46 @@
   bindCounter('deck','deckcount');
   bindCounter('gameshelf','gamecount');
 
-  /* --- DAILY：実物の写真タイル。増やすときはこの配列に追加するだけでOK --- */
-  const dailyPhotos=[
-    {src:'assets/web/fluid-01.jpg', tag:'🎨 フルイド'},
-    {src:'assets/web/fluid-02.jpg', tag:'🎨 フルイド'},
-    {src:'assets/web/fluid-03.jpg', tag:'🎨 フルイド'},
-    {src:'assets/web/resin-01.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-02.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-03.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-04.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-05.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-06.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-07.jpg', tag:'💍 レジン'},
-    {src:'assets/web/resin-08.jpg', tag:'💍 レジン'},
-    {src:'assets/web/nail-01.jpg', tag:'💅 ネイル'},
-    {src:'assets/web/nail-02.jpg', tag:'💅 ネイル'},
-    {src:'assets/web/nail-03.jpg', tag:'💅 ネイル'},
-    {src:'assets/web/daily-01.jpg', tag:'🧁 日常'},
-    {src:'assets/web/daily-02.jpg', tag:'🧁 日常'},
-    {src:'assets/web/daily-03.jpg', tag:'🧁 日常'},
-    {src:'assets/web/daily-04.jpg', tag:'🧁 日常'},
-    {src:'assets/web/daily-05.jpg', tag:'🧁 日常'},
-    {src:'assets/web/daily-06.jpg', tag:'🧁 日常'},
-    {src:'assets/web/portrait-01.jpg', tag:'🌸 セルフ'},
-    {src:'assets/web/portrait-02.jpg', tag:'🌸 セルフ'},
-    {src:'assets/web/portrait-03.jpg', tag:'🌸 セルフ'},
-    {src:'assets/web/portrait-04.jpg', tag:'🌸 セルフ'},
+  /* --- ヒーローの棚：作品写真と歌詞のかけらが混ざって流れる。
+     写真を増やすときはこの配列に { photo:'assets/web/....jpg' } を追加するだけでOK --- */
+  const marqueeItems=[
+    {photo:'assets/web/fluid-01.jpg'},
+    {photo:'assets/web/resin-07.jpg'},
+    {word:'大優勝！'},
+    {photo:'assets/web/nail-01.jpg'},
+    {photo:'assets/web/daily-04.jpg'},
+    {word:'I\'m Ai♡'},
+    {photo:'assets/web/resin-05.jpg'},
+    {photo:'assets/web/portrait-01.jpg'},
+    {word:'パスキーは え・が・お！'},
+    {photo:'assets/web/fluid-02.jpg'},
+    {photo:'assets/web/nail-02.jpg'},
+    {word:'回せ回せ ガチャ回せ〜！'},
+    {photo:'assets/web/resin-08.jpg'},
+    {photo:'assets/web/daily-01.jpg'},
+    {word:'ずるいよ 織姫と彦星'},
+    {photo:'assets/web/fluid-03.jpg'},
+    {photo:'assets/web/resin-03.jpg'},
+    {word:'透き通るわたしの色'},
+    {photo:'assets/web/nail-03.jpg'},
+    {photo:'assets/web/portrait-03.jpg'},
+    {photo:'assets/web/daily-02.jpg'},
   ];
-  const dailyshelf=document.getElementById('dailyshelf');
-  dailyPhotos.forEach(p=>{
-    const el=document.createElement('div');
-    el.className='ptile';
-    el.innerHTML=`<img src="${p.src}" loading="lazy" alt=""><span class="tag">${p.tag}</span>`;
-    dailyshelf.appendChild(el);
-  });
-  const igtile=document.createElement('a');
-  igtile.className='ptile igmore';
-  igtile.href='https://www.instagram.com/ramune_aiai';
-  igtile.target='_blank'; igtile.rel='noopener';
-  igtile.innerHTML='📷<br>もっと見る<br>→ Instagram';
-  igtile.style.background='linear-gradient(135deg,#fdf497,#fd5949,#d6249f,#285AEB)';
-  igtile.style.color='#fff';
-  igtile.style.fontSize='.74rem';
-  igtile.style.textShadow='0 1px 3px rgba(0,0,0,.3)';
-  dailyshelf.appendChild(igtile);
-  bindCounter('dailyshelf','dailycount');
-
-  /* --- ヒーローに漂う歌詞のかけら。タップでMUSICへ --- */
-  const lyricPhrases=['大優勝！','I\'m Ai♡','パスキーは え・が・お！','回せ回せ ガチャ回せ〜！','ずるいよ 織姫と彦星','透き通るわたしの色'];
-  const lyricfloat=document.getElementById('lyricfloat');
-  lyricPhrases.forEach((txt,i)=>{
-    const el=document.createElement('a');
-    el.className='lyricbit';
-    el.href='#music';
-    el.textContent=txt;
-    el.style.left=(8+Math.random()*70)+'%';
-    const dur=13+Math.random()*6;
-    el.style.animationDuration=dur+'s';
-    el.style.animationDelay=(-(i*3.2)-Math.random()*3)+'s';
-    lyricfloat.appendChild(el);
+  function tileHTML(item){
+    if(item.photo) return `<span class="mtile"><img src="${item.photo}" loading="lazy" alt=""></span>`;
+    return `<a class="mword" href="#music">${item.word}</a>`;
+  }
+  const marquee=document.getElementById('marquee');
+  const rowCount=3, rows=[[],[],[]];
+  marqueeItems.forEach((item,i)=>rows[i%rowCount].push(item));
+  const rowDur=[34,30,38];
+  rows.forEach((items,i)=>{
+    const row=document.createElement('div');
+    row.className='mrow'+(i%2===1?' rev':'');
+    row.style.animationDuration=rowDur[i]+'s';
+    // シームレスループのため中身を2回並べる
+    row.innerHTML=items.map(tileHTML).join('')+items.map(tileHTML).join('');
+    marquee.appendChild(row);
   });
 
   /* お仕事ボタン：Googleフォームを作ったらここにURLを貼ると自動で切り替わります */
