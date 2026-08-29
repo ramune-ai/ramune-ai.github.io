@@ -124,6 +124,11 @@
   #daily .en{color:#b8621f}
   #work .en{color:#0f7a63}
 
+  /* --- 画面に入ったらふわっと現れる（控えめ） --- */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
   /* --- 共通：横スワイプの棚 --- */
   .shelf{display:flex;align-items:flex-start;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;
     padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
@@ -246,20 +251,20 @@
   </div>
 
   <!-- 3. お知らせ（更新したら日付と本文を書き換えてください） -->
-  <div class="statuscard">
+  <div class="statuscard reveal">
     <span class="upd">2026.8.29 更新</span>
     <h2>楽曲12曲、REC中🎶<br>MVは2026年10月から順次公開！</h2>
     <p>歌詞の一部を先取り公開中👇</p>
   </div>
 
   <!-- 4. MUSIC -->
-  <h2 class="seclabel" id="music"><span class="en">♪ MUSIC</span><span class="ja">音楽</span></h2>
+  <h2 class="seclabel reveal" id="music"><span class="en">♪ MUSIC</span><span class="ja">音楽</span></h2>
   <div class="shelf" id="deck"></div>
   <div class="shelfnav"><span class="shelfcount" id="deckcount">1 / 11</span></div>
   <div class="shelfhint">👉 スワイプしてめくってね</div>
 
   <!-- 5. GAME -->
-  <h2 class="seclabel" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
+  <h2 class="seclabel reveal" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
   <div class="shelf" id="gameshelf">
 
     <article class="gcard">
@@ -290,12 +295,12 @@
   <div class="shelfnav"><span class="shelfcount" id="gamecount">1 / 2</span></div>
 
   <!-- 6. DAILY -->
-  <h2 class="seclabel" id="daily"><span class="en">🎨 DAILY</span><span class="ja">日常</span></h2>
+  <h2 class="seclabel reveal" id="daily"><span class="en">🎨 DAILY</span><span class="ja">日常</span></h2>
   <div class="shelf" id="dailyshelf"></div>
   <div class="shelfnav"><span class="shelfcount" id="dailycount">1 / 25</span></div>
 
   <!-- ABOUT -->
-  <div class="about">
+  <div class="about reveal">
     <p>創作しないと、<span class="accent">頭パンクしちゃう</span>タイプです。<br>
     音楽もゲームもアートも、ジャンルはバラバラだけど、<br>
     ぜんぶ「カワイイ＆夢」でつながってる。<br>
@@ -304,7 +309,7 @@
   </div>
 
   <!-- 7. WORK -->
-  <h2 class="seclabel" id="work"><span class="en">💌 WORK</span><span class="ja">お仕事</span></h2>
+  <h2 class="seclabel reveal" id="work"><span class="en">💌 WORK</span><span class="ja">お仕事</span></h2>
   <a class="banner" id="workbtn" href="#">
     <span class="bic">💌</span>
     <span class="tx"><b>お仕事のご依頼</b><small>ご相談はこちらから</small></span>
@@ -468,6 +473,18 @@
   mb.addEventListener('click',toggle);
   dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
   dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
+
+  /* 画面に入ったセクションだけ、ふわっと現れる */
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    },{threshold:0.15, rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }else{
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  }
 </script>
 </body>
 </html>
