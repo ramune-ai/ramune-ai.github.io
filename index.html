@@ -21,17 +21,23 @@
      ページの長さに関係なく、どこを見てもピンク→ミントが1画面に収まるので、
      上端・下端だけべた塗りになって不自然に見える問題が起きない。
      overscroll-behavior:none で引っ張った時の余白自体を出さないようにしている。 */
-  html{scroll-behavior:smooth;min-height:100%;background:#f3ecff;overscroll-behavior:none}
+  /* ★上下対称のグラデにしてある理由★
+     iOS Safari は theme-color を1色しか持てず、画面上端バーと下端バーが同じ色になる。
+     グラデの一番上と一番下を同じピンク(#ffe3f1)に揃えることで、
+     どちらのバーとも色がぴったり合い、べた塗りの継ぎ目が見えなくなる。
+     （上下の色を変えると、必ずどちらかがズレてしまう） */
+  html{scroll-behavior:smooth;min-height:100%;background:#ffe3f1;overscroll-behavior:none}
   body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
     background:transparent;overscroll-behavior:none}
   body::before{content:"";position:fixed;inset:0;z-index:-2;
     background:linear-gradient(168deg,
       #ffe3f1 0%,
-      #fde7f6 20%,
-      #f4ecff 45%,
-      #e9f1ff 70%,
-      #e0f6fb 88%,
-      #dcf7f2 100%)}
+      #fbe8f8 14%,
+      #f2ecff 34%,
+      #e6f3fd 52%,
+      #ddf7f4 66%,
+      #f0edfb 84%,
+      #ffe3f1 100%)}
 
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
   .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.26}
@@ -146,12 +152,30 @@
 
   /* 歌詞は白地×ピンク文字。単語の途中で改行しない */
   /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
-  .mword{flex:0 0 auto;height:var(--th);width:auto;
-    max-width:calc(var(--th) * 1.45);display:flex;align-items:center;justify-content:center;
-    text-align:center;font-size:1.02rem;font-weight:700;color:#c0397a;background:#fffefc;padding:0 20px;
-    border-radius:16px;box-shadow:0 6px 14px var(--shadow);border:2.5px solid #ffdaee;
-    text-decoration:none;line-height:1.5;word-break:keep-all;overflow-wrap:normal}
-  @media(min-width:860px){.mword{font-size:1.5rem;padding:0 34px;max-width:calc(var(--th) * 1.35)}}
+  /* --- 歌詞ティッカー：写真の段のあいだを流れる1行の帯 --- */
+  .ticker{display:block;text-decoration:none;overflow:hidden;position:relative;
+    padding:11px 0;background:rgba(255,255,255,.62);
+    border-top:1.5px solid rgba(255,190,225,.75);border-bottom:1.5px solid rgba(255,190,225,.75);
+    -webkit-tap-highlight-color:transparent;transition:background .2s}
+  .ticker:hover,.ticker:active{background:rgba(255,255,255,.85)}
+  .tickrow{display:flex;width:max-content;align-items:center;
+    animation:scrollL 46s linear infinite;will-change:transform}
+  .ticker:hover .tickrow{animation-play-state:paused}
+  @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
+  .tickrow span{font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
+    font-size:1.12rem;color:#e0559d;white-space:nowrap;padding:0 6px}
+  .tickrow i{color:#c9b3ff;font-style:normal;font-size:.95rem;padding:0 14px}
+  /* タップできることが伝わるヒント */
+  .tickhint{position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    font-size:.62rem;font-weight:900;color:#c0397a;background:#fff;
+    padding:4px 9px;border-radius:99px;box-shadow:0 2px 6px var(--shadow);
+    border:1.5px solid #ffdaee;pointer-events:none;white-space:nowrap}
+  @media(min-width:860px){
+    .ticker{padding:15px 0}
+    .tickrow span{font-size:1.7rem;padding:0 10px}
+    .tickrow i{font-size:1.3rem;padding:0 22px}
+    .tickhint{font-size:.76rem;padding:6px 14px;right:18px}
+  }
 
   /* --- お知らせ：ポンッと弾んで出現 --- */
   .statuscard{margin-top:26px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
@@ -191,9 +215,24 @@
   .shelf{display:flex;align-items:flex-start;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;
     padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .shelf::-webkit-scrollbar{display:none}
-  .shelfnav{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:2px}
-  .shelfcount{font-size:.8rem;font-weight:700;color:#a99cb8}
+  .shelfnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px}
+  .shelfcount{font-size:.8rem;font-weight:700;color:#a99cb8;min-width:52px;text-align:center}
   .shelfhint{text-align:center;font-size:.76rem;font-weight:700;color:#c78ab0;margin-top:5px}
+  /* スマホでも矢印で送れるようにして「めくれる」ことを分かりやすく */
+  .shelfarrow{width:34px;height:34px;border:2px solid #ffdaee;background:#fff;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:#c0397a;
+    font-size:.95rem;font-weight:900;box-shadow:0 3px 8px var(--shadow);transition:transform .12s}
+  .shelfarrow:active{transform:scale(.9)}
+  .shelfarrow[disabled]{opacity:.35;cursor:default}
+
+  /* PCでは横スライドをやめて全部並べる（一覧性を優先） */
+  @media(min-width:860px){
+    .shelf{display:grid;gap:18px;overflow:visible;padding:2px}
+    .shelf#deck{grid-template-columns:repeat(3,1fr)}
+    .shelf#gameshelf{grid-template-columns:repeat(2,1fr)}
+    .shelf .lcard,.shelf .gcard{flex:none;max-width:none;width:auto}
+    .shelfnav,.shelfhint{display:none}
+  }
 
   /* --- MUSIC カード：将来のYouTube埋め込みを基準に高さを固定 --- */
   .lcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;
@@ -266,15 +305,17 @@
   }
 
   /* --- WORK --- */
-  .banner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:14px 14px;
+  /* 他のカードと同じ「白地＋パステルの差し色」に統一 */
+  .banner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:16px 16px;
     transition:transform .12s,box-shadow .12s;border:2.5px solid #fff;
-    background:linear-gradient(100deg,#d3f6ea,#d6edff);color:#0f7a63;box-shadow:0 7px 0 #a5e3d1}
-  .banner:active{transform:translateY(5px);box-shadow:0 2px 0 #a5e3d1}
+    background:#fff;color:#0f7a63;box-shadow:0 8px 20px var(--shadow)}
+  .banner:active{transform:translateY(4px);box-shadow:0 3px 10px var(--shadow)}
   .banner .bic{font-size:1.6rem;flex:0 0 auto}
   .banner .tx{flex:1;min-width:0}
   .banner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;display:block;line-height:1.3}
-  .banner .tx small{font-size:.8rem;display:block;margin-top:3px;line-height:1.4;opacity:.85}
-  .banner .chip{font-size:.68rem;font-weight:900;padding:5px 10px;border-radius:99px;white-space:nowrap;flex:0 0 auto;background:#fff;color:#0f7a63}
+  .banner .tx small{font-size:.8rem;display:block;margin-top:3px;line-height:1.4;color:#8d7ba3}
+  .banner .chip{font-size:.68rem;font-weight:900;padding:6px 12px;border-radius:99px;white-space:nowrap;flex:0 0 auto;
+    background:#e2fbf3;color:#0f7a63}
   /* ボタンに見えないよう、カードにせず素のテキストにする */
   .worknote{margin-top:14px;font-size:.85rem;font-weight:700;color:#8d7ba3;line-height:1.8;text-align:center}
 
@@ -378,8 +419,12 @@
   <!-- 3. MUSIC -->
   <h2 class="seclabel reveal" id="music"><span class="en">♪ MUSIC</span><span class="ja">音楽</span></h2>
   <div class="shelf reveal" id="deck"></div>
-  <div class="shelfnav"><span class="shelfcount" id="deckcount">1 / 11</span></div>
-  <div class="shelfhint">👉 スワイプしてめくってね</div>
+  <div class="shelfnav">
+    <button class="shelfarrow" data-shelf="deck" data-dir="-1" aria-label="前の曲">◀</button>
+    <span class="shelfcount" id="deckcount">1 / 11</span>
+    <button class="shelfarrow" data-shelf="deck" data-dir="1" aria-label="次の曲">▶</button>
+  </div>
+  <div class="shelfhint">👉 スワイプ／矢印でめくってね</div>
 
   <!-- 5. GAME -->
   <h2 class="seclabel reveal" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
@@ -410,7 +455,11 @@
     </article>
 
   </div>
-  <div class="shelfnav"><span class="shelfcount" id="gamecount">1 / 2</span></div>
+  <div class="shelfnav">
+    <button class="shelfarrow" data-shelf="gameshelf" data-dir="-1" aria-label="前のゲーム">◀</button>
+    <span class="shelfcount" id="gamecount">1 / 2</span>
+    <button class="shelfarrow" data-shelf="gameshelf" data-dir="1" aria-label="次のゲーム">▶</button>
+  </div>
 
   <!-- ABOUT -->
   <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT</span><span class="ja">わたしのこと</span></h2>
@@ -523,6 +572,16 @@
   bindCounter('deck','deckcount');
   bindCounter('gameshelf','gamecount');
 
+  /* ◀ ▶ ボタンでも1枚ずつ送れるように（スワイプに気づかない人向け） */
+  document.querySelectorAll('.shelfarrow').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const shelf=document.getElementById(btn.dataset.shelf);
+      if(!shelf||!shelf.firstElementChild) return;
+      const step=shelf.firstElementChild.getBoundingClientRect().width+13;
+      shelf.scrollBy({left:step*Number(btn.dataset.dir),behavior:'smooth'});
+    });
+  });
+
   /* --- ヒーローの棚：写真は元の縦横比のまま、高さだけ揃える（切り取りゼロ）。
      ar は画像の横÷縦。先に指定しておくと読み込み前でも幅が決まり、
      チカつき・ガタつきが起きません。画像はヒーロー専用の軽量版(thumb)。
@@ -553,36 +612,36 @@
   const rowA=[
     {photo:'fluid-01.jpg',ar:0.75},
     {photo:'resin-07.jpg',ar:1},
-    {word:'大優勝！'},
     {photo:'nail-01.jpg',ar:1},
     {photo:'daily-04.jpg',ar:1},
     {photo:'resin-05.jpg',ar:1.333},
-    {word:'パスキーは え・が・お！'},
     {photo:'portrait-01.jpg',ar:0.707},
     {photo:'fluid-02.jpg',ar:1},
     {photo:'resin-04.jpg',ar:1.333},
-    {word:'透き通る わたしの色'},
     {photo:'daily-05.jpg',ar:1},
   ];
   const rowB=[
     {photo:'resin-08.jpg',ar:1},
-    {word:'I\'m Ai♡'},
     {photo:'daily-01.jpg',ar:1.333},
     {photo:'fluid-03.jpg',ar:0.75},
     {photo:'resin-03.jpg',ar:1},
-    {word:'回せ回せ ガチャ回せ〜！'},
     {photo:'nail-03.jpg',ar:1},
     {photo:'portrait-03.jpg',ar:0.707},
     {photo:'daily-02.jpg',ar:1.333},
-    {word:'ずるいよ 織姫と彦星'},
     {photo:'nail-02.jpg',ar:1},
     {photo:'resin-01.jpg',ar:0.75},
   ];
+  /* 写真の段のあいだを流れる歌詞。増やすときはここに足すだけでOK */
+  const tickerWords=[
+    '大優勝！',
+    'I\'m Ai♡',
+    'パスキーは え・が・お！',
+    '回せ回せ ガチャ回せ〜！',
+    'ずるいよ 織姫と彦星',
+    '透き通る わたしの色',
+  ];
   function tileHTML(item){
-    if(item.photo){
-      return `<span class="mtile" style="--ar:${item.ar}"><img src="${T}${item.photo}" alt="" decoding="async"></span>`;
-    }
-    return `<a class="mword" href="#music">${item.word}</a>`;
+    return `<span class="mtile" style="--ar:${item.ar}"><img src="${T}${item.photo}" alt="" decoding="async"></span>`;
   }
 
   const marquee=document.getElementById('marquee');
@@ -591,12 +650,23 @@
     {items:rowA, dir:'L', dur:62},
     {items:rowB, dir:'R', dur:54},
   ];
-  const marqueeRows=rowDefs.map(def=>{
+  const marqueeRows=rowDefs.map((def,i)=>{
     const row=document.createElement('div');
     row.className='mrow';
     // シームレスに繋ぐため中身を2回並べる
     row.innerHTML=def.items.map(tileHTML).join('')+def.items.map(tileHTML).join('');
     marquee.appendChild(row);
+
+    // 1段目の直後に、歌詞が流れる帯を挟む（タップでMUSICへ）
+    if(i===0){
+      const tick=document.createElement('a');
+      tick.className='ticker';
+      tick.href='#music';
+      const one=tickerWords.map(w=>`<span>${w}</span><i>♡</i>`).join('');
+      tick.innerHTML=`<div class="tickrow">${one}${one}</div><span class="tickhint">♪ 曲を見る</span>`;
+      marquee.appendChild(tick);
+    }
+
     const st={el:row, dir:def.dir, dur:def.dur, half:0, base:0};
     play(st,0);
     return st;
