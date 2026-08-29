@@ -13,13 +13,10 @@
     --ink:#3b2a4a;--paper:#fff7fb;--bubble:#ffffff;
     --pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;
     --lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28);
-    --rainbow:linear-gradient(100deg,#ea4f9e,#ef7b2a,#e0aa00,#17b894,#2f9fd8,#7c5fd6);
+    --soda:#2bb8d6;--candy:#ff5fa8;
   }
   *{box-sizing:border-box;margin:0;padding:0}
 
-  /* 背景は html に置く。html の背景だけがキャンバス全体（iOSのステータスバー裏や
-     引っ張った時のゴム領域を含む）に広がるので、これで継ぎ目が完全に消える。
-     ※ position:fixed のレイヤーではその領域は塗れない＝以前の白抜けの原因 */
   html{
     scroll-behavior:smooth;
     min-height:100%;
@@ -32,10 +29,20 @@
       #ddf7f3 100%);
     background-repeat:no-repeat;
   }
-  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);background:transparent;min-height:100vh;overflow-x:hidden}
+  /* iOSは overflow-x:hidden があるとbodyを実質のスクロール要素とみなし、
+     引っ張った時の余白にはbodyの背景を出す。html側のグラデを丸ごと複製しておく */
+  body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
+    background:linear-gradient(176deg,
+      #ffe3f1 0%,
+      #fdeaf7 18%,
+      #f3ecff 42%,
+      #eaf1ff 66%,
+      #e2f6fb 85%,
+      #ddf7f3 100%);
+    background-repeat:no-repeat;background-attachment:local}
 
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-  .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.4}
+  .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.26}
   @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
   .sh-ring{border:2.5px solid var(--c);border-radius:50%}
   .sh-sq{border:2.5px solid var(--c)}
@@ -51,10 +58,11 @@
   .sh-hex{border:2.5px solid var(--c);border-radius:4px;transform:rotate(30deg)}
   @media(prefers-reduced-motion:reduce){.sky i{animation:none;display:none}}
 
+  /* --- モバイル：ハンバーガー --- */
   .menubtn{position:fixed;top:14px;right:14px;z-index:30;width:46px;height:46px;border:none;cursor:pointer;
     background:#fff;border-radius:14px;box-shadow:0 5px 14px var(--shadow);display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:5px}
-  .menubtn span{width:22px;height:2.8px;background:var(--grape);border-radius:2px;transition:.25s}
+  .menubtn span{width:22px;height:2.8px;background:var(--candy);border-radius:2px;transition:.25s}
   .menubtn.open span:nth-child(1){transform:translateY(7.8px) rotate(45deg)}
   .menubtn.open span:nth-child(2){opacity:0}
   .menubtn.open span:nth-child(3){transform:translateY(-7.8px) rotate(-45deg)}
@@ -68,53 +76,92 @@
     padding:16px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1.05rem}
   .panel a .e{font-size:1.35rem}
 
+  /* --- PC：上部固定ナビ（Dipsy風の横並びリンク） --- */
+  .topnav{display:none}
+  @media(min-width:860px){
+    .menubtn,.drawer{display:none}
+    .topnav{display:flex;position:sticky;top:0;z-index:30;align-items:center;justify-content:center;gap:36px;
+      padding:16px 24px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      border-bottom:1.5px solid #ffd9ee}
+    .topnav a{text-decoration:none;color:#7a6a8a;font-weight:700;font-size:.92rem;letter-spacing:.03em;transition:color .15s}
+    .topnav a:hover{color:var(--candy)}
+    .topnav .tnlogo{position:absolute;left:28px;font-family:'Mochiy Pop One',sans-serif;font-size:1rem}
+    .topnav .tnlogo .lg-1{color:var(--soda)} .topnav .tnlogo .lg-2{color:var(--candy)}
+  }
+
   .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 18px 40px}
+  @media(min-width:860px){.wrap{max-width:720px;padding:0 32px 60px}}
 
-  header{text-align:center;padding:20px 0 0}
+  header{text-align:center;padding:26px 0 0}
+  @media(min-width:860px){header{padding:44px 0 0}}
 
-  h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(1.65rem,6vw,2.1rem);line-height:1.15;margin-bottom:8px;
-    background:var(--rainbow);background-size:300% 100%;
-    -webkit-background-clip:text;background-clip:text;color:transparent;animation:hue 9s ease infinite;
-    filter:drop-shadow(0 1px 0 rgba(255,255,255,.95)) drop-shadow(0 0 3px rgba(255,255,255,.9)) drop-shadow(0 2px 4px rgba(120,90,160,.18))}
-  @keyframes hue{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+  /* --- ロゴ：ラムネソーダ×ピンクの2トーン・ステッカー風（動かない） --- */
+  h1{font-family:'Mochiy Pop One',sans-serif;font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.15;margin-bottom:10px;
+    letter-spacing:.02em}
+  h1 .lg-1{color:var(--soda)}
+  h1 .lg-2{color:var(--candy)}
+  h1 .lg-1,h1 .lg-2{
+    filter:drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff)
+      drop-shadow(0 5px 10px rgba(120,90,160,.28))}
   .bio{font-size:1.06rem;font-weight:700;color:#6a5a7a;line-height:1.6;margin:0 auto}
   .bio b{color:#e0559d}
 
-  .sns{display:flex;justify-content:center;gap:13px;margin:12px 0 0}
-  .sns a{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;
-    color:#fff;text-decoration:none;box-shadow:0 6px 14px var(--shadow);
+  /* --- SNS：白タイル＋ブランドカラーのロゴのみ --- */
+  .sns{display:flex;justify-content:center;gap:13px;margin:16px 0 0;flex-wrap:wrap}
+  .sns a{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+    background:#fff;text-decoration:none;box-shadow:0 6px 14px var(--shadow);border:2px solid #fff;
     transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
   .sns a:hover{transform:translateY(-5px) rotate(-4deg)}
-  .sns svg{width:26px;height:26px;fill:currentColor;display:block}
-  .b-x{background:#000}
-  .b-ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fdf497 5%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
-  .b-tt{background:#010101}
-  .b-yt{background:#ff0000}
+  .sns svg{width:26px;height:26px;display:block}
+  .b-x svg{fill:#141414}
+  .b-tt svg{fill:#141414}
+  .b-yt svg{fill:#ff0000}
 
-  /* --- ヒーロー：作品と歌詞が流れる棚（雲のように3段） --- */
-  .marquee{margin-top:16px;display:flex;flex-direction:column;gap:10px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-  .mrow{display:flex;gap:10px;width:max-content;animation:scrollx linear infinite}
+  /* --- ヒーロー：作品＋歌詞ステッカーが流れる棚（2段・フルブリード） --- */
+  .marquee{margin-top:20px;display:flex;flex-direction:column;gap:12px;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  @media(min-width:860px){
+    .marquee{width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;margin-top:28px}
+  }
+  .mrow{display:flex;gap:12px;width:max-content;animation:scrollx linear infinite;
+    will-change:transform;transform:translateZ(0);backface-visibility:hidden}
   .mrow.rev{animation-direction:reverse}
-  @keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes scrollx{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
   @media(prefers-reduced-motion:reduce){.mrow{animation:none}}
-  .mtile{flex:0 0 auto;width:76px;height:76px;border-radius:16px;overflow:hidden;
+  .mtile{flex:0 0 auto;height:100px;border-radius:16px;overflow:hidden;
     box-shadow:0 6px 14px var(--shadow);border:2.5px solid #fff;background:#f1edff;text-decoration:none}
-  .mtile img{width:100%;height:100%;object-fit:cover;display:block}
-  .mword{flex:0 0 auto;height:76px;display:flex;align-items:center;white-space:nowrap;
-    font-size:.8rem;font-weight:700;color:#c0397a;background:#fffefc;
-    border:2px solid #ffdaee;padding:0 16px;border-radius:20px;box-shadow:0 6px 14px var(--shadow);text-decoration:none}
+  @media(min-width:860px){.mtile{height:130px}.mword{height:130px!important;font-size:1rem!important}}
+  .mtile img{height:100%;width:auto;display:block}
+  .mword{flex:0 0 auto;height:100px;width:100px;display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:.82rem;font-weight:700;color:#fff;padding:8px;border-radius:16px;box-shadow:0 6px 14px var(--shadow);
+    border:2.5px solid #fff;text-decoration:none;line-height:1.35}
+  .mword.c1{background:linear-gradient(145deg,#ff9ecb,#ff6fb0)}
+  .mword.c2{background:linear-gradient(145deg,#9ad9ff,#4fb8e8)}
+  .mword.c3{background:linear-gradient(145deg,#ffd18a,#ff9e57)}
+  .mword.c4{background:linear-gradient(145deg,#c9b3ff,#9d7bff)}
+  .mword.c5{background:linear-gradient(145deg,#8ee9c9,#3fc9a0)}
+  .mword.c6{background:linear-gradient(145deg,#ffb3c9,#e05a90)}
 
-  /* --- お知らせ --- */
-  .statuscard{margin-top:22px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
-    box-shadow:0 8px 22px var(--shadow);position:relative}
+  /* --- お知らせ：ポンッと弾んで出現 --- */
+  .statuscard{margin-top:26px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
+    box-shadow:0 8px 22px var(--shadow);position:relative;opacity:0;transform:scale(.82)}
+  .statuscard.in{animation:popcard .55s cubic-bezier(.34,1.56,.64,1) forwards}
+  @keyframes popcard{0%{opacity:0;transform:scale(.82)}60%{opacity:1;transform:scale(1.035)}100%{opacity:1;transform:scale(1)}}
   .upd{position:absolute;top:-15px;right:12px;font-size:.88rem;font-weight:900;letter-spacing:.01em;
     color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:7px 16px;border-radius:99px;
-    box-shadow:0 4px 10px rgba(157,123,255,.35);transform:rotate(3deg)}
+    box-shadow:0 4px 10px rgba(157,123,255,.35);transform:rotate(3deg) scale(0);opacity:0}
+  .statuscard.in .upd{animation:stamp .4s .35s cubic-bezier(.34,1.56,.64,1) forwards}
+  @keyframes stamp{0%{transform:rotate(-18deg) scale(0);opacity:0}70%{transform:rotate(6deg) scale(1.08);opacity:1}100%{transform:rotate(3deg) scale(1);opacity:1}}
+  @media(prefers-reduced-motion:reduce){
+    .statuscard{opacity:1;transform:none}.statuscard.in{animation:none}
+    .upd{opacity:1;transform:rotate(3deg) scale(1)}.statuscard.in .upd{animation:none}
+  }
   .statuscard h2{font-family:'Mochiy Pop One',sans-serif;font-size:1.02rem;margin:8px 0 5px;line-height:1.5}
   .statuscard p{font-size:.88rem;color:#6a5a7a;line-height:1.55}
 
   /* --- セクション見出し --- */
-  .seclabel{display:flex;align-items:baseline;gap:9px;margin:22px 2px 10px}
+  .seclabel{display:flex;align-items:baseline;gap:9px;margin:26px 2px 12px}
   .seclabel .en{font-family:'Mochiy Pop One',sans-serif;font-size:1.3rem;letter-spacing:.02em}
   .seclabel .ja{font-size:.85rem;font-weight:700;color:#8d7ba3}
   .seclabel::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#e6d9ff,transparent)}
@@ -140,10 +187,10 @@
   .lcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;
     padding:14px 16px 14px;box-shadow:0 10px 24px var(--shadow);border:3px solid #ffdaee;
     display:flex;flex-direction:column}
+  @media(min-width:860px){.lcard{flex-basis:calc(50% - 8px)}}
   .lhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
   .lcard .num{font-family:'Mochiy Pop One',sans-serif;font-size:1.1rem;color:#c0397a;opacity:.5}
   .lcard .stat{font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px;background:#e2fbf3;color:#0d8168;white-space:nowrap}
-  /* 16:9の動画とだいたい同じ高さ。長い歌詞はこの中だけでスクロールする */
   .lbody{height:158px;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
   .lbody::-webkit-scrollbar{width:4px}
   .lbody::-webkit-scrollbar-thumb{background:#ffdaee;border-radius:99px}
@@ -153,9 +200,10 @@
   .lbody .video iframe{width:100%;height:100%;border:0;display:block}
   .lfoot{margin-top:10px;font-size:.74rem;font-weight:700;color:#c78ab0;min-height:1.2em}
 
-  /* --- GAME カード：音楽と同じ棚に、コンパクトに --- */
+  /* --- GAME カード --- */
   .gcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;overflow:hidden;
     box-shadow:0 10px 24px var(--shadow);border:3px solid #fff;position:relative;display:flex;flex-direction:column}
+  @media(min-width:860px){.gcard{flex-basis:calc(50% - 8px)}}
   .gcard.soon{filter:saturate(.75)}
   .gribbon{position:absolute;top:11px;right:-34px;transform:rotate(38deg);background:var(--grape);color:#fff;
     font-weight:700;font-size:.68rem;padding:4px 40px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.15)}
@@ -180,11 +228,15 @@
   .gplay:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
   .gplay.disabled{background:#efeaf5;color:#a99cb8;box-shadow:0 6px 0 #ddd4e8;cursor:not-allowed;pointer-events:none}
 
-  /* --- ABOUT：マニフェスト --- */
-  .about{margin-top:16px;text-align:center;padding:6px 8px 4px}
+  /* --- 動く背景の上に文字を置くときの共通解：すりガラスカード --- */
+  .frost{background:rgba(255,255,255,.74);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+    border-radius:22px;box-shadow:0 8px 20px var(--shadow)}
+
+  /* --- ABOUT：マニフェスト（すりガラス） --- */
+  .about{margin-top:16px;text-align:center;padding:24px 20px 22px}
   .about p{font-size:1rem;font-weight:700;color:#6a5a7a;line-height:2}
   .about .accent{color:#e0559d}
-  .about .igline{display:inline-flex;align-items:center;gap:6px;margin-top:14px;text-decoration:none;
+  .about .igline{display:inline-flex;align-items:center;gap:6px;margin-top:16px;text-decoration:none;
     color:#c2185b;font-weight:700;font-size:.86rem;background:#fff0f8;padding:8px 18px;border-radius:99px;
     box-shadow:0 4px 10px var(--shadow)}
 
@@ -198,14 +250,24 @@
   .banner .tx b{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;display:block;line-height:1.3}
   .banner .tx small{font-size:.8rem;display:block;margin-top:3px;line-height:1.4;opacity:.85}
   .banner .chip{font-size:.68rem;font-weight:900;padding:5px 10px;border-radius:99px;white-space:nowrap;flex:0 0 auto;background:#fff;color:#0f7a63}
-  .worknote{margin-top:10px;font-size:.85rem;font-weight:700;color:#8d7ba3;line-height:1.7;text-align:center}
+  .worknote{margin-top:12px;font-size:.85rem;font-weight:700;color:#8d7ba3;line-height:1.7;text-align:center;padding:14px 16px}
 
-  footer{text-align:center;margin-top:30px;color:#9a89ad;font-size:.88rem;line-height:1.7}
+  footer{text-align:center;margin-top:30px;color:#7a6a8a;font-size:.88rem;line-height:1.7;padding:14px 16px}
 </style>
 </head>
 <body>
 <div class="sky" id="sky" aria-hidden="true"></div>
 
+<!-- PC：上部固定ナビ -->
+<nav class="topnav">
+  <span class="tnlogo"><span class="lg-1">らむね</span> <span class="lg-2">あい</span></span>
+  <a href="#music">MUSIC</a>
+  <a href="#game">GAME</a>
+  <a href="#about">ABOUT</a>
+  <a href="#work">WORK</a>
+</nav>
+
+<!-- モバイル：ハンバーガー -->
 <button class="menubtn" id="menubtn" aria-label="メニュー"><span></span><span></span><span></span></button>
 <div class="drawer" id="drawer">
   <nav class="panel">
@@ -219,31 +281,37 @@
 <div class="wrap">
   <!-- 1. intro -->
   <header>
-    <h1>らむね あい</h1>
+    <h1><span class="lg-1">らむね</span> <span class="lg-2">あい</span></h1>
     <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🌈🫧<br>ジャンル問わず、作りたいものを🤍</p>
+
+    <!-- 2. SNS -->
+    <div class="sns">
+      <a class="b-x" href="https://x.com/ramune_aiai" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+      </a>
+      <a class="b-ig" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <defs><linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#fdf497"/><stop offset="30%" stop-color="#fd5949"/>
+            <stop offset="60%" stop-color="#d6249f"/><stop offset="100%" stop-color="#285AEB"/>
+          </linearGradient></defs>
+          <path fill="url(#igGrad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+        </svg>
+      </a>
+      <a class="b-tt" href="https://www.tiktok.com/@ramune_aiai" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+      </a>
+      <a class="b-yt" href="https://www.youtube.com/@ramune_aiai" target="_blank" rel="noopener" aria-label="YouTube">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </a>
+    </div>
   </header>
 
   <!-- 作品と歌詞が流れる棚 -->
   <div class="marquee" id="marquee"></div>
 
-  <!-- 2. SNS -->
-  <div class="sns">
-    <a class="b-x" href="https://x.com/ramune_aiai" target="_blank" rel="noopener" aria-label="X">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
-    </a>
-    <a class="b-ig" href="https://www.instagram.com/ramune_aiai" target="_blank" rel="noopener" aria-label="Instagram">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-    </a>
-    <a class="b-tt" href="https://www.tiktok.com/@ramune_aiai" target="_blank" rel="noopener" aria-label="TikTok">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
-    </a>
-    <a class="b-yt" href="https://www.youtube.com/@ramune_aiai" target="_blank" rel="noopener" aria-label="YouTube">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-    </a>
-  </div>
-
   <!-- 3. お知らせ（更新したら日付と本文を書き換えてください） -->
-  <div class="statuscard reveal">
+  <div class="statuscard reveal" id="statuscard">
     <span class="upd">2026.8.29 更新</span>
     <h2>楽曲12曲、REC中🎶<br>MVは2026年10月から順次公開！</h2>
     <p>歌詞の一部を先取り公開中👇</p>
@@ -288,7 +356,7 @@
 
   <!-- ABOUT -->
   <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT</span><span class="ja">わたしのこと</span></h2>
-  <div class="about reveal">
+  <div class="about reveal frost">
     <p>創作しないと、<span class="accent">頭パンクしちゃう</span>タイプです。<br>
     音楽もゲームもアートも、ジャンルはバラバラだけど、<br>
     ぜんぶ「カワイイ＆夢」でつながってる。<br>
@@ -304,9 +372,9 @@
     <span class="tx"><b>お仕事のご依頼</b><small>ご相談はこちらから</small></span>
     <span class="chip">お問い合わせ</span>
   </a>
-  <p class="worknote">お仕事のご依頼・ご相談はこちらから📩<br>軽いご相談は、SNSのDMでも大歓迎です🫶</p>
+  <p class="worknote reveal frost">お仕事のご依頼・ご相談はこちらから📩<br>軽いご相談は、SNSのDMでも大歓迎です🫶</p>
 
-  <footer>らむね あい｜創作<br>創作しないと頭パンクしちゃうタイプです</footer>
+  <footer class="frost">らむね あい｜創作<br>創作しないと頭パンクしちゃうタイプです</footer>
 </div>
 
 <script>
@@ -366,44 +434,47 @@
   bindCounter('deck','deckcount');
   bindCounter('gameshelf','gamecount');
 
-  /* --- ヒーローの棚：作品写真と歌詞のかけらが混ざって流れる。
-     写真を増やすときはこの配列に { photo:'assets/web/....jpg' } を追加するだけでOK --- */
-  const marqueeItems=[
+  /* --- ヒーローの棚：写真は元の縦横比のまま高さだけ揃える（切れ防止）。
+     歌詞ステッカーは正方形・パステルグラデ・6色をローテーション。
+     2段構成、歌詞同士が隣り合わないよう手で並べてあります。
+     写真を増やすときは配列に { photo:'assets/web/xxx.jpg' } を追加するだけでOK --- */
+  const rowA=[
     {photo:'assets/web/fluid-01.jpg'},
     {photo:'assets/web/resin-07.jpg'},
     {word:'大優勝！'},
     {photo:'assets/web/nail-01.jpg'},
     {photo:'assets/web/daily-04.jpg'},
-    {word:'I\'m Ai♡'},
     {photo:'assets/web/resin-05.jpg'},
+    {word:'パスキーは\nえ・が・お！'},
     {photo:'assets/web/portrait-01.jpg'},
-    {word:'パスキーは え・が・お！'},
     {photo:'assets/web/fluid-02.jpg'},
     {photo:'assets/web/nail-02.jpg'},
-    {word:'回せ回せ ガチャ回せ〜！'},
+    {word:'透き通る\nわたしの色'},
+  ];
+  const rowB=[
     {photo:'assets/web/resin-08.jpg'},
+    {word:'I\'m Ai♡'},
     {photo:'assets/web/daily-01.jpg'},
-    {word:'ずるいよ 織姫と彦星'},
     {photo:'assets/web/fluid-03.jpg'},
     {photo:'assets/web/resin-03.jpg'},
-    {word:'透き通るわたしの色'},
+    {word:'回せ回せ\nガチャ回せ〜！'},
     {photo:'assets/web/nail-03.jpg'},
     {photo:'assets/web/portrait-03.jpg'},
+    {word:'ずるいよ\n織姫と彦星'},
     {photo:'assets/web/daily-02.jpg'},
   ];
+  let wordColorIdx=0;
   function tileHTML(item){
-    if(item.photo) return `<span class="mtile"><img src="${item.photo}" loading="lazy" alt=""></span>`;
-    return `<a class="mword" href="#music">${item.word}</a>`;
+    if(item.photo) return `<span class="mtile"><img src="${item.photo}" alt=""></span>`;
+    wordColorIdx++;
+    const c='c'+(((wordColorIdx-1)%6)+1);
+    return `<a class="mword ${c}" href="#music">${item.word}</a>`;
   }
   const marquee=document.getElementById('marquee');
-  const rowCount=3, rows=[[],[],[]];
-  marqueeItems.forEach((item,i)=>rows[i%rowCount].push(item));
-  const rowDur=[34,30,38];
-  rows.forEach((items,i)=>{
+  [rowA,rowB].forEach((items,i)=>{
     const row=document.createElement('div');
-    row.className='mrow'+(i%2===1?' rev':'');
-    row.style.animationDuration=rowDur[i]+'s';
-    // シームレスループのため中身を2回並べる
+    row.className='mrow'+(i===1?' rev':'');
+    row.style.animationDuration=(i===0?36:32)+'s';
     row.innerHTML=items.map(tileHTML).join('')+items.map(tileHTML).join('');
     marquee.appendChild(row);
   });
@@ -426,7 +497,7 @@
   const sky=document.getElementById('sky');
   const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
   const colors=['#ff7ec0','#9d7bff','#5ec8ff','#67e6c2','#ffd84d','#ff9a52'];
-  for(let n=0;n<18;n++){
+  for(let n=0;n<10;n++){
     const el=document.createElement('i');
     const kind=shapes[Math.floor(Math.random()*shapes.length)];
     el.className=kind;
@@ -444,7 +515,7 @@
   dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
   dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
 
-  /* 画面に入ったセクションだけ、ふわっと現れる */
+  /* 画面に入ったセクションだけ、ふわっと現れる（お知らせだけはポンッと弾む） */
   if('IntersectionObserver' in window){
     const io=new IntersectionObserver((entries)=>{
       entries.forEach(en=>{
