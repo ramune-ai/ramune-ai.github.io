@@ -57,7 +57,7 @@
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
   .topbar .tnlogo .lg-1{color:var(--soda)} .topbar .tnlogo .lg-2{color:var(--candy)}
-  .topsns{display:flex;gap:7px;align-items:center;margin-left:auto}
+  .topsns{display:flex;gap:12px;align-items:center;margin-left:auto}
   .topsns a{width:33px;height:33px;border-radius:11px;display:flex;align-items:center;justify-content:center;
     background:#fff;text-decoration:none;box-shadow:0 3px 8px var(--shadow);border:1.5px solid #fff;
     transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
@@ -67,7 +67,7 @@
   .b-tt svg{fill:#141414}
   .b-yt svg{fill:#ff0000}
 
-  .menubtn{margin-left:8px;width:40px;height:40px;border:none;cursor:pointer;flex:0 0 auto;
+  .menubtn{margin-left:14px;width:40px;height:40px;border:none;cursor:pointer;flex:0 0 auto;
     background:#fff;border-radius:13px;box-shadow:0 3px 10px var(--shadow);display:flex;flex-direction:column;
     align-items:center;justify-content:center;gap:5px}
   .menubtn span{width:21px;height:2.8px;background:var(--candy);border-radius:2px;transition:.25s}
@@ -103,7 +103,7 @@
   }
 
   .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 18px 40px}
-  @media(min-width:860px){.wrap{max-width:860px;padding:0 32px 70px}}
+  @media(min-width:860px){.wrap{max-width:1080px;padding:0 40px 80px}}
 
   .intro{text-align:center;padding:22px 0 0}
   @media(min-width:860px){.intro{padding:30px 0 0}}
@@ -145,11 +145,13 @@
   .mtile img{width:100%;height:100%;object-fit:cover;display:block}
 
   /* 歌詞は白地×ピンク文字。単語の途中で改行しない */
-  .mword{flex:0 0 auto;height:var(--th);aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-    text-align:center;font-size:.84rem;font-weight:700;color:#c0397a;background:#fffefc;padding:9px;
+  /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
+  .mword{flex:0 0 auto;height:var(--th);width:auto;
+    max-width:calc(var(--th) * 1.45);display:flex;align-items:center;justify-content:center;
+    text-align:center;font-size:1.02rem;font-weight:700;color:#c0397a;background:#fffefc;padding:0 20px;
     border-radius:16px;box-shadow:0 6px 14px var(--shadow);border:2.5px solid #ffdaee;
-    text-decoration:none;line-height:1.45;word-break:keep-all;overflow-wrap:normal}
-  @media(min-width:860px){.mword{font-size:1.06rem;padding:14px}}
+    text-decoration:none;line-height:1.5;word-break:keep-all;overflow-wrap:normal}
+  @media(min-width:860px){.mword{font-size:1.5rem;padding:0 34px;max-width:calc(var(--th) * 1.35)}}
 
   /* --- お知らせ：ポンッと弾んで出現 --- */
   .statuscard{margin-top:26px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
@@ -197,7 +199,7 @@
   .lcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;
     padding:14px 16px 14px;box-shadow:0 10px 24px var(--shadow);border:3px solid #ffdaee;
     display:flex;flex-direction:column}
-  @media(min-width:860px){.lcard{flex-basis:calc(50% - 8px)}}
+  @media(min-width:860px){.lcard{flex-basis:calc(33.333% - 9px);max-width:none}}
   .lhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
   .lcard .num{font-family:'Mochiy Pop One',sans-serif;font-size:1.1rem;color:#c0397a;opacity:.5}
   .lcard .stat{font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px;background:#e2fbf3;color:#0d8168;white-space:nowrap}
@@ -213,7 +215,7 @@
   /* --- GAME カード --- */
   .gcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;overflow:hidden;
     box-shadow:0 10px 24px var(--shadow);border:3px solid #fff;position:relative;display:flex;flex-direction:column}
-  @media(min-width:860px){.gcard{flex-basis:calc(50% - 8px)}}
+  @media(min-width:860px){.gcard{flex-basis:calc(50% - 7px);max-width:none}}
   .gcard.soon{filter:saturate(.75)}
   .gribbon{position:absolute;top:11px;right:-34px;transform:rotate(38deg);background:var(--grape);color:#fff;
     font-weight:700;font-size:.68rem;padding:4px 40px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.15)}
@@ -302,7 +304,7 @@
     .gph .big{font-size:2.1rem}
     .gph small{font-size:.82rem}
     .about{padding:34px 38px 32px;border-radius:26px}
-    .about p{font-size:1.16rem;line-height:2.05}
+    .about p{font-size:1.2rem;line-height:2.05;max-width:56ch;margin:0 auto}
     .about .igline{font-size:.98rem;padding:11px 24px;margin-top:22px}
     .banner{padding:20px 22px;border-radius:22px}
     .banner .tx b{font-size:1.3rem}
@@ -525,12 +527,27 @@
      ar は画像の横÷縦。先に指定しておくと読み込み前でも幅が決まり、
      チカつき・ガタつきが起きません。画像はヒーロー専用の軽量版(thumb)。
      写真を増やすときは配列に {photo:'ファイル名.jpg', ar:横÷縦} を足すだけでOK --- */
-  /* リロードしたとき、前回のスクロール位置が復元されて
-     途中から表示されてしまうのを防ぐ（必ず一番上から始める） */
+  /* リロードすると前回位置（や残っている #music などのハッシュ）に飛んでしまうので、
+     リロード時は必ず一番上から始める。iOSは復元が遅れて効くことがあるので数回打ち消す。 */
   if('scrollRestoration' in history) history.scrollRestoration='manual';
-  window.addEventListener('load',()=>{
-    if(!location.hash) window.scrollTo(0,0);
-  });
+  (function(){
+    let navType='navigate';
+    try{
+      const nav=performance.getEntriesByType('navigation')[0];
+      if(nav && nav.type) navType=nav.type;
+    }catch(e){}
+    const isReload = navType==='reload';
+    if(isReload && location.hash){
+      history.replaceState(null,'',location.pathname+location.search);
+    }
+    if(isReload || !location.hash){
+      const toTop=()=>window.scrollTo(0,0);
+      toTop();
+      document.addEventListener('DOMContentLoaded',toTop);
+      window.addEventListener('load',()=>{ toTop(); setTimeout(toTop,60); setTimeout(toTop,250); });
+      window.addEventListener('pageshow',e=>{ if(e.persisted) toTop(); });
+    }
+  })();
 
   const T='assets/web/thumb/';
   const rowA=[
@@ -605,37 +622,37 @@
     return parseFloat(v.length>6 ? v[12] : v[4]) || 0;
   }
 
-  let dragging=false, dragStartX=0, dragMoved=0;
-  function dragStart(x){
-    dragging=true; dragStartX=x; dragMoved=0;
+  /* ドラッグは「つかんだ段だけ」動かす（上下は独立して動かせる） */
+  let activeRow=null, dragStartX=0, dragMoved=0;
+  function dragStart(st,x){
+    activeRow=st; dragStartX=x; dragMoved=0;
     marquee.classList.add('dragging');
-    marqueeRows.forEach(st=>{
-      st.half=st.el.scrollWidth/2 || 1;
-      st.base=currentX(st.el);
-      st.el.style.animation='none';
-      st.el.style.transform=`translate3d(${st.base}px,0,0)`;
-    });
+    st.half=st.el.scrollWidth/2 || 1;
+    st.base=currentX(st.el);
+    st.el.style.animation='none';
+    st.el.style.transform=`translate3d(${st.base}px,0,0)`;
   }
   function dragMove(x){
-    if(!dragging) return;
+    if(!activeRow) return;
+    const st=activeRow;
     const dx=x-dragStartX;
     dragMoved=Math.abs(dx);
-    marqueeRows.forEach(st=>{
-      let nx=st.base+dx;
-      while(nx<=-st.half) nx+=st.half;
-      while(nx>0) nx-=st.half;
-      st.el.style.transform=`translate3d(${nx}px,0,0)`;
-    });
+    let nx=st.base+dx;
+    while(nx<=-st.half) nx+=st.half;
+    while(nx>0) nx-=st.half;
+    st.el.style.transform=`translate3d(${nx}px,0,0)`;
   }
   function dragEnd(){
-    if(!dragging) return;
-    dragging=false;
+    if(!activeRow) return;
+    play(activeRow,currentX(activeRow.el));
+    activeRow=null;
     marquee.classList.remove('dragging');
-    marqueeRows.forEach(st=>play(st,currentX(st.el)));
   }
 
-  marquee.addEventListener('pointerdown',e=>{ dragStart(e.clientX); });
-  window.addEventListener('pointermove',e=>{ if(dragging) dragMove(e.clientX); });
+  marqueeRows.forEach(st=>{
+    st.el.addEventListener('pointerdown',e=>{ dragStart(st,e.clientX); });
+  });
+  window.addEventListener('pointermove',e=>{ if(activeRow) dragMove(e.clientX); });
   window.addEventListener('pointerup',dragEnd);
   window.addEventListener('pointercancel',dragEnd);
   // ドラッグしたあとに歌詞リンクが誤爆しないように
