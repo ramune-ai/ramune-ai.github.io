@@ -108,7 +108,13 @@
 
   .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;
     padding:0 18px calc(14px + var(--safe-bottom))}
-  @media(min-width:860px){.wrap{max-width:1240px;padding:0 40px 40px}}
+  /* PCは画面幅をいっぱいに使う。ただし読む要素（文章・お知らせ・お仕事）は
+     横に伸びすぎると読みにくいので、それぞれ幅を制限して中央に置く */
+  @media(min-width:860px){
+    .wrap{max-width:none;padding:0 clamp(28px,3.5vw,72px) 50px}
+    .statuscard,.about,.banner,.worknote,.snsnote,.snsgrid,.morebtn{
+      max-width:960px;margin-left:auto;margin-right:auto}
+  }
 
   .intro{text-align:center;padding:22px 0 0}
   @media(min-width:860px){.intro{padding:30px 0 0}}
@@ -153,18 +159,20 @@
   /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
   /* --- 歌詞：写真2段の下を流れる「吹き出しタイル」。
      写真タイルと同じ白フチ・角丸・影で、同じ棚の仲間に見えるようにしてある --- */
-  .ticker{overflow:hidden;position:relative;padding:4px 0 12px}
+  /* 写真の段と同じくドラッグでスライドできる（触っても止まらない） */
+  .ticker{overflow:hidden;position:relative;padding:4px 0 12px;cursor:grab;touch-action:pan-y}
   .tickrow{display:flex;width:max-content;align-items:flex-start;gap:12px;
     animation:scrollL 56s linear infinite;will-change:transform}
-  .ticker:hover .tickrow{animation-play-state:paused}
   @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
   @media(min-width:860px){.tickrow{gap:16px}}
 
+  /* Hachi Maru Pop は文字が字面の下寄りに来るので、
+     上下のpaddingを非対称（下を厚く）にして見た目の中央に合わせている */
   .bubble{position:relative;flex:0 0 auto;text-decoration:none;
     font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
-    font-size:1.05rem;color:#e0559d;white-space:nowrap;
+    font-size:1.05rem;line-height:1.2;color:#e0559d;white-space:nowrap;
     background:#fff;border:2.5px solid #fff;border-radius:16px;
-    padding:11px 20px;box-shadow:var(--card-shadow);
+    padding:13px 20px 9px;box-shadow:var(--card-shadow);
     -webkit-tap-highlight-color:transparent;
     transition:transform .18s cubic-bezier(.34,1.56,.64,1),color .15s}
   .bubble:hover,.bubble:active{transform:translateY(-4px) rotate(-1.5deg);color:#c0397a}
@@ -173,7 +181,7 @@
     width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;
     border-top:9px solid #fff}
   @media(min-width:860px){
-    .bubble{font-size:1.55rem;padding:15px 30px;border-radius:20px}
+    .bubble{font-size:1.55rem;padding:22px 30px 14px;border-radius:20px}
     .bubble::after{left:34px;bottom:-10px;border-left:11px solid transparent;
       border-right:11px solid transparent;border-top:11px solid #fff}
   }
@@ -238,11 +246,18 @@
   @media(min-width:860px){
     .shelf{display:grid;gap:20px;overflow:visible;padding:2px;scroll-snap-type:none}
     .shelf#deck{grid-template-columns:repeat(3,1fr)}
-    .shelf#gameshelf{grid-template-columns:repeat(3,1fr);justify-content:start}
+    /* ゲームは2作品なので2列。中央寄せにして空きスロットを作らない */
+    .shelf#gameshelf{grid-template-columns:repeat(2,1fr);max-width:1120px;margin:0 auto}
     .shelf .lcard,.shelf .gcard{flex:none;max-width:none;width:auto}
     .shelfnav{display:none}
     .shelf#deck:not(.expanded) .lcard:nth-child(n+7){display:none}
     .morebtn{display:block}
+  }
+
+  /* 超ワイド画面ではMUSICを4列にして、カードが大きくなりすぎないようにする */
+  @media(min-width:1800px){
+    .shelf#deck{grid-template-columns:repeat(4,1fr)}
+    .shelf#gameshelf{max-width:1300px}
   }
 
   /* --- MUSIC カード：将来のYouTube埋め込みを基準に高さを固定 --- */
@@ -731,13 +746,20 @@
     return st;
   });
 
-  // 写真2段の下に、歌詞が流れる帯を置く（フレーズごとにタップでMUSICへ）
+  // 写真2段の下に、歌詞が流れる帯を置く（フレーズごとにタップでMUSICへ）。
+  // 写真の段と同じくドラッグでスライドできるよう marqueeRows に登録する
   (function(){
     const tick=document.createElement('div');
     tick.className='ticker';
+    const row=document.createElement('div');
+    row.className='tickrow';
     const one=tickerWords.map(w=>`<a class="bubble" href="#music">${w}</a>`).join('');
-    tick.innerHTML=`<div class="tickrow">${one}${one}</div>`;
+    row.innerHTML=one+one;
+    tick.appendChild(row);
     marquee.appendChild(tick);
+    const st={el:row, dir:'L', dur:56, half:0, base:0};
+    play(st,0);
+    marqueeRows.push(st);
   })();
 
   /* 自動の流れはCSSアニメーション（コンポジタで動くので滑らか＆省電力）。
@@ -811,20 +833,30 @@
     });
   }
 
+  /* ★浮遊する幾何学シェイプ★
+     いまは一時的にオフ（画面上下バーの透過を確認するため）。
+     戻したいときは下の SHOW_SHAPES を true にするだけでOK。 */
+  const SHOW_SHAPES = false;
+
   const sky=document.getElementById('sky');
   const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
   const colors=['#ff7ec0','#9d7bff','#5ec8ff','#67e6c2','#ffd84d','#ff9a52'];
-  for(let n=0;n<10;n++){
-    const el=document.createElement('i');
-    const kind=shapes[Math.floor(Math.random()*shapes.length)];
-    el.className=kind;
-    el.style.setProperty('--c', colors[Math.floor(Math.random()*colors.length)]);
-    const size=14+Math.random()*28;el.style.width=size+'px';el.style.height=size+'px';
-    el.style.left=Math.random()*100+'vw';
-    const dur=12+Math.random()*14;
-    el.style.animationDuration=dur+'s';
-    el.style.animationDelay=(-Math.random()*dur)+'s';
-    sky.appendChild(el);
+  if(SHOW_SHAPES){
+    for(let n=0;n<10;n++){
+      const el=document.createElement('i');
+      const kind=shapes[Math.floor(Math.random()*shapes.length)];
+      el.className=kind;
+      el.style.setProperty('--c', colors[Math.floor(Math.random()*colors.length)]);
+      const size=14+Math.random()*28;el.style.width=size+'px';el.style.height=size+'px';
+      el.style.left=Math.random()*100+'vw';
+      const dur=12+Math.random()*14;
+      el.style.animationDuration=dur+'s';
+      el.style.animationDelay=(-Math.random()*dur)+'s';
+      sky.appendChild(el);
+    }
+  }else if(sky){
+    // 空の固定レイヤーも消しておく（透過の妨げにならないように）
+    sky.remove();
   }
   const mb=document.getElementById('menubtn'), dr=document.getElementById('drawer');
   function toggle(){mb.classList.toggle('open');dr.classList.toggle('open');}
