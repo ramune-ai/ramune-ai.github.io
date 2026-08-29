@@ -5,7 +5,10 @@
 <!-- viewport-fit=cover：ページをステータスバー／ホームバーの下まで広げる。
      これが無いと、その部分がSafariのベタ塗り帯として残ってしまう -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#ffe3f1">
+<!-- ★theme-color はあえて指定していません★
+     指定すると iOS が上下バーを「そのベタ1色」で塗りつぶしてしまい、
+     参考サイトのようにページの中身が透けて見える表示になりません。
+     未指定にすると iOS が実際の表示内容から自動で色を拾ってくれます。 -->
 <title>らむね あい 🌈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,11 +29,8 @@
      ページの長さに関係なく、どこを見てもピンク→ミントが1画面に収まるので、
      上端・下端だけべた塗りになって不自然に見える問題が起きない。
      overscroll-behavior:none で引っ張った時の余白自体を出さないようにしている。 */
-  /* ★上下対称のグラデにしてある理由★
-     iOS Safari は theme-color を1色しか持てず、画面上端バーと下端バーが同じ色になる。
-     グラデの一番上と一番下を同じピンク(#ffe3f1)に揃えることで、
-     どちらのバーとも色がぴったり合い、べた塗りの継ぎ目が見えなくなる。
-     （上下の色を変えると、必ずどちらかがズレてしまう） */
+  /* グラデの上端と下端を同じピンクにしてあるので、
+     iOSがどちらのバーの色を拾っても自然に馴染む */
   html{scroll-behavior:smooth;min-height:100%;background:#ffe3f1;overscroll-behavior:none}
   body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
     background:transparent;overscroll-behavior:none}
@@ -161,23 +161,31 @@
 
   /* 歌詞は白地×ピンク文字。単語の途中で改行しない */
   /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
-  /* --- 歌詞ティッカー：写真2段の下を流れる1行の帯。
-     フレーズごとに区切られていて、1つずつタップできる --- */
-  .ticker{overflow:hidden;position:relative;padding:9px 0;background:rgba(255,255,255,.6);
-    border-top:1.5px solid rgba(255,190,225,.75);border-bottom:1.5px solid rgba(255,190,225,.75)}
-  .tickrow{display:flex;width:max-content;align-items:center;
-    animation:scrollL 52s linear infinite;will-change:transform}
+  /* --- 歌詞：写真2段の下を流れる「吹き出しタイル」。
+     写真タイルと同じ白フチ・角丸・影で、同じ棚の仲間に見えるようにしてある --- */
+  .ticker{overflow:hidden;position:relative;padding:6px 0 14px}
+  .tickrow{display:flex;width:max-content;align-items:flex-start;gap:12px;
+    animation:scrollL 56s linear infinite;will-change:transform}
   .ticker:hover .tickrow{animation-play-state:paused}
   @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
-  /* 1フレーズ＝1リンク。区切りの縦線とホバーで押せることが伝わる */
-  .tickrow a{font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
-    font-size:1.1rem;color:#e0559d;white-space:nowrap;text-decoration:none;
-    padding:5px 22px;border-right:1.5px solid #ffd0e8;border-radius:10px;
-    -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
-  .tickrow a:hover,.tickrow a:active{background:#fff;color:#c0397a}
+  @media(min-width:860px){.tickrow{gap:16px}}
+
+  .bubble{position:relative;flex:0 0 auto;text-decoration:none;
+    font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
+    font-size:1.05rem;color:#e0559d;white-space:nowrap;
+    background:#fff;border:2.5px solid #fff;border-radius:16px;
+    padding:11px 20px;box-shadow:0 6px 14px var(--shadow);
+    -webkit-tap-highlight-color:transparent;
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1),color .15s}
+  .bubble:hover,.bubble:active{transform:translateY(-4px) rotate(-1.5deg);color:#c0397a}
+  /* 吹き出しのしっぽ（白い三角を下にちょこんと） */
+  .bubble::after{content:"";position:absolute;left:26px;bottom:-9px;
+    width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;
+    border-top:10px solid #fff;filter:drop-shadow(0 3px 3px rgba(157,123,255,.2))}
   @media(min-width:860px){
-    .ticker{padding:13px 0}
-    .tickrow a{font-size:1.65rem;padding:7px 34px}
+    .bubble{font-size:1.55rem;padding:15px 30px;border-radius:20px}
+    .bubble::after{left:34px;bottom:-12px;border-left:11px solid transparent;
+      border-right:11px solid transparent;border-top:13px solid #fff}
   }
 
   /* --- お知らせ：ポンッと弾んで出現 --- */
@@ -215,33 +223,32 @@
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
   /* --- 共通：横スワイプの棚 --- */
-  .shelf{display:flex;align-items:flex-start;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;
+  .shelf{display:flex;align-items:flex-start;gap:13px;overflow-x:auto;scroll-snap-type:x proximity;
     padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .shelf::-webkit-scrollbar{display:none}
   .shelfnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px}
   .shelfcount{font-size:.8rem;font-weight:700;color:#a99cb8;min-width:52px;text-align:center}
   .shelfhint{text-align:center;font-size:.76rem;font-weight:700;color:#c78ab0;margin-top:5px}
-  /* スマホでも矢印で送れるようにして「めくれる」ことを分かりやすく */
+  /* 矢印で送れるようにして「めくれる」ことを分かりやすく */
   .shelfarrow{width:34px;height:34px;border:2px solid #ffdaee;background:#fff;border-radius:50%;
     display:flex;align-items:center;justify-content:center;cursor:pointer;color:#c0397a;
-    font-size:.95rem;font-weight:900;box-shadow:0 3px 8px var(--shadow);transition:transform .12s}
+    font-size:.95rem;font-weight:900;box-shadow:0 3px 8px var(--shadow);transition:transform .12s,opacity .2s}
   .shelfarrow:active{transform:scale(.9)}
-  .shelfarrow[disabled]{opacity:.35;cursor:default}
+  .shelfarrow[disabled]{opacity:.28;cursor:default}
 
-  /* PCでは横スライドをやめて全部並べる（一覧性を優先） */
+  /* PCは「大きめカードが1段・横に流れる」形。マウスでも操作しやすいよう
+     ①次カードの見切れ ②大きな左右ボタン ③ホイールで横送り の三重にしてある */
   @media(min-width:860px){
-    .shelf{display:grid;gap:18px;overflow:visible;padding:2px}
-    .shelf#deck{grid-template-columns:repeat(4,1fr);gap:14px}
-    .shelf#gameshelf{grid-template-columns:repeat(2,1fr)}
-    .shelf .lcard,.shelf .gcard{flex:none;max-width:none;width:auto}
-    .shelfnav,.shelfhint{display:none}
+    .shelf{gap:18px;padding:4px 4px 12px}
+    .shelfarrow{width:46px;height:46px;font-size:1.15rem;border-width:2.5px}
+    .shelfnav{gap:18px;margin-top:6px}
   }
 
   /* --- MUSIC カード：将来のYouTube埋め込みを基準に高さを固定 --- */
-  .lcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;
+  .lcard{flex:0 0 82%;max-width:330px;scroll-snap-align:start;background:#fff;border-radius:22px;
     padding:14px 16px 14px;box-shadow:0 10px 24px var(--shadow);border:3px solid #ffdaee;
     display:flex;flex-direction:column}
-  @media(min-width:860px){.lcard{flex-basis:calc(33.333% - 9px);max-width:none}}
+  @media(min-width:860px){.lcard{flex:0 0 38%;max-width:none}}
   .lhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
   .lcard .num{font-family:'Mochiy Pop One',sans-serif;font-size:1.1rem;color:#c0397a;opacity:.5}
   .lcard .stat{font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px;background:#e2fbf3;color:#0d8168;white-space:nowrap}
@@ -255,9 +262,9 @@
   .lfoot{margin-top:10px;font-size:.74rem;font-weight:700;color:#c78ab0;min-height:1.2em}
 
   /* --- GAME カード --- */
-  .gcard{flex:0 0 82%;max-width:330px;scroll-snap-align:center;background:#fff;border-radius:22px;overflow:hidden;
+  .gcard{flex:0 0 82%;max-width:330px;scroll-snap-align:start;background:#fff;border-radius:22px;overflow:hidden;
     box-shadow:0 10px 24px var(--shadow);border:3px solid #fff;position:relative;display:flex;flex-direction:column}
-  @media(min-width:860px){.gcard{flex-basis:calc(50% - 7px);max-width:none}}
+  @media(min-width:860px){.gcard{flex:0 0 38%;max-width:none}}
   .gcard.soon{filter:saturate(.75)}
   .gribbon{position:absolute;top:11px;right:-34px;transform:rotate(38deg);background:var(--grape);color:#fff;
     font-weight:700;font-size:.68rem;padding:4px 40px;z-index:3;box-shadow:0 4px 10px rgba(0,0,0,.15)}
@@ -334,8 +341,8 @@
     .statuscard h2{font-size:1.3rem;line-height:1.6}
     .statuscard p{font-size:1.02rem}
     .upd{font-size:1rem;padding:9px 20px;top:-18px}
-    .lcard{padding:15px 16px;border-radius:22px}
-    .lbody{height:150px}
+    .lcard{padding:20px 22px;border-radius:24px}
+    .lbody{height:210px}
     .lcard .lyric{font-size:1.08rem;line-height:1.9}
     .lcard .num{font-size:1.3rem}
     .lcard .stat{font-size:.76rem;padding:5px 13px}
@@ -573,14 +580,51 @@
   bindCounter('deck','deckcount');
   bindCounter('gameshelf','gamecount');
 
-  /* ◀ ▶ ボタンでも1枚ずつ送れるように（スワイプに気づかない人向け） */
+  /* ◀ ▶ ボタンで1枚ずつ送る */
+  function shelfStep(shelf){
+    if(!shelf||!shelf.firstElementChild) return 0;
+    const gap=parseFloat(getComputedStyle(shelf).gap)||13;
+    return shelf.firstElementChild.getBoundingClientRect().width+gap;
+  }
   document.querySelectorAll('.shelfarrow').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const shelf=document.getElementById(btn.dataset.shelf);
-      if(!shelf||!shelf.firstElementChild) return;
-      const step=shelf.firstElementChild.getBoundingClientRect().width+13;
-      shelf.scrollBy({left:step*Number(btn.dataset.dir),behavior:'smooth'});
+      if(!shelf) return;
+      const step=shelfStep(shelf);
+      if(!step) return;
+      // 送り先を「何枚目」で明示的に決める（scrollByだとスナップに打ち消される）
+      const idx=Math.round(shelf.scrollLeft/step)+Number(btn.dataset.dir);
+      const max=shelf.scrollWidth-shelf.clientWidth;
+      shelf.scrollTo({left:Math.max(0,Math.min(idx*step,max)),behavior:'smooth'});
     });
+  });
+
+  /* 端まで来たら矢印を薄くして「もう無い」ことを伝える */
+  function syncArrows(shelf){
+    const max=shelf.scrollWidth-shelf.clientWidth;
+    document.querySelectorAll('.shelfarrow[data-shelf="'+shelf.id+'"]').forEach(btn=>{
+      const dir=Number(btn.dataset.dir);
+      btn.disabled = dir<0 ? shelf.scrollLeft<=2 : shelf.scrollLeft>=max-2;
+    });
+  }
+  /* PCのマウスは縦ホイールしか回せないので、棚の上では縦回転を横送りに変換する。
+     これが無いと「横に流れること」に気づかれない */
+  ['deck','gameshelf'].forEach(id=>{
+    const shelf=document.getElementById(id);
+    if(!shelf) return;
+    syncArrows(shelf);
+    shelf.addEventListener('scroll',()=>window.requestAnimationFrame(()=>syncArrows(shelf)),{passive:true});
+    window.addEventListener('resize',()=>syncArrows(shelf));
+    window.addEventListener('load',()=>syncArrows(shelf));
+    shelf.addEventListener('wheel',e=>{
+      if(Math.abs(e.deltaY)<=Math.abs(e.deltaX)) return; // 横操作はそのまま活かす
+      const max=shelf.scrollWidth-shelf.clientWidth;
+      if(max<=0) return;
+      // 端に着いたらページの縦スクロールに戻す（棚に閉じ込めない）
+      if((e.deltaY<0&&shelf.scrollLeft<=0)||(e.deltaY>0&&shelf.scrollLeft>=max)) return;
+      e.preventDefault();
+      shelf.scrollLeft+=e.deltaY;
+    },{passive:false});
   });
 
   /* --- ヒーローの棚：写真は元の縦横比のまま、高さだけ揃える（切り取りゼロ）。
@@ -666,7 +710,7 @@
   (function(){
     const tick=document.createElement('div');
     tick.className='ticker';
-    const one=tickerWords.map(w=>`<a href="#music">${w}</a>`).join('');
+    const one=tickerWords.map(w=>`<a class="bubble" href="#music">${w}</a>`).join('');
     tick.innerHTML=`<div class="tickrow">${one}${one}</div>`;
     marquee.appendChild(tick);
   })();
