@@ -2,7 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- viewport-fit=cover：ページをステータスバー／ホームバーの下まで広げる。
+     これが無いと、その部分がSafariのベタ塗り帯として残ってしまう -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#ffe3f1">
 <title>らむね あい 🌈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +16,9 @@
     --pink:#ff7ec0;--grape:#9d7bff;--sky:#5ec8ff;--mint:#67e6c2;
     --lemon:#ffd84d;--tangerine:#ff9a52;--shadow:rgba(157,123,255,.28);
     --soda:#2bb8d6;--candy:#ff5fa8;
+    /* ノッチ／ホームバーのぶんの余白。対応していない環境では0pxになる */
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
   }
   *{box-sizing:border-box;margin:0;padding:0}
 
@@ -58,7 +63,8 @@
 
   /* --- 上部バー：モバイルは[SNS｜☰]、PCは[ロゴ｜リンク｜SNS] --- */
   .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;
-    padding:8px 12px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    padding:8px 12px;padding-top:calc(8px + var(--safe-top));
+    background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     border-bottom:1.5px solid #ffd9ee}
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
@@ -87,12 +93,14 @@
     padding:74px 20px 30px;overflow-y:auto}
   .drawer.open .panel{transform:translateX(0)}
   .panel a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font-weight:700;
-    padding:16px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1.05rem}
-  .panel a .e{font-size:1.35rem}
+    padding:14px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1.05rem}
+  .panel a .e{font-size:1.35rem;flex:0 0 auto}
+  .panel a .tx{display:flex;flex-direction:column;line-height:1.3}
+  .panel a .en{font-family:'Mochiy Pop One',sans-serif;font-size:.66rem;color:#c78ab0;letter-spacing:.08em;margin-top:2px}
 
   /* 固定バーのぶんだけ本文を下げる／アンカー移動でバーに隠れないようにする */
-  body{padding-top:56px}
-  [id]{scroll-margin-top:66px}
+  body{padding-top:calc(56px + var(--safe-top))}
+  [id]{scroll-margin-top:calc(66px + var(--safe-top))}
 
   @media(min-width:860px){
     .menubtn,.drawer{display:none}
@@ -104,12 +112,13 @@
     .topsns{gap:10px;flex:0 0 auto;margin-left:0}
     .topsns a{width:40px;height:40px;border-radius:13px}
     .topsns svg{width:21px;height:21px}
-    body{padding-top:66px}
-    [id]{scroll-margin-top:86px}
+    body{padding-top:calc(66px + var(--safe-top))}
+    [id]{scroll-margin-top:calc(86px + var(--safe-top))}
   }
 
-  .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 18px 40px}
-  @media(min-width:860px){.wrap{max-width:1080px;padding:0 40px 80px}}
+  .wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;
+    padding:0 18px calc(14px + var(--safe-bottom))}
+  @media(min-width:860px){.wrap{max-width:1240px;padding:0 40px 40px}}
 
   .intro{text-align:center;padding:22px 0 0}
   @media(min-width:860px){.intro{padding:30px 0 0}}
@@ -152,29 +161,23 @@
 
   /* 歌詞は白地×ピンク文字。単語の途中で改行しない */
   /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
-  /* --- 歌詞ティッカー：写真の段のあいだを流れる1行の帯 --- */
-  .ticker{display:block;text-decoration:none;overflow:hidden;position:relative;
-    padding:11px 0;background:rgba(255,255,255,.62);
-    border-top:1.5px solid rgba(255,190,225,.75);border-bottom:1.5px solid rgba(255,190,225,.75);
-    -webkit-tap-highlight-color:transparent;transition:background .2s}
-  .ticker:hover,.ticker:active{background:rgba(255,255,255,.85)}
+  /* --- 歌詞ティッカー：写真2段の下を流れる1行の帯。
+     フレーズごとに区切られていて、1つずつタップできる --- */
+  .ticker{overflow:hidden;position:relative;padding:9px 0;background:rgba(255,255,255,.6);
+    border-top:1.5px solid rgba(255,190,225,.75);border-bottom:1.5px solid rgba(255,190,225,.75)}
   .tickrow{display:flex;width:max-content;align-items:center;
-    animation:scrollL 46s linear infinite;will-change:transform}
+    animation:scrollL 52s linear infinite;will-change:transform}
   .ticker:hover .tickrow{animation-play-state:paused}
   @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
-  .tickrow span{font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
-    font-size:1.12rem;color:#e0559d;white-space:nowrap;padding:0 6px}
-  .tickrow i{color:#c9b3ff;font-style:normal;font-size:.95rem;padding:0 14px}
-  /* タップできることが伝わるヒント */
-  .tickhint{position:absolute;right:10px;top:50%;transform:translateY(-50%);
-    font-size:.62rem;font-weight:900;color:#c0397a;background:#fff;
-    padding:4px 9px;border-radius:99px;box-shadow:0 2px 6px var(--shadow);
-    border:1.5px solid #ffdaee;pointer-events:none;white-space:nowrap}
+  /* 1フレーズ＝1リンク。区切りの縦線とホバーで押せることが伝わる */
+  .tickrow a{font-family:'Hachi Maru Pop','Zen Maru Gothic',sans-serif;
+    font-size:1.1rem;color:#e0559d;white-space:nowrap;text-decoration:none;
+    padding:5px 22px;border-right:1.5px solid #ffd0e8;border-radius:10px;
+    -webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
+  .tickrow a:hover,.tickrow a:active{background:#fff;color:#c0397a}
   @media(min-width:860px){
-    .ticker{padding:15px 0}
-    .tickrow span{font-size:1.7rem;padding:0 10px}
-    .tickrow i{font-size:1.3rem;padding:0 22px}
-    .tickhint{font-size:.76rem;padding:6px 14px;right:18px}
+    .ticker{padding:13px 0}
+    .tickrow a{font-size:1.65rem;padding:7px 34px}
   }
 
   /* --- お知らせ：ポンッと弾んで出現 --- */
@@ -228,7 +231,7 @@
   /* PCでは横スライドをやめて全部並べる（一覧性を優先） */
   @media(min-width:860px){
     .shelf{display:grid;gap:18px;overflow:visible;padding:2px}
-    .shelf#deck{grid-template-columns:repeat(3,1fr)}
+    .shelf#deck{grid-template-columns:repeat(4,1fr);gap:14px}
     .shelf#gameshelf{grid-template-columns:repeat(2,1fr)}
     .shelf .lcard,.shelf .gcard{flex:none;max-width:none;width:auto}
     .shelfnav,.shelfhint{display:none}
@@ -308,7 +311,7 @@
   /* 他のカードと同じ「白地＋パステルの差し色」に統一 */
   .banner{display:flex;align-items:center;gap:11px;text-decoration:none;border-radius:19px;padding:16px 16px;
     transition:transform .12s,box-shadow .12s;border:2.5px solid #fff;
-    background:#fff;color:#0f7a63;box-shadow:0 8px 20px var(--shadow)}
+    background:#fff;color:var(--ink);box-shadow:0 8px 20px var(--shadow)}
   .banner:active{transform:translateY(4px);box-shadow:0 3px 10px var(--shadow)}
   .banner .bic{font-size:1.6rem;flex:0 0 auto}
   .banner .tx{flex:1;min-width:0}
@@ -319,7 +322,7 @@
   /* ボタンに見えないよう、カードにせず素のテキストにする */
   .worknote{margin-top:14px;font-size:.85rem;font-weight:700;color:#8d7ba3;line-height:1.8;text-align:center}
 
-  footer{text-align:center;margin-top:34px;color:#a294b3;font-size:.8rem;letter-spacing:.05em}
+  footer{text-align:center;margin-top:22px;color:#a294b3;font-size:.8rem;letter-spacing:.05em}
 
   /* --- PC：全体的に一回り大きく、ゆったり --- */
   @media(min-width:860px){
@@ -331,8 +334,8 @@
     .statuscard h2{font-size:1.3rem;line-height:1.6}
     .statuscard p{font-size:1.02rem}
     .upd{font-size:1rem;padding:9px 20px;top:-18px}
-    .lcard{padding:18px 20px;border-radius:24px}
-    .lbody{height:200px}
+    .lcard{padding:15px 16px;border-radius:22px}
+    .lbody{height:150px}
     .lcard .lyric{font-size:1.08rem;line-height:1.9}
     .lcard .num{font-size:1.3rem}
     .lcard .stat{font-size:.76rem;padding:5px 13px}
@@ -397,12 +400,12 @@
 
 <div class="drawer" id="drawer">
   <nav class="panel">
-    <a href="#music"><span class="e">🎶</span>音楽</a>
-    <a href="#game"><span class="e">🎮</span>ゲーム</a>
-    <a href="#about"><span class="e">🌷</span>わたしのこと</a>
-    <a href="#sns"><span class="e">💬</span>SNS</a>
-    <a href="#news"><span class="e">📢</span>おしらせ</a>
-    <a href="#work"><span class="e">💌</span>お仕事</a>
+    <a href="#music"><span class="e">🎶</span><span class="tx">音楽<span class="en">MUSIC</span></span></a>
+    <a href="#game"><span class="e">🎮</span><span class="tx">ゲーム<span class="en">GAME</span></span></a>
+    <a href="#about"><span class="e">🌷</span><span class="tx">わたしのこと<span class="en">ABOUT</span></span></a>
+    <a href="#sns"><span class="e">💬</span><span class="tx">SNS<span class="en">SNS</span></span></a>
+    <a href="#news"><span class="e">📢</span><span class="tx">おしらせ<span class="en">NEWS</span></span></a>
+    <a href="#work"><span class="e">💌</span><span class="tx">お仕事<span class="en">WORK</span></span></a>
   </nav>
 </div>
 
@@ -424,7 +427,6 @@
     <span class="shelfcount" id="deckcount">1 / 11</span>
     <button class="shelfarrow" data-shelf="deck" data-dir="1" aria-label="次の曲">▶</button>
   </div>
-  <div class="shelfhint">👉 スワイプ／矢印でめくってね</div>
 
   <!-- 5. GAME -->
   <h2 class="seclabel reveal" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
@@ -510,7 +512,6 @@
     <span class="tx"><b>お仕事のご依頼</b><small>ご相談はこちらから</small></span>
     <span class="chip">お問い合わせ</span>
   </a>
-  <p class="worknote reveal">お仕事のご依頼・ご相談はこちらから📩<br>軽いご相談は、SNSのDMでも大歓迎です🫶</p>
 
   <footer>© らむね あい</footer>
 </div>
@@ -650,27 +651,25 @@
     {items:rowA, dir:'L', dur:62},
     {items:rowB, dir:'R', dur:54},
   ];
-  const marqueeRows=rowDefs.map((def,i)=>{
+  const marqueeRows=rowDefs.map(def=>{
     const row=document.createElement('div');
     row.className='mrow';
     // シームレスに繋ぐため中身を2回並べる
     row.innerHTML=def.items.map(tileHTML).join('')+def.items.map(tileHTML).join('');
     marquee.appendChild(row);
-
-    // 1段目の直後に、歌詞が流れる帯を挟む（タップでMUSICへ）
-    if(i===0){
-      const tick=document.createElement('a');
-      tick.className='ticker';
-      tick.href='#music';
-      const one=tickerWords.map(w=>`<span>${w}</span><i>♡</i>`).join('');
-      tick.innerHTML=`<div class="tickrow">${one}${one}</div><span class="tickhint">♪ 曲を見る</span>`;
-      marquee.appendChild(tick);
-    }
-
     const st={el:row, dir:def.dir, dur:def.dur, half:0, base:0};
     play(st,0);
     return st;
   });
+
+  // 写真2段の下に、歌詞が流れる帯を置く（フレーズごとにタップでMUSICへ）
+  (function(){
+    const tick=document.createElement('div');
+    tick.className='ticker';
+    const one=tickerWords.map(w=>`<a href="#music">${w}</a>`).join('');
+    tick.innerHTML=`<div class="tickrow">${one}${one}</div>`;
+    marquee.appendChild(tick);
+  })();
 
   /* 自動の流れはCSSアニメーション（コンポジタで動くので滑らか＆省電力）。
      ドラッグ中だけJSで手動位置に切り替え、離したら今の位置から自然に再開する */
