@@ -101,8 +101,10 @@
   .panel .nav a{display:flex;align-items:baseline;gap:11px;text-decoration:none;color:var(--ink);
     padding:11px 13px;margin-bottom:7px;background:#fff;box-shadow:0 3px 9px var(--shadow);
     border-left:3.5px solid var(--line,#e6d9ff);border-radius:0}
+  /* min-width は英字の置き場の幅。いちばん長い ABOUT ME がここに収まらないと、
+     その行だけ日本語が右に押し出されて段がずれる */
   .panel .nav a .en{font-family:'Mochiy Pop One',sans-serif;font-size:.92rem;letter-spacing:.06em;
-    color:var(--c,#c78ab0);flex:0 0 auto;min-width:6.2em}
+    color:var(--c,#c78ab0);flex:0 0 auto;min-width:7.7em}
   .panel .nav a .ja{font-size:.86rem;font-weight:700;color:#6a5a7a}
   /* 上のセクション色と同じ値。ここを直すときは .seclabel の色も合わせてください */
   .n-music{--line:#f6a8c8;--c:#b8356f}
@@ -120,10 +122,12 @@
   .panelfollow .fttl{font-family:'Mochiy Pop One',sans-serif;font-size:.66rem;letter-spacing:.16em;
     color:#b4b2a9;text-align:center;margin:0 0 9px}
   .panelfollow .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-  .panelfollow .fgrid a{display:flex;align-items:center;gap:7px;text-decoration:none;
-    background:#fff;border-radius:10px;padding:9px 8px;box-shadow:0 3px 9px var(--shadow);
-    font-size:.76rem;font-weight:700;color:#6a5a7a}
-  .panelfollow .fgrid svg{width:17px;height:17px;flex:0 0 auto}
+  /* 指で押す的なので、高さは 48px 前後を確保する（これより小さいと押しはずしが増える） */
+  .panelfollow .fgrid a{display:flex;align-items:center;gap:8px;text-decoration:none;
+    background:#fff;border-radius:12px;padding:14px 10px;box-shadow:0 3px 9px var(--shadow);
+    font-size:.8rem;font-weight:700;color:#6a5a7a}
+  .panelfollow .fgrid a:active{transform:scale(.96)}
+  .panelfollow .fgrid svg{width:19px;height:19px;flex:0 0 auto}
 
   /* 固定バーのぶんだけ本文を下げる／アンカー移動でバーに隠れないようにする */
   /* セーフエリア分は足さない。こうするとコンテンツがステータスバーの裏まで届き、
@@ -238,10 +242,10 @@
 
   /* --- お知らせ：ポンッと弾んで出現 --- */
   .statuscard{margin-top:26px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
-    box-shadow:var(--card-shadow);position:relative;opacity:0;transform:scale(.94)}
-  /* 弾みは控えめに。大きく縮めると、出現の瞬間にカードの高さが変わって周りが動いて見える */
-  .statuscard.in{animation:popcard .5s cubic-bezier(.34,1.4,.64,1) forwards}
-  @keyframes popcard{0%{opacity:0;transform:scale(.94)}60%{opacity:1;transform:scale(1.018)}100%{opacity:1;transform:scale(1)}}
+    box-shadow:var(--card-shadow);position:relative;opacity:0;transform:scale(.86)}
+  /* 拡大縮小だけで弾ませる。上下移動を混ぜるとカードの位置が飛んでガクッとずれる */
+  .statuscard.in{animation:popcard .6s cubic-bezier(.34,1.56,.64,1) forwards}
+  @keyframes popcard{0%{opacity:0;transform:scale(.86)}55%{opacity:1;transform:scale(1.045)}100%{opacity:1;transform:scale(1)}}
   .upd{position:absolute;top:-15px;right:12px;font-size:.88rem;font-weight:900;letter-spacing:.01em;
     color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:7px 16px;border-radius:99px;
     box-shadow:0 4px 10px rgba(157,123,255,.35);transform:rotate(3deg) scale(0);opacity:0}
@@ -274,7 +278,8 @@
   #shop .en{color:#965c03}  #shop{--line:#f5cf7a}   /* 黄色寄りオレンジ */
   #about .en{color:#3a7526} #about{--line:#a9d98c}  /* やさしいグリーン */
   #sns .en{color:#5f5e5a}   #sns{--line:#c9c7bf}    /* グレー */
-  #news .en{color:#0f6d9a}  #news{--line:#8fd6f0}   /* 水色 */
+  /* NEWSの見出しだけ、メニューの文字（#0f6d9a）より明るい水色にしている */
+  #news .en{color:#157aa3}  #news{--line:#8fd6f0}   /* 水色 */
   #work .en{color:#1f2d55}  #work{--line:#98a4c4}   /* ネイビー */
 
   /* --- 画面に入ったらふわっと現れる（控えめ） --- */
@@ -283,7 +288,7 @@
   /* NEWSカードだけは「ポンッ」と弾む専用アニメを持っている。
      .reveal の上下移動（translateY）と重なると、出た瞬間に位置が飛んでガクッとずれるため、
      ここで上下移動を打ち消して拡大縮小だけにする */
-  .statuscard.reveal{transform:scale(.94);transition:none}
+  .statuscard.reveal{transform:scale(.86);transition:none}
   .statuscard.reveal.in{transform:scale(1)}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
@@ -376,9 +381,8 @@
     padding:24px 22px 22px;text-align:center;box-shadow:var(--card-shadow)}
   /* カードの中に堂々と置く「準備中」。中身を読んだ最後に目に入るよう、枠の一番下に置いている */
   .shopbadge{display:inline-block;margin-top:22px;font-family:'Mochiy Pop One',sans-serif;
-    font-size:1.35rem;color:#fff;white-space:nowrap;letter-spacing:.04em;
-    background:linear-gradient(100deg,#f9a03f,#f2762e);padding:12px 30px;border-radius:99px;
-    box-shadow:0 6px 16px rgba(230,140,60,.32)}
+    font-size:1.35rem;color:#a35c12;white-space:nowrap;letter-spacing:.04em;
+    background:#ffeed7;padding:12px 30px;border-radius:99px;box-shadow:none}
   .shoptags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:2px}
   .shoptag{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:99px;background:#ffe8f4;color:#e0559d}
   .shoptag.b{background:#f1ecff;color:#7c5fd6}
@@ -392,8 +396,8 @@
   @media(min-width:860px){
     .shopcard{padding:34px 30px 30px;border-radius:26px}
     .shopbadge{font-size:1.7rem;padding:15px 40px}
-    .shoptag{font-size:.86rem;padding:6px 15px}
-    .shoplead{font-size:1.04rem;margin-top:18px}
+    .shoptag{font-size:.96rem;padding:7px 17px}
+    .shoplead{font-size:1.18rem;margin-top:20px}
     .shopbtn{font-size:1.14rem;padding:16px 38px;margin-top:20px}
   }
 
@@ -410,8 +414,8 @@
     .snsgrid{gap:16px}
     .snscard{padding:20px 10px;border-radius:22px;gap:10px}
     .snscard svg{width:32px;height:32px}
-    .snscard span{font-size:.86rem}
-    .snsnote{font-size:1rem;margin-top:16px}
+    .snscard span{font-size:.98rem}
+    .snsnote{font-size:1.14rem;margin-top:18px}
   }
 
   /* --- WORK --- */
@@ -431,42 +435,46 @@
 
   footer{text-align:center;margin-top:22px;color:#a294b3;font-size:.8rem;letter-spacing:.05em}
 
-  /* --- PC：全体的に一回り大きく、ゆったり --- */
+  /* --- PC：全体的に一回り大きく、ゆったり ---
+     PCは画面が遠いぶん、スマホと同じ文字サイズだと小さく見える。
+     ここの数字を上げ下げすると、PCでの文字の大きさがまとめて変わります */
   @media(min-width:860px){
-    .bio{font-size:1.22rem;line-height:1.75}
-    .seclabel{margin:26px 2px 14px}
-    .seclabel .en{font-size:1.75rem}
-    .seclabel .ja{font-size:1rem}
-    .statuscard{margin-top:38px;padding:22px 26px 20px;border-radius:24px}
-    .statuscard h2{font-size:1.3rem;line-height:1.6}
-    .statuscard p{font-size:1.02rem}
-    .upd{font-size:1rem;padding:9px 20px;top:-18px}
+    .bio{font-size:1.5rem;line-height:1.8}
+    .seclabel{margin:30px 2px 16px}
+    .seclabel .en{font-size:2.05rem}
+    .seclabel .ja{font-size:1.18rem}
+    .statuscard{margin-top:38px;padding:26px 30px 24px;border-radius:24px}
+    .statuscard h2{font-size:1.5rem;line-height:1.6}
+    .statuscard p{font-size:1.15rem}
+    .upd{font-size:1.08rem;padding:10px 22px;top:-19px}
     .lcard{padding:26px 28px;border-radius:26px}
     /* ゲームのカードと高さを揃える（中の歌詞エリアが伸び縮みして埋める） */
-    .lcard,.gcard{min-height:490px}
+    .lcard,.gcard{min-height:520px}
     .lbody{height:auto;flex:1;min-height:0}
-    .lcard .lyric{font-size:1.08rem;line-height:1.9}
-    .lcard .num{font-size:1.3rem}
-    .lcard .stat{font-size:.76rem;padding:5px 13px}
-    .lfoot{font-size:.84rem}
+    .lcard .lyric{font-size:1.2rem;line-height:1.95}
+    .lcard .num{font-size:1.45rem}
+    .lcard .stat{font-size:.88rem;padding:6px 15px}
+    .lfoot{font-size:.96rem}
     .gcard{border-radius:24px}
-    .gttl{font-size:1.3rem}
-    .gdesc{font-size:.98rem;line-height:1.75}
-    .gtag{font-size:.78rem;padding:4px 11px}
-    .gplay{font-size:1.08rem;padding:13px 32px}
-    .gph .big{font-size:2.1rem}
-    .gph small{font-size:.82rem}
+    .gttl{font-size:1.5rem}
+    .gdesc{font-size:1.12rem;line-height:1.8}
+    .gtag{font-size:.9rem;padding:5px 13px}
+    .gplay{font-size:1.22rem;padding:15px 36px}
+    .gph .big{font-size:2.3rem}
+    .gph small{font-size:.95rem}
+    .morebtn{font-size:1.15rem;padding:14px 36px}
     .about{padding:34px 38px 32px;border-radius:26px}
-    .about p{font-size:1.2rem;line-height:2.05;max-width:56ch;margin:0 auto}
-    .about .igline{font-size:.98rem;padding:11px 24px;margin-top:22px}
-    .banner{padding:20px 22px;border-radius:22px}
-    .banner .tx b{font-size:1.3rem}
-    .banner .tx small{font-size:.94rem}
-    .banner .bic{font-size:2rem}
-    .banner .chip{font-size:.8rem;padding:7px 14px}
-    .worknote{font-size:.98rem}
-    .shelfcount{font-size:.92rem}
-    .shelfhint{font-size:.88rem}
+    .about p{font-size:1.34rem;line-height:2.05;max-width:56ch;margin:0 auto}
+    .about .igline{font-size:1.1rem;padding:12px 26px;margin-top:22px}
+    .banner{padding:22px 24px;border-radius:22px}
+    .banner .tx b{font-size:1.45rem}
+    .banner .tx small{font-size:1.06rem}
+    .banner .bic{font-size:2.2rem}
+    .banner .chip{font-size:.92rem;padding:8px 16px}
+    .worknote{font-size:1.12rem}
+    .shelfcount{font-size:1.05rem}
+    .shelfhint{font-size:1rem}
+    footer{font-size:.95rem;margin-top:30px}
   }
 </style>
 </head>
@@ -566,7 +574,7 @@
   </header>
 
   <!-- 3. MUSIC -->
-  <h2 class="seclabel reveal" id="music"><span class="en">♪ MUSIC</span><span class="ja">音楽</span></h2>
+  <h2 class="seclabel reveal" id="music"><span class="en">MUSIC</span><span class="ja">音楽</span></h2>
   <div class="shelf reveal" id="deck"></div>
   <div class="shelfnav">
     <button class="shelfarrow" data-shelf="deck" data-dir="-1" aria-label="前の曲">◀</button>
@@ -576,7 +584,7 @@
   <button class="morebtn" id="moresongs"></button>
 
   <!-- 5. GAME -->
-  <h2 class="seclabel reveal" id="game"><span class="en">🎮 GAME</span><span class="ja">ゲーム</span></h2>
+  <h2 class="seclabel reveal" id="game"><span class="en">GAME</span><span class="ja">ゲーム</span></h2>
   <div class="shelf reveal" id="gameshelf">
 
     <article class="gcard">
@@ -611,7 +619,7 @@
   </div>
 
   <!-- SHOP -->
-  <h2 class="seclabel reveal" id="shop"><span class="en">🛍 SHOP</span><span class="ja">通販</span></h2>
+  <h2 class="seclabel reveal" id="shop"><span class="en">SHOP</span><span class="ja">通販</span></h2>
   <!-- 販売を始めるときは shopbadge の行を消して、下の shopbtn のコメントを外してください
        （ショップURL：https://fril.jp/shop/ramunei_aiai） -->
   <div class="shopcard reveal">
@@ -627,13 +635,13 @@
   </div>
 
   <!-- ABOUT -->
-  <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT ME</span><span class="ja">わたしのこと</span></h2>
+  <h2 class="seclabel reveal" id="about"><span class="en">ABOUT ME</span><span class="ja">わたしのこと</span></h2>
   <div class="about reveal frost">
     <p>創作しないと、<span class="accent">頭パンクしちゃう</span>タイプです。音楽もゲームもアートも、ジャンルはバラバラだけど、ぜんぶ「カワイイ＆夢」でつながってる。ここは、わたしの作品がぜんぶ集まる創作のお花畑です🌷</p>
   </div>
 
   <!-- SNS -->
-  <h2 class="seclabel reveal" id="sns"><span class="en">💬 SNS</span><span class="ja">フォローしてね</span></h2>
+  <h2 class="seclabel reveal" id="sns"><span class="en">SNS</span><span class="ja">フォローしてね</span></h2>
   <div class="snsgrid reveal">
     <a class="snscard b-x" href="https://x.com/ramune_aiai" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
@@ -661,7 +669,7 @@
   <p class="snsnote reveal">日々の制作や作品の写真は、ここで見られます📷</p>
 
   <!-- NEWS：お知らせ（更新したら日付と本文を書き換えてください） -->
-  <h2 class="seclabel reveal" id="news"><span class="en">📢 NEWS</span><span class="ja">おしらせ</span></h2>
+  <h2 class="seclabel reveal" id="news"><span class="en">NEWS</span><span class="ja">おしらせ</span></h2>
   <div class="statuscard reveal" id="statuscard">
     <span class="upd">2026.8.29 更新</span>
     <h2>楽曲12曲、REC中🎶<br>MVは2026年10月から順次公開！</h2>
@@ -669,7 +677,7 @@
   </div>
 
   <!-- 7. WORK -->
-  <h2 class="seclabel reveal" id="work"><span class="en">💌 WORK</span><span class="ja">お仕事</span></h2>
+  <h2 class="seclabel reveal" id="work"><span class="en">WORK</span><span class="ja">お仕事</span></h2>
   <a class="banner reveal" id="workbtn" href="#">
     <span class="bic">💌</span>
     <span class="tx"><b>お仕事のご依頼</b><small>ご相談はこちらから</small></span>
@@ -1030,22 +1038,60 @@
   /* 画面に入ったらスッと現れる。下側へ出ていったらまた隠すので、
      上にスクロールし直したときや2周目も毎回アニメーションする。
      （上へ流れ去ったものは出したままにして、戻り読みの邪魔をしない） */
-  if('IntersectionObserver' in window){
-    const io=new IntersectionObserver((entries)=>{
-      entries.forEach(en=>{
-        if(en.isIntersecting){
-          en.target.classList.add('in');
-        }else if(en.boundingClientRect.top >= window.innerHeight){
-          /* 「画面の下に完全に出きった」ときだけ隠す。
-             出現の境目で判定すると、出た瞬間に一度消えてチカつくため */
-          en.target.classList.remove('in');
+  const revealEls=[...document.querySelectorAll('.reveal')];
+
+  /* ★ここは「出す」も「戻す」も、必ずこの1つの関数だけで決めています★
+
+     以前は「出す」を IntersectionObserver、「戻す」をスクロール監視、と
+     2つの仕組みで分担していました。これが原因で、2回目以降に
+     動いたり動かなかったりする不安定さが出ていました。
+
+     IntersectionObserver は「今の画面の状態」ではなく
+     「境目をまたいだ瞬間の記録」を、少し遅れてまとめて渡してきます。
+     指ではじいて速くスクロールすると、
+       ・記録が届いたときには要素はもう画面外に戻っている
+       → 画面外なのに「出た」印が付いたままになり、
+         次に近づいても「もう出てる」と判断されて動かない
+     ということが起こります。どのくらい速くはじいたかで変わるので、
+     規則性がないように見えていました。
+
+     いまは、スクロールのたびに実際の位置をその場で測って決めています。
+     記録ではなく現在地を見るので、ずれようがありません。 */
+
+  const IN_LINE  = 0.94;   /* 画面の高さの94%より上に来たら「出す」 */
+  /* 「戻す」のは画面から完全に出きったとき（100%）。
+     出す線（94%）と戻す線（100%）をわざとずらしてあるので、
+     境目で出たり消えたりを繰り返してチカチカすることがない */
+
+  function updateReveals(){
+    const h=window.innerHeight;
+    revealEls.forEach(el=>{
+      const top=el.getBoundingClientRect().top;
+      const shown=el.classList.contains('in');
+      if(shown){
+        if(top >= h){
+          el.classList.remove('in');
+          void el.offsetWidth;   /* ここで一度描画を確定させる。
+                                    これを挟まないと、消してすぐ付け直したときに
+                                    ブラウザが「変化なし」とみなしてアニメが再生されない */
         }
-      });
-    },{threshold:[0,0.12], rootMargin:'0px 0px -6% 0px'});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-  }else{
-    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+      }else if(top < h*IN_LINE){
+        el.classList.add('in');
+      }
+    });
   }
+
+  /* スクロール中は50ミリ秒に1回だけ測る（毎回測ると重いため）。
+     指を離したあとの最後の1回も必ず走るので、止めた位置で取りこぼさない */
+  let revealTimer=null;
+  function scheduleReveals(){
+    if(revealTimer!==null) return;
+    revealTimer=setTimeout(()=>{ revealTimer=null; updateReveals(); },50);
+  }
+  window.addEventListener('scroll',scheduleReveals,{passive:true});
+  window.addEventListener('resize',scheduleReveals);
+  window.addEventListener('load',updateReveals);
+  updateReveals();
 
   /* ★外部リンクはすべて新しいタブで開く★
      ゲーム・ショップ・YouTube・Instagram など、このサイトの外へ出るリンクは
