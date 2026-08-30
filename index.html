@@ -58,9 +58,9 @@
   .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;
     padding:8px 12px;padding-top:calc(8px + var(--safe-top));
     /* 透明度：下げるほど写真が透けるが、下げすぎるとロゴ・アイコンが読みにくくなる。
-       .75＋強めのぼかしが「透けるけど読める」の折り合い */
-    background:rgba(255,255,255,.75);
-    backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
+       ぼかしを強くしすぎると、裏で写真が動いているときスマホがチカつくので控えめに */
+    background:rgba(255,255,255,.72);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
     border-bottom:1.5px solid #ffd9ee}
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
@@ -95,7 +95,9 @@
   .panel a .en{font-family:'Mochiy Pop One',sans-serif;font-size:.66rem;color:#c78ab0;letter-spacing:.08em;margin-top:2px}
 
   /* 固定バーのぶんだけ本文を下げる／アンカー移動でバーに隠れないようにする */
-  body{padding-top:calc(56px + var(--safe-top))}
+  /* セーフエリア分は足さない。こうするとコンテンツがステータスバーの裏まで届き、
+     スクロール中に写真が時刻表示の向こうを流れていくのが見える */
+  body{padding-top:56px}
   [id]{scroll-margin-top:calc(66px + var(--safe-top))}
 
   @media(min-width:860px){
@@ -108,7 +110,7 @@
     .topsns{gap:10px;flex:0 0 auto;margin-left:0}
     .topsns a{width:40px;height:40px;border-radius:13px}
     .topsns svg{width:21px;height:21px}
-    body{padding-top:calc(66px + var(--safe-top))}
+    body{padding-top:66px}
     [id]{scroll-margin-top:calc(86px + var(--safe-top))}
   }
 
@@ -263,12 +265,11 @@
     box-shadow:var(--card-shadow);transition:transform .15s,background .15s}
   .morebtn:hover{transform:translateY(-2px);background:#fff6fb}
 
-  /* PCは1段3件のグリッド。MUSICは4曲目以降を「ぜんぶ見る」にしまう */
+  /* PCは1段3件。件数が3に満たないときは中央に寄るよう、gridではなくflexで組む */
   @media(min-width:860px){
-    .shelf{display:grid;gap:20px;overflow:visible;padding:2px;scroll-snap-type:none}
-    /* MUSIC・GAMEとも1段3件。それを超える分は「ぜんぶ見る」にしまう */
-    .shelf#deck,.shelf#gameshelf{grid-template-columns:repeat(3,1fr)}
-    .shelf .lcard,.shelf .gcard{flex:none;max-width:none;width:auto}
+    .shelf{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;
+      overflow:visible;padding:2px;scroll-snap-type:none}
+    .shelf .lcard,.shelf .gcard{flex:0 0 calc((100% - 40px) / 3);max-width:none;width:auto}
     .shelfnav{display:none}
     .shelf#deck:not(.expanded) .lcard:nth-child(n+4){display:none}
     .morebtn{display:block}
@@ -330,11 +331,12 @@
   /* --- SHOP セクション --- */
   .shopcard{position:relative;background:#fff;border:2.5px solid #fff;border-radius:22px;
     padding:24px 22px 22px;text-align:center;box-shadow:var(--card-shadow)}
-  .shopbadge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);
-    font-size:.76rem;font-weight:900;color:#fff;white-space:nowrap;
-    background:linear-gradient(100deg,#f9a03f,#f2762e);padding:6px 16px;border-radius:99px;
-    box-shadow:0 4px 10px rgba(230,140,60,.3)}
-  .shoptags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:6px}
+  /* カードの中に堂々と置く「準備中」 */
+  .shopbadge{display:inline-block;font-family:'Mochiy Pop One',sans-serif;
+    font-size:1.35rem;color:#fff;white-space:nowrap;letter-spacing:.04em;
+    background:linear-gradient(100deg,#f9a03f,#f2762e);padding:12px 30px;border-radius:99px;
+    box-shadow:0 6px 16px rgba(230,140,60,.32)}
+  .shoptags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:18px}
   .shoptag{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:99px;background:#ffe8f4;color:#e0559d}
   .shoptag.b{background:#f1ecff;color:#7c5fd6}
   .shoptag.c{background:#e2fbf3;color:#0d8168}
@@ -346,7 +348,7 @@
   .shopbtn:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
   @media(min-width:860px){
     .shopcard{padding:34px 30px 30px;border-radius:26px}
-    .shopbadge{font-size:.88rem;padding:7px 20px;top:-16px}
+    .shopbadge{font-size:1.7rem;padding:15px 40px}
     .shoptag{font-size:.86rem;padding:6px 15px}
     .shoplead{font-size:1.04rem;margin-top:18px}
     .shopbtn{font-size:1.14rem;padding:16px 38px;margin-top:20px}
@@ -532,15 +534,17 @@
 
   <!-- SHOP -->
   <h2 class="seclabel reveal" id="shop"><span class="en">🛍 SHOP</span><span class="ja">通販</span></h2>
+  <!-- 販売を始めるときは shopbadge の行を消して、下の shopbtn のコメントを外してください
+       （ショップURL：https://fril.jp/shop/ramunei_aiai） -->
   <div class="shopcard reveal">
-    <span class="shopbadge">準備中</span>
+    <p class="shopbadge">🚧 準備中</p>
     <div class="shoptags">
       <span class="shoptag">レジン</span>
       <span class="shoptag b">フルイドアート</span>
       <span class="shoptag c">オリジナルグッズ</span>
     </div>
-    <p class="shoplead">手づくりの一点ものを、ラクマで販売する予定です🫧<br>準備ができたらNEWSでお知らせします！</p>
-    <a class="shopbtn" href="https://fril.jp/shop/ramunei_aiai" target="_blank" rel="noopener">🛍 ラクマのショップを見る</a>
+    <p class="shoplead">手づくりの一点ものを販売する予定です🫧</p>
+    <!-- <a class="shopbtn" href="https://fril.jp/shop/ramunei_aiai" target="_blank" rel="noopener">🛍 ショップを見る</a> -->
   </div>
 
   <!-- ABOUT -->
@@ -950,11 +954,13 @@
       entries.forEach(en=>{
         if(en.isIntersecting){
           en.target.classList.add('in');
-        }else if(en.boundingClientRect.top > 0){
+        }else if(en.boundingClientRect.top >= window.innerHeight){
+          /* 「画面の下に完全に出きった」ときだけ隠す。
+             出現の境目で判定すると、出た瞬間に一度消えてチカつくため */
           en.target.classList.remove('in');
         }
       });
-    },{threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+    },{threshold:[0,0.12], rootMargin:'0px 0px -6% 0px'});
     document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   }else{
     document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
