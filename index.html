@@ -11,6 +11,15 @@
      バーの向こうにページが透けて見える表示になりません。
      未指定なら iOS が背景色（薄ピンク）を拾いつつ、透過も効きます。 -->
 <title>らむね あい 🌈</title>
+<!-- ★アイコン（ブックマークやタブに出る絵）★
+     これを書かないと、ブラウザは ramune-ai.github.io/favicon.ico を探しに行き、
+     同じ場所に置いてある別作品（間取りすと）のアイコンを拾ってしまう。
+     ここで指定しておけば必ずこちらが使われる。
+     絵は「らむね＝水色」「あい＝ピンク」の泡ふたつ。画像ファイルではなく
+     図形の指示をそのまま書いているので、別ファイルの管理がいらない -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23ffeaf4'/%3E%3Ccircle%20cx='26'%20cy='26'%20r='15'%20fill='%232bb8d6'/%3E%3Ccircle%20cx='42'%20cy='42'%20r='13'%20fill='%23ff5fa8'/%3E%3Ccircle%20cx='21'%20cy='21'%20r='4.5'%20fill='%23ffffff'%20opacity='.85'/%3E%3C/svg%3E">
+<!-- ホーム画面に追加したときのアイコン（iOSはSVGを受け付けないのでPNG） -->
+<link rel="apple-touch-icon" href="assets/icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
@@ -196,14 +205,14 @@
       #c9c7bf 168px 196px, transparent 196px 210px, /* SNS グレー */
       #8fd6f0 210px 238px, transparent 238px 252px, /* NEWS 水色 */
       #98a4c4 252px 280px, transparent 280px 294px) /* WORK ネイビー */}
-  .intro::before{top:8px}
-  .intro::after{bottom:8px}
+  .intro::before{top:5px}
+  .intro::after{bottom:5px}
 
   @media(min-width:860px){
     .intro{padding:34px 28px 32px;margin-top:20px}
     .intro::before,.intro::after{height:6px}
-    .intro::before{top:11px}
-    .intro::after{bottom:11px}
+    .intro::before{top:7px}
+    .intro::after{bottom:7px}
   }
 
   /* --- ロゴ：ラムネソーダ×ピンクの2トーン・ステッカー風（動かない） --- */
@@ -1147,9 +1156,15 @@
      いまは、スクロールのたびに実際の位置をその場で測って決めています。
      記録ではなく現在地を見るので、ずれようがありません。 */
 
-  const IN_LINE  = 0.94;   /* 画面の高さの94%より上に来たら「出す」 */
+  /* ★出すタイミング★ 画面の高さの78%より上に来たら出す。
+     数字を大きくすると早く（画面の下端に顔を出した瞬間に）、
+     小さくすると遅く（しっかり画面に入ってから）出るようになる。
+     94%だと「下からほんの少し覗いた時点」で出てしまい、
+     勢いよくスクロールしたとき、まだちゃんと見えていない下のセクションの
+     見出しまで先に出てしまっていた。 */
+  const IN_LINE  = 0.78;
   /* 「戻す」のは画面から完全に出きったとき（100%）。
-     出す線（94%）と戻す線（100%）をわざとずらしてあるので、
+     出す線（78%）と戻す線（100%）をわざとずらしてあるので、
      境目で出たり消えたりを繰り返してチカチカすることがない */
 
   function updateReveals(){
