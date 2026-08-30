@@ -61,10 +61,17 @@
   .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;
     padding:8px 12px;padding-top:calc(8px + var(--safe-top));
     /* 透明度：下げるほど写真が透けるが、下げすぎるとロゴ・アイコンが読みにくくなる。
-       ぼかしを強くしすぎると、裏で写真が動いているときスマホがチカつくので控えめに */
-    background:rgba(255,255,255,.72);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+       ★すりガラス（backdrop-filter）はPCだけ★
+       このバーの真下ではヒーローの写真と幾何学模様がずっと動いている。
+       すりガラスは「後ろにあるものを毎コマぼかし直す」処理なので、
+       後ろが動き続けているとiPhoneでは追いつかずチカチカする。
+       透け感は背景の透明度だけで出して、ぼかしはPCに限定している */
+    background:rgba(255,255,255,.78);
     border-bottom:1.5px solid #ffd9ee}
+  @media(min-width:860px){
+    .topbar{background:rgba(255,255,255,.72);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+  }
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
   .topbar .tnlogo .lg-1{color:var(--soda)} .topbar .tnlogo .lg-2{color:var(--candy)}
@@ -170,13 +177,15 @@
        横スクロールが出てしまうので使っていない） */
   .intro{text-align:center;position:relative;z-index:1;margin-top:14px;
     padding:22px 18px 20px;
-    /* 完全な白にせず少しだけ透かして、後ろを漂う幾何学模様がうっすら通って見えるようにする */
-    background:rgba(255,255,255,.93)}
+    /* 完全な白にせず透かして、後ろを漂う幾何学模様が帯の裏を通って見えるようにする */
+    background:rgba(255,255,255,.84)}
 
   /* 上下の縫い目。「色○px → すき間○px」を横に繰り返して点線を描いている。
      セクションの7色と同じ色なので、飾りではなく色の目次になっている。
+     本物のリボンと同じで、端ギリギリではなく少し内側に入れてある。
      ★調整するとき★
        height … 線の太さ
+       ::before の top / ::after の bottom … 端からどれだけ内側に入れるか
        28px / 14px … 一針の長さ と すき間。大きくすると粗く、小さくすると細かくなる */
   .intro::before,.intro::after{content:"";position:absolute;left:0;right:0;height:5px;
     background:repeating-linear-gradient(90deg,
@@ -187,12 +196,14 @@
       #c9c7bf 168px 196px, transparent 196px 210px, /* SNS グレー */
       #8fd6f0 210px 238px, transparent 238px 252px, /* NEWS 水色 */
       #98a4c4 252px 280px, transparent 280px 294px) /* WORK ネイビー */}
-  .intro::before{top:0}
-  .intro::after{bottom:0}
+  .intro::before{top:8px}
+  .intro::after{bottom:8px}
 
   @media(min-width:860px){
-    .intro{padding:30px 28px 28px;margin-top:20px}
+    .intro{padding:34px 28px 32px;margin-top:20px}
     .intro::before,.intro::after{height:6px}
+    .intro::before{top:11px}
+    .intro::after{bottom:11px}
   }
 
   /* --- ロゴ：ラムネソーダ×ピンクの2トーン・ステッカー風（動かない） --- */
@@ -209,8 +220,10 @@
         100vw を使わないのでページ自体が横スクロールしません --- */
   /* ※iOSでは mask-image がアニメーションと重なると再描画がチラつくので、
      ぼかしフェードはPCだけに適用（スマホは端で潔く切る） */
+  /* position/z-index を持たせて、背景の幾何学模様（.sky）より確実に手前に置く。
+     こうしないと、動く図形が写真の上を横切って重なり合い、描き直しが増える */
   .marquee{--th:158px;margin:4px 0 0;display:flex;flex-direction:column;gap:7px;overflow:hidden;
-    cursor:grab;touch-action:pan-y}
+    position:relative;z-index:1;cursor:grab;touch-action:pan-y}
   .marquee.dragging{cursor:grabbing}
   @media(min-width:860px){
     .marquee{--th:206px;margin-top:6px;gap:9px;
@@ -445,9 +458,9 @@
     transition:opacity .7s ease, transform .7s ease}
   .snsgrid.in .snscard{opacity:1;transform:none}
   .snsgrid.in .snscard:nth-child(1){transition-delay:.05s}
-  .snsgrid.in .snscard:nth-child(2){transition-delay:.25s}
-  .snsgrid.in .snscard:nth-child(3){transition-delay:.45s}
-  .snsgrid.in .snscard:nth-child(4){transition-delay:.65s}
+  .snsgrid.in .snscard:nth-child(2){transition-delay:.17s}
+  .snsgrid.in .snscard:nth-child(3){transition-delay:.29s}
+  .snsgrid.in .snscard:nth-child(4){transition-delay:.41s}
   /* 出たあとは hover の動きを邪魔しないよう、遅延を消す */
   .snsgrid.in .snscard:hover{transition-delay:0s}
   @media(prefers-reduced-motion:reduce){
@@ -616,7 +629,7 @@
      マーキーと同じく .wrap の外に置いてあるので、小細工なしで画面幅ぴったりになる -->
 <header class="intro">
   <h1><span class="lg-1">らむね</span> <span class="lg-2">あい</span></h1>
-  <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🫧</p>
+  <p class="bio">「<b>カワイイ＆夢</b>」をカタチに</p>
 </header>
 
 <div class="wrap">
@@ -1057,7 +1070,9 @@
   const sky=document.getElementById('sky');
   const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
   const colors=['#ff7ec0','#9d7bff','#5ec8ff','#67e6c2','#ffd84d','#ff9a52'];
-  const SHAPE_COUNT=12;
+  /* 図形はひとつずつ別々に動くので、数が多いほどスマホの描画負担が増える。
+     画面の狭いスマホでは見える範囲も狭いので、数を減らしても寂しくならない */
+  const SHAPE_COUNT = window.matchMedia('(min-width:860px)').matches ? 12 : 7;
   if(SHOW_SHAPES){
     for(let n=0;n<SHAPE_COUNT;n++){
       const el=document.createElement('i');
