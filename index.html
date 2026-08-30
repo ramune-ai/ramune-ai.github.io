@@ -84,15 +84,46 @@
   .menubtn.open span:nth-child(3){transform:translateY(-7.8px) rotate(-45deg)}
   .drawer{position:fixed;inset:0;z-index:35;background:rgba(59,42,74,.32);opacity:0;pointer-events:none;transition:.25s}
   .drawer.open{opacity:1;pointer-events:auto}
-  .panel{position:absolute;top:0;right:0;height:100%;width:min(78vw,300px);background:var(--paper);
+  .panel{position:absolute;top:0;right:0;height:100%;width:min(80vw,308px);background:var(--paper);
     box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(100%);transition:.28s cubic-bezier(.4,0,.2,1);
-    padding:74px 20px 30px;overflow-y:auto}
+    padding:calc(12px + var(--safe-top)) 16px calc(24px + var(--safe-bottom));overflow-y:auto;
+    display:flex;flex-direction:column}
   .drawer.open .panel{transform:translateX(0)}
-  .panel a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);font-weight:700;
-    padding:14px 16px;border-radius:14px;background:#fff;box-shadow:0 4px 12px var(--shadow);margin-bottom:12px;font-size:1.05rem}
-  .panel a .e{font-size:1.35rem;flex:0 0 auto}
-  .panel a .tx{display:flex;flex-direction:column;line-height:1.3}
-  .panel a .en{font-family:'Mochiy Pop One',sans-serif;font-size:.66rem;color:#c78ab0;letter-spacing:.08em;margin-top:2px}
+
+  /* メニューを閉じる×。ハンバーガーとほぼ同じ位置に出るので、押した指をほとんど動かさずに閉じられる */
+  .panelclose{align-self:flex-end;width:38px;height:38px;flex:0 0 auto;border:none;cursor:pointer;
+    border-radius:50%;background:#ffe3f1;color:#b83a78;font-size:1.25rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+  .panelclose:active{transform:scale(.92)}
+
+  /* 各項目。色は左端の細い線と英字だけに乗せる。
+     面積を小さく保つことで、7色あってもうるさくならない */
+  .panel .nav a{display:flex;align-items:baseline;gap:11px;text-decoration:none;color:var(--ink);
+    padding:11px 13px;margin-bottom:7px;background:#fff;box-shadow:0 3px 9px var(--shadow);
+    border-left:3.5px solid var(--line,#e6d9ff);border-radius:0}
+  .panel .nav a .en{font-family:'Mochiy Pop One',sans-serif;font-size:.92rem;letter-spacing:.06em;
+    color:var(--c,#c78ab0);flex:0 0 auto;min-width:6.2em}
+  .panel .nav a .ja{font-size:.86rem;font-weight:700;color:#6a5a7a}
+  /* 上のセクション色と同じ値。ここを直すときは .seclabel の色も合わせてください */
+  .n-music{--line:#f6a8c8;--c:#b8356f}
+  .n-game {--line:#bda6ee;--c:#6b46c1}
+  .n-shop {--line:#f5cf7a;--c:#965c03}
+  .n-about{--line:#a9d98c;--c:#3a7526}
+  .n-sns  {--line:#c9c7bf;--c:#5f5e5a}
+  .n-news {--line:#8fd6f0;--c:#0f6d9a}
+  .n-work {--line:#98a4c4;--c:#1f2d55}
+
+  /* 一番下のSNS。親指がいちばん届きやすい場所を空けておくのはもったいないので、ここに置く。
+     上の項目と混ざらないよう、区切り線と小見出しではっきり切り分けている */
+  .panelfollow{margin-top:auto;padding-top:16px}
+  .panelfollow hr{border:none;border-top:1px solid #f0c8dd;margin:0 0 10px}
+  .panelfollow .fttl{font-family:'Mochiy Pop One',sans-serif;font-size:.66rem;letter-spacing:.16em;
+    color:#b4b2a9;text-align:center;margin:0 0 9px}
+  .panelfollow .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .panelfollow .fgrid a{display:flex;align-items:center;gap:7px;text-decoration:none;
+    background:#fff;border-radius:10px;padding:9px 8px;box-shadow:0 3px 9px var(--shadow);
+    font-size:.76rem;font-weight:700;color:#6a5a7a}
+  .panelfollow .fgrid svg{width:17px;height:17px;flex:0 0 auto}
 
   /* 固定バーのぶんだけ本文を下げる／アンカー移動でバーに隠れないようにする */
   /* セーフエリア分は足さない。こうするとコンテンツがステータスバーの裏まで届き、
@@ -105,8 +136,10 @@
     .topbar{padding:12px 28px;gap:20px}
     .topbar .tnlogo{font-size:1.15rem}
     .topbar .tnlinks{display:flex;gap:30px;flex:1;justify-content:center}
-    .topbar .tnlinks a{text-decoration:none;color:#7a6a8a;font-weight:700;font-size:.95rem;letter-spacing:.03em;transition:color .15s}
-    .topbar .tnlinks a:hover{color:var(--candy)}
+    /* 色は n-* クラスが持つ --c から。スマホのメニューと同じ色が並ぶ */
+    .topbar .tnlinks a{text-decoration:none;color:var(--c,#7a6a8a);font-weight:700;font-size:.95rem;
+      letter-spacing:.03em;transition:opacity .15s}
+    .topbar .tnlinks a:hover{opacity:.6}
     .topsns{gap:10px;flex:0 0 auto;margin-left:0}
     .topsns a{width:40px;height:40px;border-radius:13px}
     .topsns svg{width:21px;height:21px}
@@ -192,7 +225,7 @@
     padding:13px 20px 9px;box-shadow:0 5px 16px rgba(168,140,205,.16);
     -webkit-tap-highlight-color:transparent;backface-visibility:hidden;
     transition:transform .18s cubic-bezier(.34,1.56,.64,1),color .15s}
-  .bubble:hover,.bubble:active{transform:translateY(-5px);color:#c0397a}
+  .bubble:hover,.bubble:active{transform:translateY(-5px);color:#b8356f}
   /* 吹き出しのしっぽ（白い三角を下にちょこんと）。影は付けず、浮いて見えないようにする */
   .bubble::after{content:"";position:absolute;left:26px;bottom:-8px;
     width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;
@@ -205,9 +238,10 @@
 
   /* --- お知らせ：ポンッと弾んで出現 --- */
   .statuscard{margin-top:26px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
-    box-shadow:var(--card-shadow);position:relative;opacity:0;transform:scale(.82)}
-  .statuscard.in{animation:popcard .55s cubic-bezier(.34,1.56,.64,1) forwards}
-  @keyframes popcard{0%{opacity:0;transform:scale(.82)}60%{opacity:1;transform:scale(1.035)}100%{opacity:1;transform:scale(1)}}
+    box-shadow:var(--card-shadow);position:relative;opacity:0;transform:scale(.94)}
+  /* 弾みは控えめに。大きく縮めると、出現の瞬間にカードの高さが変わって周りが動いて見える */
+  .statuscard.in{animation:popcard .5s cubic-bezier(.34,1.4,.64,1) forwards}
+  @keyframes popcard{0%{opacity:0;transform:scale(.94)}60%{opacity:1;transform:scale(1.018)}100%{opacity:1;transform:scale(1)}}
   .upd{position:absolute;top:-15px;right:12px;font-size:.88rem;font-weight:900;letter-spacing:.01em;
     color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:7px 16px;border-radius:99px;
     box-shadow:0 4px 10px rgba(157,123,255,.35);transform:rotate(3deg) scale(0);opacity:0}
@@ -231,17 +265,26 @@
     align-self:center}
   .seclabel::before{background:linear-gradient(90deg,transparent,var(--line))}
   .seclabel::after{background:linear-gradient(90deg,var(--line),transparent)}
-  #music .en{color:#c0397a} #music{--line:#f6a8c8}
-  #game .en{color:#6b46c1}  #game{--line:#bda6ee}
-  #shop .en{color:#d2691e}  #shop{--line:#f7c9a0}
-  #about .en{color:#b8621f} #about{--line:#f3bd8e}
-  #sns .en{color:#c2185b}   #sns{--line:#f2a3bd}
-  #news .en{color:#7c5fd6}  #news{--line:#c3b0f0}
-  #work .en{color:#0f7a63}  #work{--line:#8fd9c4}
+  /* セクションごとのイメージカラー。上から順に
+     ピンク→紫→オレンジ→緑→グレー→水色→ネイビー と、暖色から寒色へ流れるように並べてある。
+     文字色（.en）は薄ピンク背景でも読めるよう十分に濃くし、線（--line）はその明るい版。
+     ★色を変えるときは .en と --line の両方を直してください（メニュー内の色もここを見ています） */
+  #music .en{color:#b8356f} #music{--line:#f6a8c8}  /* ローズピンク */
+  #game .en{color:#6b46c1}  #game{--line:#bda6ee}   /* パープル */
+  #shop .en{color:#965c03}  #shop{--line:#f5cf7a}   /* 黄色寄りオレンジ */
+  #about .en{color:#3a7526} #about{--line:#a9d98c}  /* やさしいグリーン */
+  #sns .en{color:#5f5e5a}   #sns{--line:#c9c7bf}    /* グレー */
+  #news .en{color:#0f6d9a}  #news{--line:#8fd6f0}   /* 水色 */
+  #work .en{color:#1f2d55}  #work{--line:#98a4c4}   /* ネイビー */
 
   /* --- 画面に入ったらふわっと現れる（控えめ） --- */
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease}
   .reveal.in{opacity:1;transform:none}
+  /* NEWSカードだけは「ポンッ」と弾む専用アニメを持っている。
+     .reveal の上下移動（translateY）と重なると、出た瞬間に位置が飛んでガクッとずれるため、
+     ここで上下移動を打ち消して拡大縮小だけにする */
+  .statuscard.reveal{transform:scale(.94);transition:none}
+  .statuscard.reveal.in{transform:scale(1)}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
   /* --- 共通：横スワイプの棚 --- */
@@ -253,14 +296,14 @@
   .shelfhint{text-align:center;font-size:.76rem;font-weight:700;color:#c78ab0;margin-top:5px}
   /* 矢印で送れるようにして「めくれる」ことを分かりやすく */
   .shelfarrow{width:34px;height:34px;border:2px solid #ffdaee;background:#fff;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;color:#c0397a;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:#b8356f;
     font-size:.95rem;font-weight:900;box-shadow:0 3px 8px var(--shadow);transition:transform .12s,opacity .2s}
   .shelfarrow:active{transform:scale(.9)}
   .shelfarrow[disabled]{opacity:.28;cursor:default}
 
   /* もっと見るボタン（PCでのみ使用） */
   .morebtn{display:none;margin:18px auto 0;padding:12px 30px;cursor:pointer;
-    font-family:'Mochiy Pop One',sans-serif;font-size:.98rem;color:#c0397a;
+    font-family:'Mochiy Pop One',sans-serif;font-size:.98rem;color:#b8356f;
     background:#fff;border:2.5px solid #ffdaee;border-radius:99px;
     box-shadow:var(--card-shadow);transition:transform .15s,background .15s}
   .morebtn:hover{transform:translateY(-2px);background:#fff6fb}
@@ -281,7 +324,7 @@
     display:flex;flex-direction:column}
   
   .lhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
-  .lcard .num{font-family:'Mochiy Pop One',sans-serif;font-size:1.1rem;color:#c0397a;opacity:.5}
+  .lcard .num{font-family:'Mochiy Pop One',sans-serif;font-size:1.1rem;color:#b8356f;opacity:.5}
   .lcard .stat{font-size:.66rem;font-weight:700;padding:4px 10px;border-radius:99px;background:#e2fbf3;color:#0d8168;white-space:nowrap}
   .lbody{height:158px;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
   .lbody::-webkit-scrollbar{width:4px}
@@ -314,7 +357,7 @@
   .gtag.c{background:#e2fbf3;color:#0d8168}
   .gdesc{font-size:.85rem;line-height:1.65;color:#6a5a7a;margin-bottom:12px;flex:1}
   .gplay{align-self:center;display:inline-flex;align-items:center;gap:6px;font-family:'Mochiy Pop One',sans-serif;
-    font-size:.95rem;text-decoration:none;color:#c0397a;padding:11px 26px;border-radius:99px;
+    font-size:.95rem;text-decoration:none;color:#b8356f;padding:11px 26px;border-radius:99px;
     background:linear-gradient(100deg,#ffdaee,#e8d8ff);border:2.5px solid #fff;box-shadow:0 6px 0 #f3b7d7;
     transition:transform .12s,box-shadow .12s}
   .gplay:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
@@ -331,18 +374,18 @@
   /* --- SHOP セクション --- */
   .shopcard{position:relative;background:#fff;border:2.5px solid #fff;border-radius:22px;
     padding:24px 22px 22px;text-align:center;box-shadow:var(--card-shadow)}
-  /* カードの中に堂々と置く「準備中」 */
-  .shopbadge{display:inline-block;font-family:'Mochiy Pop One',sans-serif;
+  /* カードの中に堂々と置く「準備中」。中身を読んだ最後に目に入るよう、枠の一番下に置いている */
+  .shopbadge{display:inline-block;margin-top:22px;font-family:'Mochiy Pop One',sans-serif;
     font-size:1.35rem;color:#fff;white-space:nowrap;letter-spacing:.04em;
     background:linear-gradient(100deg,#f9a03f,#f2762e);padding:12px 30px;border-radius:99px;
     box-shadow:0 6px 16px rgba(230,140,60,.32)}
-  .shoptags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:18px}
+  .shoptags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:2px}
   .shoptag{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:99px;background:#ffe8f4;color:#e0559d}
   .shoptag.b{background:#f1ecff;color:#7c5fd6}
   .shoptag.c{background:#e2fbf3;color:#0d8168}
   .shoplead{margin-top:14px;font-size:.9rem;font-weight:700;color:#8d7ba3;line-height:1.8}
   .shopbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;
-    font-family:'Mochiy Pop One',sans-serif;font-size:1rem;text-decoration:none;color:#c0397a;
+    font-family:'Mochiy Pop One',sans-serif;font-size:1rem;text-decoration:none;color:#b8356f;
     padding:14px 30px;border-radius:99px;background:linear-gradient(100deg,#ffdaee,#ffe7d6);
     border:2.5px solid #fff;box-shadow:0 6px 0 #f3b7d7;transition:transform .12s,box-shadow .12s}
   .shopbtn:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
@@ -433,14 +476,15 @@
 <!-- 上部バー：モバイル[SNS｜☰] / PC[ロゴ｜リンク｜SNS] -->
 <header class="topbar">
   <span class="tnlogo"><span class="lg-1">らむね</span> <span class="lg-2">あい</span></span>
+  <!-- PC用の横並びメニュー。色はスマホのメニューと同じ（n-* クラスがCSSで色を持っている） -->
   <nav class="tnlinks">
-    <a href="#music">MUSIC</a>
-    <a href="#game">GAME</a>
-    <a href="#shop">SHOP</a>
-    <a href="#about">ABOUT</a>
-    <a href="#sns">SNS</a>
-    <a href="#news">NEWS</a>
-    <a href="#work">WORK</a>
+    <a class="n-music" href="#music">MUSIC</a>
+    <a class="n-game"  href="#game">GAME</a>
+    <a class="n-shop"  href="#shop">SHOP</a>
+    <a class="n-about" href="#about">ABOUT ME</a>
+    <a class="n-sns"   href="#sns">SNS</a>
+    <a class="n-news"  href="#news">NEWS</a>
+    <a class="n-work"  href="#work">WORK</a>
   </nav>
   <div class="topsns">
     <a class="b-x" href="https://x.com/ramune_aiai" target="_blank" rel="noopener" aria-label="X">
@@ -467,13 +511,47 @@
 
 <div class="drawer" id="drawer">
   <nav class="panel">
-    <a href="#music"><span class="e">🎶</span><span class="tx">音楽<span class="en">MUSIC</span></span></a>
-    <a href="#game"><span class="e">🎮</span><span class="tx">ゲーム<span class="en">GAME</span></span></a>
-    <a href="#shop"><span class="e">🛍</span><span class="tx">通販<span class="en">SHOP</span></span></a>
-    <a href="#about"><span class="e">🌷</span><span class="tx">わたしのこと<span class="en">ABOUT</span></span></a>
-    <a href="#sns"><span class="e">💬</span><span class="tx">SNS<span class="en">SNS</span></span></a>
-    <a href="#news"><span class="e">📢</span><span class="tx">おしらせ<span class="en">NEWS</span></span></a>
-    <a href="#work"><span class="e">💌</span><span class="tx">お仕事<span class="en">WORK</span></span></a>
+    <button class="panelclose" id="panelclose" aria-label="メニューを閉じる">✕</button>
+    <div class="nav">
+      <a class="n-music" href="#music"><span class="en">MUSIC</span><span class="ja">音楽</span></a>
+      <a class="n-game"  href="#game"><span class="en">GAME</span><span class="ja">ゲーム</span></a>
+      <a class="n-shop"  href="#shop"><span class="en">SHOP</span><span class="ja">通販</span></a>
+      <a class="n-about" href="#about"><span class="en">ABOUT ME</span><span class="ja">わたしのこと</span></a>
+      <a class="n-sns"   href="#sns"><span class="en">SNS</span><span class="ja">フォローしてね</span></a>
+      <a class="n-news"  href="#news"><span class="en">NEWS</span><span class="ja">おしらせ</span></a>
+      <a class="n-work"  href="#work"><span class="en">WORK</span><span class="ja">お仕事</span></a>
+    </div>
+    <!-- SNSはメニューの一番下＝親指が届きやすい場所に置く。
+         上の項目と紛れないよう、区切り線と FOLLOW ME の小見出しで切り分けている -->
+    <div class="panelfollow">
+      <hr>
+      <p class="fttl">FOLLOW ME</p>
+      <div class="fgrid">
+        <a href="https://x.com/ramune_aiai" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#111" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <span>X</span>
+        </a>
+        <a href="https://www.instagram.com/ramune_aiai/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <!-- 上のバーとは別のグラデーション定義。バーがスマホで隠れていても色が出るように、ここにも持たせている -->
+            <defs><linearGradient id="igGradM" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#fdf497"/><stop offset="30%" stop-color="#fd5949"/>
+              <stop offset="60%" stop-color="#d6249f"/><stop offset="100%" stop-color="#285AEB"/>
+            </linearGradient></defs>
+            <path fill="url(#igGradM)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+          <span>Instagram</span>
+        </a>
+        <a href="https://www.tiktok.com/@ramune_aiai" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#111" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+          <span>TikTok</span>
+        </a>
+        <a href="https://www.youtube.com/@ramune_aiai" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#ff0000" d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          <span>YouTube</span>
+        </a>
+      </div>
+    </div>
   </nav>
 </div>
 
@@ -510,7 +588,7 @@
         <h3 class="gttl">間取りすと</h3>
         <div class="gtags"><span class="gtag">パズル</span><span class="gtag b">間取り</span><span class="gtag c">ブラウザ</span></div>
         <p class="gdesc">部屋をならべて理想のお部屋を完成させる間取りパズル。ぴったりハマる配置を探そう。</p>
-        <a class="gplay" href="https://ramune-ai.github.io/madori-st/">▶ あそぶ</a>
+        <a class="gplay" href="https://ramune-ai.github.io/madori-st/" target="_blank" rel="noopener">▶ あそぶ</a>
       </div>
     </article>
 
@@ -537,18 +615,19 @@
   <!-- 販売を始めるときは shopbadge の行を消して、下の shopbtn のコメントを外してください
        （ショップURL：https://fril.jp/shop/ramunei_aiai） -->
   <div class="shopcard reveal">
-    <p class="shopbadge">🚧 準備中</p>
     <div class="shoptags">
       <span class="shoptag">レジン</span>
       <span class="shoptag b">フルイドアート</span>
       <span class="shoptag c">オリジナルグッズ</span>
     </div>
     <p class="shoplead">手づくりの一点ものを販売する予定です🫧</p>
+    <!-- 販売を始めるときは、この shopbadge の行を消して下の shopbtn のコメントを外してください -->
+    <p class="shopbadge">準備中</p>
     <!-- <a class="shopbtn" href="https://fril.jp/shop/ramunei_aiai" target="_blank" rel="noopener">🛍 ショップを見る</a> -->
   </div>
 
   <!-- ABOUT -->
-  <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT</span><span class="ja">わたしのこと</span></h2>
+  <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT ME</span><span class="ja">わたしのこと</span></h2>
   <div class="about reveal frost">
     <p>創作しないと、<span class="accent">頭パンクしちゃう</span>タイプです。音楽もゲームもアートも、ジャンルはバラバラだけど、ぜんぶ「カワイイ＆夢」でつながってる。ここは、わたしの作品がぜんぶ集まる創作のお花畑です🌷</p>
   </div>
@@ -626,7 +705,7 @@
     const num=String(i+1).padStart(2,'0');
     if(s.youtubeId){
       el.innerHTML=`
-        <div class="lhead"><span class="num">${num}</span><span class="stat" style="background:#ffe0f2;color:#c0397a">MV公開中</span></div>
+        <div class="lhead"><span class="num">${num}</span><span class="stat" style="background:#ffe0f2;color:#b8356f">MV公開中</span></div>
         <div class="lbody"><div class="video">
           <iframe src="https://www.youtube.com/embed/${s.youtubeId}" title="MV" allowfullscreen loading="lazy"
             allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture"></iframe>
@@ -945,6 +1024,8 @@
   mb.addEventListener('click',toggle);
   dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
   dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
+  /* パネル内の×でも閉じる（ハンバーガーを探しに戻らなくていいように） */
+  document.getElementById('panelclose').addEventListener('click',toggle);
 
   /* 画面に入ったらスッと現れる。下側へ出ていったらまた隠すので、
      上にスクロールし直したときや2周目も毎回アニメーションする。
@@ -965,6 +1046,24 @@
   }else{
     document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
   }
+
+  /* ★外部リンクはすべて新しいタブで開く★
+     ゲーム・ショップ・YouTube・Instagram など、このサイトの外へ出るリンクは
+     別タブにして、見ていたページをそのまま残す。
+     ページ内の移動（#music など）と mailto: はここに含まれないので、今までどおり。
+     今後リンクを増やしても target="_blank" を書き忘れて大丈夫なように、
+     まとめてここで面倒を見ています。 */
+  function openExternalInNewTab(root){
+    (root||document).querySelectorAll('a[href^="http"]:not([target])').forEach(a=>{
+      a.target='_blank';
+      a.rel='noopener';   /* 開いた先から元のページを操作されないようにする決まり文句 */
+    });
+  }
+  openExternalInNewTab();
+  /* ヒーローの写真は画面幅に合わせて作り直されることがあるので、そのたびに掛け直す */
+  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{
+    if(n.nodeType===1) openExternalInNewTab(n.parentNode);
+  }))).observe(document.body,{childList:true,subtree:true});
 </script>
 </body>
 </html>
