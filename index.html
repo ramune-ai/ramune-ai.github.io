@@ -2,7 +2,10 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ★viewport-fit=cover★ これがあるとページがステータスバー／ホームバーの下まで広がり、
+     スクロール中に写真が時刻表示の裏を流れていくのが見えるようになる。
+     （文字が時刻に重ならないよう、下の --safe-top / --safe-bottom で余白を確保している） -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <!-- ★theme-color はあえて指定していません★
      指定すると iOS が上下バーを「不透明のベタ1色」で塗ってしまい、
      バーの向こうにページが透けて見える表示になりません。
@@ -54,8 +57,10 @@
   /* --- 上部バー：モバイルは[SNS｜☰]、PCは[ロゴ｜リンク｜SNS] --- */
   .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;
     padding:8px 12px;padding-top:calc(8px + var(--safe-top));
-    background:rgba(255,255,255,.92);
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    /* 透明度：下げるほど写真が透けるが、下げすぎるとロゴ・アイコンが読みにくくなる。
+       .75＋強めのぼかしが「透けるけど読める」の折り合い */
+    background:rgba(255,255,255,.75);
+    backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);
     border-bottom:1.5px solid #ffd9ee}
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
@@ -113,7 +118,7 @@
      横に伸びすぎると読みにくいので、それぞれ幅を制限して中央に置く */
   @media(min-width:860px){
     .wrap{max-width:none;padding:0 clamp(28px,3.5vw,72px) 50px}
-    .statuscard,.about,.banner,.worknote,.snsnote,.snsgrid,.morebtn{
+    .statuscard,.about,.banner,.worknote,.snsnote,.snsgrid,.morebtn,.shopcard{
       max-width:960px;margin-left:auto;margin-right:auto}
   }
 
@@ -152,9 +157,16 @@
   /* 高さ固定・幅は写真の比率まかせ（切り取りゼロ）。
      aspect-ratio を先に指定しているので画像読み込み前でも幅が確定し、
      読み込み時のガタつき・チカつきが起きない */
-  .mtile{flex:0 0 auto;height:var(--th);aspect-ratio:var(--ar,1);border-radius:16px;overflow:hidden;
-    box-shadow:0 6px 14px var(--shadow);border:2.5px solid #fff;background:#f4eeff;text-decoration:none}
+  .mtile{position:relative;flex:0 0 auto;height:var(--th);aspect-ratio:var(--ar,1);border-radius:16px;overflow:hidden;
+    box-shadow:0 6px 14px var(--shadow);border:2.5px solid #fff;background:#f4eeff;text-decoration:none;display:block}
   .mtile img{width:100%;height:100%;object-fit:cover;display:block}
+  /* Instagramの投稿リンクが付いている写真だけ、押せることが分かるようにする */
+  .mtile.linked{cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+  .mtile.linked:hover{transform:translateY(-5px);box-shadow:0 12px 26px rgba(168,140,205,.3)}
+  .tilemark{position:absolute;right:7px;bottom:7px;font-size:.72rem;line-height:1;
+    background:rgba(255,255,255,.9);padding:5px 6px;border-radius:9px;
+    box-shadow:0 2px 6px rgba(120,90,160,.2)}
+  @media(min-width:860px){.tilemark{right:10px;bottom:10px;font-size:.9rem;padding:6px 8px;border-radius:11px}}
 
   /* 歌詞は白地×ピンク文字。単語の途中で改行しない */
   /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
@@ -211,16 +223,19 @@
   .seclabel{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:18px 2px 10px}
   .seclabel .en{font-family:'Mochiy Pop One',sans-serif;font-size:1.3rem;letter-spacing:.02em}
   .seclabel .ja{font-size:.85rem;font-weight:700;color:#8d7ba3}
+  /* 両端の線は --line（セクションごとの色）を使う。文字色と揃うようにしてある */
+  .seclabel{--line:#e6d9ff}
   .seclabel::before,.seclabel::after{content:"";flex:1;max-width:180px;height:3px;border-radius:99px;
     align-self:center}
-  .seclabel::before{background:linear-gradient(90deg,transparent,#e6d9ff)}
-  .seclabel::after{background:linear-gradient(90deg,#e6d9ff,transparent)}
-  #music .en{color:#c0397a}
-  #game .en{color:#6b46c1}
-  #about .en{color:#b8621f}
-  #sns .en{color:#c2185b}
-  #news .en{color:#7c5fd6}
-  #work .en{color:#0f7a63}
+  .seclabel::before{background:linear-gradient(90deg,transparent,var(--line))}
+  .seclabel::after{background:linear-gradient(90deg,var(--line),transparent)}
+  #music .en{color:#c0397a} #music{--line:#f6a8c8}
+  #game .en{color:#6b46c1}  #game{--line:#bda6ee}
+  #shop .en{color:#d2691e}  #shop{--line:#f7c9a0}
+  #about .en{color:#b8621f} #about{--line:#f3bd8e}
+  #sns .en{color:#c2185b}   #sns{--line:#f2a3bd}
+  #news .en{color:#7c5fd6}  #news{--line:#c3b0f0}
+  #work .en{color:#0f7a63}  #work{--line:#8fd9c4}
 
   /* --- 画面に入ったらふわっと現れる（控えめ） --- */
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease}
@@ -312,6 +327,31 @@
   .about{margin-top:16px;text-align:center;padding:24px 22px 22px}
   .about p{font-size:1rem;font-weight:700;color:#6a5a7a;line-height:1.95;text-align:left}
   .about .accent{color:#e0559d}
+  /* --- SHOP セクション --- */
+  .shopcard{position:relative;background:#fff;border:2.5px solid #fff;border-radius:22px;
+    padding:24px 22px 22px;text-align:center;box-shadow:var(--card-shadow)}
+  .shopbadge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+    font-size:.76rem;font-weight:900;color:#fff;white-space:nowrap;
+    background:linear-gradient(100deg,#f9a03f,#f2762e);padding:6px 16px;border-radius:99px;
+    box-shadow:0 4px 10px rgba(230,140,60,.3)}
+  .shoptags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-top:6px}
+  .shoptag{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:99px;background:#ffe8f4;color:#e0559d}
+  .shoptag.b{background:#f1ecff;color:#7c5fd6}
+  .shoptag.c{background:#e2fbf3;color:#0d8168}
+  .shoplead{margin-top:14px;font-size:.9rem;font-weight:700;color:#8d7ba3;line-height:1.8}
+  .shopbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;
+    font-family:'Mochiy Pop One',sans-serif;font-size:1rem;text-decoration:none;color:#c0397a;
+    padding:14px 30px;border-radius:99px;background:linear-gradient(100deg,#ffdaee,#ffe7d6);
+    border:2.5px solid #fff;box-shadow:0 6px 0 #f3b7d7;transition:transform .12s,box-shadow .12s}
+  .shopbtn:active{transform:translateY(4px);box-shadow:0 2px 0 #f3b7d7}
+  @media(min-width:860px){
+    .shopcard{padding:34px 30px 30px;border-radius:26px}
+    .shopbadge{font-size:.88rem;padding:7px 20px;top:-16px}
+    .shoptag{font-size:.86rem;padding:6px 15px}
+    .shoplead{font-size:1.04rem;margin-top:18px}
+    .shopbtn{font-size:1.14rem;padding:16px 38px;margin-top:20px}
+  }
+
   /* --- SNS セクション --- */
   .snsgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
   .snscard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
@@ -394,6 +434,7 @@
   <nav class="tnlinks">
     <a href="#music">MUSIC</a>
     <a href="#game">GAME</a>
+    <a href="#shop">SHOP</a>
     <a href="#about">ABOUT</a>
     <a href="#sns">SNS</a>
     <a href="#news">NEWS</a>
@@ -426,6 +467,7 @@
   <nav class="panel">
     <a href="#music"><span class="e">🎶</span><span class="tx">音楽<span class="en">MUSIC</span></span></a>
     <a href="#game"><span class="e">🎮</span><span class="tx">ゲーム<span class="en">GAME</span></span></a>
+    <a href="#shop"><span class="e">🛍</span><span class="tx">通販<span class="en">SHOP</span></span></a>
     <a href="#about"><span class="e">🌷</span><span class="tx">わたしのこと<span class="en">ABOUT</span></span></a>
     <a href="#sns"><span class="e">💬</span><span class="tx">SNS<span class="en">SNS</span></span></a>
     <a href="#news"><span class="e">📢</span><span class="tx">おしらせ<span class="en">NEWS</span></span></a>
@@ -440,7 +482,7 @@
   <!-- 2. 名前と自己紹介 -->
   <header class="intro">
     <h1><span class="lg-1">らむね</span> <span class="lg-2">あい</span></h1>
-    <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🌈🫧</p>
+    <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🫧</p>
   </header>
 
   <!-- 3. MUSIC -->
@@ -488,6 +530,19 @@
     <button class="shelfarrow" data-shelf="gameshelf" data-dir="1" aria-label="次のゲーム">▶</button>
   </div>
 
+  <!-- SHOP -->
+  <h2 class="seclabel reveal" id="shop"><span class="en">🛍 SHOP</span><span class="ja">通販</span></h2>
+  <div class="shopcard reveal">
+    <span class="shopbadge">準備中</span>
+    <div class="shoptags">
+      <span class="shoptag">レジン</span>
+      <span class="shoptag b">フルイドアート</span>
+      <span class="shoptag c">オリジナルグッズ</span>
+    </div>
+    <p class="shoplead">手づくりの一点ものを、ラクマで販売する予定です🫧<br>準備ができたらNEWSでお知らせします！</p>
+    <a class="shopbtn" href="https://fril.jp/shop/ramunei_aiai" target="_blank" rel="noopener">🛍 ラクマのショップを見る</a>
+  </div>
+
   <!-- ABOUT -->
   <h2 class="seclabel reveal" id="about"><span class="en">🌷 ABOUT</span><span class="ja">わたしのこと</span></h2>
   <div class="about reveal frost">
@@ -520,7 +575,7 @@
       <span>YouTube</span>
     </a>
   </div>
-  <p class="snsnote reveal">日々の制作や作品の写真は、ここで見られます📷<br>気軽に絡んでね🫶</p>
+  <p class="snsnote reveal">日々の制作や作品の写真は、ここで見られます📷</p>
 
   <!-- NEWS：お知らせ（更新したら日付と本文を書き換えてください） -->
   <h2 class="seclabel reveal" id="news"><span class="en">📢 NEWS</span><span class="ja">おしらせ</span></h2>
@@ -694,6 +749,12 @@
     }
   })();
 
+  /* ★ヒーローに並べる写真★
+     photo … assets/web/thumb/ の中のファイル名
+     ar    … 写真の「横 ÷ 縦」。読み込み前に幅を決めてガタつきを防ぐため必須
+     url   … （任意）Instagramの投稿URL。書くとタップでその投稿に飛べる。
+             省略するとリンクなしの写真として表示されるだけ。
+     例) {photo:'resin-07.jpg', ar:1, url:'https://www.instagram.com/p/XXXXXXXX/'} */
   const T='assets/web/thumb/';
   const rowA=[
     {photo:'fluid-01.jpg',ar:0.75},
@@ -708,14 +769,14 @@
   ];
   const rowB=[
     {photo:'resin-08.jpg',ar:1},
-    {photo:'daily-01.jpg',ar:1.333},
     {photo:'fluid-03.jpg',ar:0.75},
     {photo:'resin-03.jpg',ar:1},
     {photo:'nail-03.jpg',ar:1},
     {photo:'portrait-03.jpg',ar:0.707},
-    {photo:'daily-02.jpg',ar:1.333},
     {photo:'nail-02.jpg',ar:1},
     {photo:'resin-01.jpg',ar:0.75},
+    {photo:'resin-06.jpg',ar:1.333},
+    {photo:'portrait-02.jpg',ar:0.707},
   ];
   /* 写真の段のあいだを流れる歌詞。増やすときはここに足すだけでOK */
   const tickerWords=[
@@ -726,8 +787,13 @@
     'ずるいよ 織姫と彦星',
     '透き通る わたしの色',
   ];
+  /* url があるものはリンク（タップでInstagramの投稿へ）、無ければただの画像 */
   function tileHTML(item){
-    return `<span class="mtile" style="--ar:${item.ar}"><img src="${T}${item.photo}" alt="" decoding="async"></span>`;
+    const inner=`<img src="${T}${item.photo}" alt="" decoding="async">`;
+    if(item.url){
+      return `<a class="mtile linked" style="--ar:${item.ar}" href="${item.url}" target="_blank" rel="noopener">${inner}<span class="tilemark">📷</span></a>`;
+    }
+    return `<span class="mtile" style="--ar:${item.ar}">${inner}</span>`;
   }
 
   const marquee=document.getElementById('marquee');
