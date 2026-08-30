@@ -38,20 +38,23 @@
     background:#ffeaf4}
 
   .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-  .sky i{position:absolute;display:block;animation:drift linear infinite;opacity:.26}
+  /* --w が線の太さ。JS が図形ごとにランダムで入れる（既定値は保険） */
+  .sky i{position:absolute;display:block;animation:drift linear infinite;--w:3.5px}
   @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
-  .sh-ring{border:2.5px solid var(--c);border-radius:50%}
-  .sh-sq{border:2.5px solid var(--c)}
-  .sh-dia{border:2.5px solid var(--c);transform:rotate(45deg)}
+  .sh-ring{border:var(--w) solid var(--c);border-radius:50%}
+  .sh-sq{border:var(--w) solid var(--c)}
+  .sh-dia{border:var(--w) solid var(--c);transform:rotate(45deg)}
+  /* 三角だけは中身をSVGの線で描いている。その線の太さも JS が --m ごと差し替える。
+     （以前はここが図形の大きさに比例して太くなり、大きい三角だけ極端に太くなっていた） */
   .sh-tri{background:none!important;border:none!important;position:relative}
   .sh-tri::after{content:"";position:absolute;inset:0;background:var(--c);
-    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 2 L22 20 L2 20 Z' fill='none' stroke='black' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 2 L22 20 L2 20 Z' fill='none' stroke='black' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+    -webkit-mask:var(--m) center/contain no-repeat;
+    mask:var(--m) center/contain no-repeat}
   .sh-plus{position:relative}
   .sh-plus::before,.sh-plus::after{content:"";position:absolute;background:var(--c);border-radius:2px}
-  .sh-plus::before{left:50%;top:0;width:2.5px;height:100%;transform:translateX(-50%)}
-  .sh-plus::after{top:50%;left:0;height:2.5px;width:100%;transform:translateY(-50%)}
-  .sh-hex{border:2.5px solid var(--c);border-radius:4px;transform:rotate(30deg)}
+  .sh-plus::before{left:50%;top:0;width:var(--w);height:100%;transform:translateX(-50%)}
+  .sh-plus::after{top:50%;left:0;height:var(--w);width:100%;transform:translateY(-50%)}
+  .sh-hex{border:var(--w) solid var(--c);border-radius:4px;transform:rotate(30deg)}
   @media(prefers-reduced-motion:reduce){.sky i{animation:none;display:none}}
 
   /* --- 上部バー：モバイルは[SNS｜☰]、PCは[ロゴ｜リンク｜SNS] --- */
@@ -98,13 +101,13 @@
 
   /* 各項目。色は左端の細い線と英字だけに乗せる。
      面積を小さく保つことで、7色あってもうるさくならない */
-  .panel .nav a{display:flex;align-items:baseline;gap:11px;text-decoration:none;color:var(--ink);
+  .panel .nav a{display:flex;align-items:baseline;gap:.5em;text-decoration:none;color:var(--ink);
     padding:11px 13px;margin-bottom:7px;background:#fff;box-shadow:0 3px 9px var(--shadow);
     border-left:3.5px solid var(--line,#e6d9ff);border-radius:0}
-  /* min-width は英字の置き場の幅。いちばん長い ABOUT ME がここに収まらないと、
-     その行だけ日本語が右に押し出されて段がずれる */
+  /* 英字と日本語はくっつけて左に寄せる。日本語の位置を縦に揃えると
+     英字との間が空きすぎて、ひとつづきの言葉として読みにくくなるため */
   .panel .nav a .en{font-family:'Mochiy Pop One',sans-serif;font-size:.92rem;letter-spacing:.06em;
-    color:var(--c,#c78ab0);flex:0 0 auto;min-width:7.7em}
+    color:var(--c,#c78ab0);flex:0 0 auto}
   .panel .nav a .ja{font-size:.86rem;font-weight:700;color:#6a5a7a}
   /* 上のセクション色と同じ値。ここを直すときは .seclabel の色も合わせてください */
   .n-music{--line:#f6a8c8;--c:#b8356f}
@@ -407,6 +410,20 @@
     text-decoration:none;background:#fff;border:2.5px solid #fff;border-radius:18px;padding:14px 6px;
     box-shadow:var(--card-shadow);transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
   .snscard:hover{transform:translateY(-5px) rotate(-2deg)}
+  /* 4つ同時に出ると一度に目に入る情報が多いので、左から順に出す。
+     枠（.snsgrid）が .reveal で出るのに合わせて、中身を少しずつ遅らせている */
+  .snsgrid .snscard{opacity:0;transform:translateY(14px);
+    transition:opacity .45s ease, transform .45s cubic-bezier(.34,1.4,.64,1)}
+  .snsgrid.in .snscard{opacity:1;transform:none}
+  .snsgrid.in .snscard:nth-child(1){transition-delay:.05s}
+  .snsgrid.in .snscard:nth-child(2){transition-delay:.16s}
+  .snsgrid.in .snscard:nth-child(3){transition-delay:.27s}
+  .snsgrid.in .snscard:nth-child(4){transition-delay:.38s}
+  /* 出たあとは hover の動きを邪魔しないよう、遅延を消す */
+  .snsgrid.in .snscard:hover{transition-delay:0s}
+  @media(prefers-reduced-motion:reduce){
+    .snsgrid .snscard{opacity:1;transform:none;transition:none}
+  }
   .snscard svg{width:26px;height:26px;display:block}
   .snscard span{font-size:.72rem;font-weight:700;color:#7a6a8a;letter-spacing:.02em}
   .snsnote{margin-top:12px;text-align:center;font-size:.86rem;font-weight:700;color:#8d7ba3;line-height:1.75}
@@ -1010,13 +1027,38 @@
   const sky=document.getElementById('sky');
   const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
   const colors=['#ff7ec0','#9d7bff','#5ec8ff','#67e6c2','#ffd84d','#ff9a52'];
+  const SHAPE_COUNT=12;
   if(SHOW_SHAPES){
-    for(let n=0;n<10;n++){
+    for(let n=0;n<SHAPE_COUNT;n++){
       const el=document.createElement('i');
       const kind=shapes[Math.floor(Math.random()*shapes.length)];
       el.className=kind;
       el.style.setProperty('--c', colors[Math.floor(Math.random()*colors.length)]);
-      const size=36+Math.random()*72;el.style.width=size+'px';el.style.height=size+'px';
+
+      /* ★大きさ★ 32〜220px。
+         まったくのランダムだと「今回は12個ぜんぶ小さめ」という回が出てしまうので、
+         "n個目は全体の何番目あたりの大きさか" という枠をまず決めて、その枠の中でランダムにする。
+         こうすると毎回かならず 小・中・大 がそろう。
+         1.3乗しているぶん、小さめがやや多く、大きいものは控えめに出る */
+      const t=Math.pow((n+Math.random())/SHAPE_COUNT, 1.3);
+      const size=32+t*188;
+      el.style.width=size+'px';el.style.height=size+'px';
+
+      /* ★線の太さ★ 大きさとは切り離して 3〜6px でばらけさせる。
+         3px … 細いけどPCでも見える下限（枠線は整数に丸められるので3〜6pxになる）
+         6px … これ以上は太くて野暮ったくなる上限 */
+      const w=3.2+Math.random()*3;
+      el.style.setProperty('--w', w+'px');
+      if(kind==='sh-tri'){
+        /* 三角のSVGは24幅で描いてから size まで拡大されるので、
+           拡大率で割り戻した太さを入れると、他の図形と同じ見え方になる */
+        const sw=(w*24/size).toFixed(2);
+        el.style.setProperty('--m',
+          `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 2 L22 20 L2 20 Z' fill='none' stroke='black' stroke-width='${sw}' stroke-linejoin='round'/%3E%3C/svg%3E")`);
+      }
+
+      /* 大きい図形ほど薄く。同じ濃さだと大きいものだけ主張しすぎるため */
+      el.style.opacity=(0.30-(size-32)/188*0.10).toFixed(3);
       el.style.left=Math.random()*100+'vw';
       const dur=12+Math.random()*14;
       el.style.animationDuration=dur+'s';
