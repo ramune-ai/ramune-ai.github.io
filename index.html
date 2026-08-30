@@ -184,8 +184,8 @@
      マーキーと同じく .wrap の外に置いてあるので、幅の指定は要らない。
      （100vw で広げるやり方もあるが、PCではスクロールバーのぶん右にはみ出して
        横スクロールが出てしまうので使っていない） */
-  .intro{text-align:center;position:relative;z-index:1;margin-top:14px;
-    padding:22px 18px 20px;
+  .intro{text-align:center;position:relative;z-index:1;margin-top:8px;
+    padding:16px 18px 15px;
     /* 完全な白にせず透かして、後ろを漂う幾何学模様が帯の裏を通って見えるようにする */
     background:rgba(255,255,255,.84)}
 
@@ -231,7 +231,7 @@
      ぼかしフェードはPCだけに適用（スマホは端で潔く切る） */
   /* position/z-index を持たせて、背景の幾何学模様（.sky）より確実に手前に置く。
      こうしないと、動く図形が写真の上を横切って重なり合い、描き直しが増える */
-  .marquee{--th:158px;margin:4px 0 0;display:flex;flex-direction:column;gap:7px;overflow:hidden;
+  .marquee{--th:146px;margin:2px 0 0;display:flex;flex-direction:column;gap:7px;overflow:hidden;
     position:relative;z-index:1;cursor:grab;touch-action:pan-y}
   .marquee.dragging{cursor:grabbing}
   @media(min-width:860px){
@@ -313,7 +313,7 @@
 
   /* --- セクション見出し --- */
   /* 見出しは中央。両側に細い線が伸びる形 */
-  .seclabel{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:18px 2px 10px}
+  .seclabel{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:13px 2px 9px}
   .seclabel .en{font-family:'Mochiy Pop One',sans-serif;font-size:1.3rem;letter-spacing:.02em}
   .seclabel .ja{font-size:.85rem;font-weight:700;color:#8d7ba3}
   /* 両端の線は --line（セクションごとの色）を使う。文字色と揃うようにしてある */
@@ -1156,19 +1156,26 @@
      いまは、スクロールのたびに実際の位置をその場で測って決めています。
      記録ではなく現在地を見るので、ずれようがありません。 */
 
-  /* ★出すタイミング★ 画面の高さの78%より上に来たら出す。
+  /* ★出すタイミング★ 画面の高さの86%より上に来たら出す。
      数字を大きくすると早く（画面の下端に顔を出した瞬間に）、
-     小さくすると遅く（しっかり画面に入ってから）出るようになる。
-     94%だと「下からほんの少し覗いた時点」で出てしまい、
-     勢いよくスクロールしたとき、まだちゃんと見えていない下のセクションの
-     見出しまで先に出てしまっていた。 */
-  const IN_LINE  = 0.78;
+     小さくすると遅く（しっかり画面に入ってから）出るようになる。 */
+  const IN_LINE  = 0.86;
   /* 「戻す」のは画面から完全に出きったとき（100%）。
-     出す線（78%）と戻す線（100%）をわざとずらしてあるので、
+     出す線（86%）と戻す線（100%）をわざとずらしてあるので、
      境目で出たり消えたりを繰り返してチカチカすることがない */
+
+  /* ★最初の1回だけは画面いっぱい（100%）で判定する★
+     ページを開いた直後は「スクロールして近づいてきた」という動きがない。
+     ここで 86% の線を使うと、画面には見えているのに線より下にある
+     MUSICの見出しなどが、出ないまま取り残されてしまう。
+     （実際それで最初の画面にMUSICが出なくなっていた）
+     最初の1回は「画面に入っているものは全部出す」でよい。 */
+  let firstRun=true;
 
   function updateReveals(){
     const h=window.innerHeight;
+    const line = firstRun ? h : h*IN_LINE;
+    firstRun=false;
     revealEls.forEach(el=>{
       const top=el.getBoundingClientRect().top;
       const shown=el.classList.contains('in');
@@ -1179,11 +1186,12 @@
                                     これを挟まないと、消してすぐ付け直したときに
                                     ブラウザが「変化なし」とみなしてアニメが再生されない */
         }
-      }else if(top < h*IN_LINE){
+      }else if(top < line){
         el.classList.add('in');
       }
     });
   }
+
 
   /* スクロール中は50ミリ秒に1回だけ測る（毎回測ると重いため）。
      指を離したあとの最後の1回も必ず走るので、止めた位置で取りこぼさない */
