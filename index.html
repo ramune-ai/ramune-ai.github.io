@@ -54,11 +54,9 @@
   /* --- 上部バー：モバイルは[SNS｜☰]、PCは[ロゴ｜リンク｜SNS] --- */
   .topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;gap:10px;
     padding:8px 12px;padding-top:calc(8px + var(--safe-top));
-    /* ★透け感はここで決まる★ 白の不透明度を上げすぎると下のコンテンツが見えなくなる。
-       .55前後＋強めのぼかしで「すりガラス越しに写真が流れる」感じになる */
-    background:rgba(255,255,255,.55);
-    backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);
-    border-bottom:1.5px solid rgba(255,217,238,.8)}
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1.5px solid #ffd9ee}
   .topbar .tnlinks{display:none}
   .topbar .tnlogo{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:1rem;flex:0 0 auto;white-space:nowrap}
   .topbar .tnlogo .lg-1{color:var(--soda)} .topbar .tnlogo .lg-2{color:var(--candy)}
@@ -119,8 +117,8 @@
       max-width:960px;margin-left:auto;margin-right:auto}
   }
 
-  .intro{text-align:center;padding:22px 0 0}
-  @media(min-width:860px){.intro{padding:30px 0 0}}
+  .intro{text-align:center;padding:6px 0 0}
+  @media(min-width:860px){.intro{padding:8px 0 0}}
 
   /* --- ロゴ：ラムネソーダ×ピンクの2トーン・ステッカー風（動かない） --- */
   h1{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:clamp(2.1rem,6.5vw,3.1rem);line-height:1.25;margin-bottom:10px;
@@ -136,17 +134,17 @@
         100vw を使わないのでページ自体が横スクロールしません --- */
   /* ※iOSでは mask-image がアニメーションと重なると再描画がチラつくので、
      ぼかしフェードはPCだけに適用（スマホは端で潔く切る） */
-  .marquee{--th:158px;margin:10px 0 0;display:flex;flex-direction:column;gap:12px;overflow:hidden;
+  .marquee{--th:158px;margin:4px 0 0;display:flex;flex-direction:column;gap:7px;overflow:hidden;
     cursor:grab;touch-action:pan-y}
   .marquee.dragging{cursor:grabbing}
   @media(min-width:860px){
-    .marquee{--th:250px;margin-top:18px;gap:16px;
+    .marquee{--th:206px;margin-top:6px;gap:9px;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
       mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
   }
-  .mrow{display:flex;gap:12px;width:max-content;will-change:transform;
+  .mrow{display:flex;gap:7px;width:max-content;will-change:transform;
     transform:translateZ(0);backface-visibility:hidden}
-  @media(min-width:860px){.mrow{gap:16px}}
+  @media(min-width:860px){.mrow{gap:9px}}
   @keyframes scrollL{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
   @keyframes scrollR{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
   @media(prefers-reduced-motion:reduce){.mrow{animation:none!important}}
@@ -163,13 +161,13 @@
   /* --- 歌詞：写真2段の下を流れる「吹き出しタイル」。
      写真タイルと同じ白フチ・角丸・影で、同じ棚の仲間に見えるようにしてある --- */
   /* 写真の段と同じくドラッグでスライドできる（触っても止まらない） */
-  .ticker{overflow:hidden;position:relative;padding:4px 0 12px;cursor:grab;touch-action:pan-y}
+  .ticker{overflow:hidden;position:relative;padding:2px 0 11px;cursor:grab;touch-action:pan-y}
   /* translateZ / backface は、写真の段と同じくスマホのチカつき対策 */
   .tickrow{display:flex;width:max-content;align-items:flex-start;gap:12px;
     animation:scrollL 56s linear infinite;will-change:transform;
     transform:translateZ(0);backface-visibility:hidden}
   @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
-  @media(min-width:860px){.tickrow{gap:16px}}
+  @media(min-width:860px){.tickrow{gap:10px}}
 
   /* Hachi Maru Pop は文字が字面の下寄りに来るので、
      上下のpaddingを非対称（下を厚く）にして見た目の中央に合わせている */
@@ -210,7 +208,7 @@
 
   /* --- セクション見出し --- */
   /* 見出しは中央。両側に細い線が伸びる形 */
-  .seclabel{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:26px 2px 12px}
+  .seclabel{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:18px 2px 10px}
   .seclabel .en{font-family:'Mochiy Pop One',sans-serif;font-size:1.3rem;letter-spacing:.02em}
   .seclabel .ja{font-size:.85rem;font-weight:700;color:#8d7ba3}
   .seclabel::before,.seclabel::after{content:"";flex:1;max-width:180px;height:3px;border-radius:99px;
@@ -351,7 +349,7 @@
   /* --- PC：全体的に一回り大きく、ゆったり --- */
   @media(min-width:860px){
     .bio{font-size:1.22rem;line-height:1.75}
-    .seclabel{margin:44px 2px 18px}
+    .seclabel{margin:26px 2px 14px}
     .seclabel .en{font-size:1.75rem}
     .seclabel .ja{font-size:1rem}
     .statuscard{margin-top:38px;padding:22px 26px 20px;border-radius:24px}
@@ -359,7 +357,9 @@
     .statuscard p{font-size:1.02rem}
     .upd{font-size:1rem;padding:9px 20px;top:-18px}
     .lcard{padding:26px 28px;border-radius:26px}
-    .lbody{height:240px}
+    /* ゲームのカードと高さを揃える（中の歌詞エリアが伸び縮みして埋める） */
+    .lcard,.gcard{min-height:490px}
+    .lbody{height:auto;flex:1;min-height:0}
     .lcard .lyric{font-size:1.08rem;line-height:1.9}
     .lcard .num{font-size:1.3rem}
     .lcard .stat{font-size:.76rem;padding:5px 13px}
@@ -440,7 +440,7 @@
   <!-- 2. 名前と自己紹介 -->
   <header class="intro">
     <h1><span class="lg-1">らむね</span> <span class="lg-2">あい</span></h1>
-    <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🌈🫧<br>ジャンル問わず、作りたいものを🤍</p>
+    <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🌈🫧</p>
   </header>
 
   <!-- 3. MUSIC -->
@@ -736,12 +736,25 @@
     {items:rowA, dir:'L', dur:62},
     {items:rowB, dir:'R', dur:54},
   ];
+  /* 1セットが画面幅より短いと、流れている途中で右側に空白ができてしまう。
+     常に「1セット ≧ 画面幅」になるようセットを増やしてから2周ぶん並べる。 */
+  function buildLoop(row,oneHTML){
+    let reps=1;
+    row.innerHTML=oneHTML;
+    // まず1セットが画面幅を超えるまで足す（多すぎないよう上限あり）
+    while(row.scrollWidth < window.innerWidth && reps < 8){
+      reps++;
+      row.innerHTML=oneHTML.repeat(reps);
+    }
+    // シームレスに繋ぐため、その2倍を並べる（前半と後半が同じ内容になる）
+    row.innerHTML=oneHTML.repeat(reps*2);
+  }
+
   const marqueeRows=rowDefs.map(def=>{
     const row=document.createElement('div');
     row.className='mrow';
-    // シームレスに繋ぐため中身を2回並べる
-    row.innerHTML=def.items.map(tileHTML).join('')+def.items.map(tileHTML).join('');
     marquee.appendChild(row);
+    buildLoop(row,def.items.map(tileHTML).join(''));
     const st={el:row, dir:def.dir, dur:def.dur, half:0, base:0};
     play(st,0);
     return st;
@@ -754,10 +767,9 @@
     tick.className='ticker';
     const row=document.createElement('div');
     row.className='tickrow';
-    const one=tickerWords.map(w=>`<a class="bubble" href="#music">${w}</a>`).join('');
-    row.innerHTML=one+one;
     tick.appendChild(row);
     marquee.appendChild(tick);
+    buildLoop(row,tickerWords.map(w=>`<a class="bubble" href="#music">${w}</a>`).join(''));
     const st={el:row, dir:'L', dur:56, half:0, base:0};
     play(st,0);
     marqueeRows.push(st);
@@ -847,7 +859,7 @@
       const kind=shapes[Math.floor(Math.random()*shapes.length)];
       el.className=kind;
       el.style.setProperty('--c', colors[Math.floor(Math.random()*colors.length)]);
-      const size=14+Math.random()*28;el.style.width=size+'px';el.style.height=size+'px';
+      const size=36+Math.random()*72;el.style.width=size+'px';el.style.height=size+'px';
       el.style.left=Math.random()*100+'vw';
       const dur=12+Math.random()*14;
       el.style.animationDuration=dur+'s';
@@ -864,29 +876,20 @@
   dr.addEventListener('click',e=>{if(e.target===dr)toggle();});
   dr.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toggle()));
 
-  /* 画面に入ったセクションだけ、ふわっと現れる（お知らせだけはポンッと弾む） */
+  /* 画面に入ったらスッと現れる。下側へ出ていったらまた隠すので、
+     上にスクロールし直したときや2周目も毎回アニメーションする。
+     （上へ流れ去ったものは出したままにして、戻り読みの邪魔をしない） */
   if('IntersectionObserver' in window){
     const io=new IntersectionObserver((entries)=>{
       entries.forEach(en=>{
-        if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
-      });
-    },{threshold:0.15, rootMargin:'0px 0px -8% 0px'});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-    /* 保険：メニューから一気にジャンプすると途中のセクションを飛び越して
-       表示されないままになることがあるので、通り過ぎたものは出しておく */
-    let ticking=false;
-    function catchUp(){
-      ticking=false;
-      document.querySelectorAll('.reveal:not(.in)').forEach(el=>{
-        if(el.getBoundingClientRect().top < window.innerHeight){
-          el.classList.add('in'); io.unobserve(el);
+        if(en.isIntersecting){
+          en.target.classList.add('in');
+        }else if(en.boundingClientRect.top > 0){
+          en.target.classList.remove('in');
         }
       });
-    }
-    window.addEventListener('scroll',()=>{
-      if(!ticking){ ticking=true; requestAnimationFrame(catchUp); }
-    },{passive:true});
+    },{threshold:0.12, rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   }else{
     document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
   }
