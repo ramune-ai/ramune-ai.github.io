@@ -164,8 +164,36 @@
       max-width:960px;margin-left:auto;margin-right:auto}
   }
 
-  .intro{text-align:center;padding:6px 0 0}
-  @media(min-width:860px){.intro{padding:8px 0 0}}
+  /* --- 名前と一言：画面を横断する白リボン ---
+     マーキーと同じく .wrap の外に置いてあるので、幅の指定は要らない。
+     （100vw で広げるやり方もあるが、PCではスクロールバーのぶん右にはみ出して
+       横スクロールが出てしまうので使っていない） */
+  .intro{text-align:center;position:relative;z-index:1;margin-top:14px;
+    padding:22px 18px 20px;
+    /* 完全な白にせず少しだけ透かして、後ろを漂う幾何学模様がうっすら通って見えるようにする */
+    background:rgba(255,255,255,.93)}
+
+  /* 上下の縫い目。「色○px → すき間○px」を横に繰り返して点線を描いている。
+     セクションの7色と同じ色なので、飾りではなく色の目次になっている。
+     ★調整するとき★
+       height … 線の太さ
+       28px / 14px … 一針の長さ と すき間。大きくすると粗く、小さくすると細かくなる */
+  .intro::before,.intro::after{content:"";position:absolute;left:0;right:0;height:5px;
+    background:repeating-linear-gradient(90deg,
+      #f6a8c8 0 28px, transparent 28px 42px,        /* MUSIC ピンク */
+      #bda6ee 42px 70px, transparent 70px 84px,     /* GAME 紫 */
+      #f5cf7a 84px 112px, transparent 112px 126px,  /* SHOP オレンジ */
+      #a9d98c 126px 154px, transparent 154px 168px, /* ABOUT ME 緑 */
+      #c9c7bf 168px 196px, transparent 196px 210px, /* SNS グレー */
+      #8fd6f0 210px 238px, transparent 238px 252px, /* NEWS 水色 */
+      #98a4c4 252px 280px, transparent 280px 294px) /* WORK ネイビー */}
+  .intro::before{top:0}
+  .intro::after{bottom:0}
+
+  @media(min-width:860px){
+    .intro{padding:30px 28px 28px;margin-top:20px}
+    .intro::before,.intro::after{height:6px}
+  }
 
   /* --- ロゴ：ラムネソーダ×ピンクの2トーン・ステッカー風（動かない） --- */
   h1{font-family:'Hachi Maru Pop','Mochiy Pop One',sans-serif;font-size:clamp(2.1rem,6.5vw,3.1rem);line-height:1.25;margin-bottom:10px;
@@ -412,13 +440,14 @@
   .snscard:hover{transform:translateY(-5px) rotate(-2deg)}
   /* 4つ同時に出ると一度に目に入る情報が多いので、左から順に出す。
      枠（.snsgrid）が .reveal で出るのに合わせて、中身を少しずつ遅らせている */
-  .snsgrid .snscard{opacity:0;transform:translateY(14px);
-    transition:opacity .45s ease, transform .45s cubic-bezier(.34,1.4,.64,1)}
+  /* 動き方（下から16px・0.7秒）は他のセクションとまったく同じ。順番だけずらしている */
+  .snsgrid .snscard{opacity:0;transform:translateY(16px);
+    transition:opacity .7s ease, transform .7s ease}
   .snsgrid.in .snscard{opacity:1;transform:none}
   .snsgrid.in .snscard:nth-child(1){transition-delay:.05s}
-  .snsgrid.in .snscard:nth-child(2){transition-delay:.16s}
-  .snsgrid.in .snscard:nth-child(3){transition-delay:.27s}
-  .snsgrid.in .snscard:nth-child(4){transition-delay:.38s}
+  .snsgrid.in .snscard:nth-child(2){transition-delay:.25s}
+  .snsgrid.in .snscard:nth-child(3){transition-delay:.45s}
+  .snsgrid.in .snscard:nth-child(4){transition-delay:.65s}
   /* 出たあとは hover の動きを邪魔しないよう、遅延を消す */
   .snsgrid.in .snscard:hover{transition-delay:0s}
   @media(prefers-reduced-motion:reduce){
@@ -583,13 +612,14 @@
 <!-- 1. まず世界観と作品を見せる（.wrapの外＝画面幅ぴったり） -->
 <div class="marquee" id="marquee"></div>
 
-<div class="wrap">
-  <!-- 2. 名前と自己紹介 -->
-  <header class="intro">
-    <h1><span class="lg-1">らむね</span> <span class="lg-2">あい</span></h1>
-    <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🫧</p>
-  </header>
+<!-- 2. 名前と自己紹介：画面を横断するリボン。
+     マーキーと同じく .wrap の外に置いてあるので、小細工なしで画面幅ぴったりになる -->
+<header class="intro">
+  <h1><span class="lg-1">らむね</span> <span class="lg-2">あい</span></h1>
+  <p class="bio">「<b>カワイイ＆夢</b>」をカタチに 🎀🫧</p>
+</header>
 
+<div class="wrap">
   <!-- 3. MUSIC -->
   <h2 class="seclabel reveal" id="music"><span class="en">MUSIC</span><span class="ja">音楽</span></h2>
   <div class="shelf reveal" id="deck"></div>
@@ -1057,8 +1087,10 @@
           `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 22'%3E%3Cpath d='M12 2 L22 20 L2 20 Z' fill='none' stroke='black' stroke-width='${sw}' stroke-linejoin='round'/%3E%3C/svg%3E")`);
       }
 
-      /* 大きい図形ほど薄く。同じ濃さだと大きいものだけ主張しすぎるため */
-      el.style.opacity=(0.30-(size-32)/188*0.10).toFixed(3);
+      /* ★濃さ★ かなり薄めにしてある。ここを上げると、セクションタイトル両端の線と
+         同じくらいの濃さになって背景と前景の区別がつかなくなり、本文が読みにくくなる。
+         さらに、大きい図形ほど薄くしている（同じ濃さだと大きいものだけ主張しすぎるため） */
+      el.style.opacity=(0.17-(size-32)/188*0.07).toFixed(3);
       el.style.left=Math.random()*100+'vw';
       const dur=12+Math.random()*14;
       el.style.animationDuration=dur+'s';
