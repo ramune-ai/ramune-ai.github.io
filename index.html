@@ -11,15 +11,18 @@
      バーの向こうにページが透けて見える表示になりません。
      未指定なら iOS が背景色（薄ピンク）を拾いつつ、透過も効きます。 -->
 <title>らむね あい 🌈</title>
-<!-- ★アイコン（ブックマークやタブに出る絵）★
+<!-- ★アイコン（タブ・ブックマーク・ホーム画面に出る絵）★
      これを書かないと、ブラウザは ramune-ai.github.io/favicon.ico を探しに行き、
      同じ場所に置いてある別作品（間取りすと）のアイコンを拾ってしまう。
      ここで指定しておけば必ずこちらが使われる。
-     絵は「らむね＝水色」「あい＝ピンク」の泡ふたつ。画像ファイルではなく
-     図形の指示をそのまま書いているので、別ファイルの管理がいらない -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='16'%20fill='%23ffeaf4'/%3E%3Ccircle%20cx='26'%20cy='26'%20r='15'%20fill='%232bb8d6'/%3E%3Ccircle%20cx='42'%20cy='42'%20r='13'%20fill='%23ff5fa8'/%3E%3Ccircle%20cx='21'%20cy='21'%20r='4.5'%20fill='%23ffffff'%20opacity='.85'/%3E%3C/svg%3E">
-<!-- ホーム画面に追加したときのアイコン（iOSはSVGを受け付けないのでPNG） -->
-<link rel="apple-touch-icon" href="assets/icon-180.png">
+
+     ファイルが2つあるのは、透過の扱いがiPhoneだけ違うため：
+       icon-180.png   … 背景が透明。タブやブックマークではこちらを使う
+       icon-touch.png … 背景が薄ピンク。ホーム画面に追加したとき用。
+                        iOSは透明部分を黒く塗りつぶしてしまうので、
+                        こちらだけ背景色を入れてある -->
+<link rel="icon" type="image/png" href="assets/icon-180.png">
+<link rel="apple-touch-icon" href="assets/icon-touch.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
@@ -1156,17 +1159,22 @@
      いまは、スクロールのたびに実際の位置をその場で測って決めています。
      記録ではなく現在地を見るので、ずれようがありません。 */
 
-  /* ★出すタイミング★ 画面の高さの86%より上に来たら出す。
+  /* ★出すタイミング★ 画面の高さの何％より上に来たら出すか。
      数字を大きくすると早く（画面の下端に顔を出した瞬間に）、
-     小さくすると遅く（しっかり画面に入ってから）出るようになる。 */
-  const IN_LINE  = 0.86;
+     小さくすると遅く（しっかり画面に入ってから）出るようになる。
+
+     セクションタイトルだけ先に出るようにしてある。
+     「見出しが出る → 少し遅れて中身が出る」という順番になり、
+     読み進める流れと同じになるため。 */
+  const LINE_LABEL = 0.95;  /* セクションタイトル（MUSIC / GAME など） */
+  const LINE_BODY  = 0.86;  /* それ以外（カード・写真・お知らせなど） */
   /* 「戻す」のは画面から完全に出きったとき（100%）。
-     出す線（86%）と戻す線（100%）をわざとずらしてあるので、
+     出す線と戻す線をわざとずらしてあるので、
      境目で出たり消えたりを繰り返してチカチカすることがない */
 
   /* ★最初の1回だけは画面いっぱい（100%）で判定する★
      ページを開いた直後は「スクロールして近づいてきた」という動きがない。
-     ここで 86% の線を使うと、画面には見えているのに線より下にある
+     ここで通常の線を使うと、画面には見えているのに線より下にある
      MUSICの見出しなどが、出ないまま取り残されてしまう。
      （実際それで最初の画面にMUSICが出なくなっていた）
      最初の1回は「画面に入っているものは全部出す」でよい。 */
@@ -1174,8 +1182,6 @@
 
   function updateReveals(){
     const h=window.innerHeight;
-    const line = firstRun ? h : h*IN_LINE;
-    firstRun=false;
     revealEls.forEach(el=>{
       const top=el.getBoundingClientRect().top;
       const shown=el.classList.contains('in');
@@ -1186,11 +1192,16 @@
                                     これを挟まないと、消してすぐ付け直したときに
                                     ブラウザが「変化なし」とみなしてアニメが再生されない */
         }
-      }else if(top < line){
-        el.classList.add('in');
+      }else{
+        const line = firstRun ? h
+          : h * (el.classList.contains('seclabel') ? LINE_LABEL : LINE_BODY);
+        if(top < line) el.classList.add('in');
       }
     });
+    firstRun=false;
   }
+
+
 
 
   /* スクロール中は50ミリ秒に1回だけ測る（毎回測ると重いため）。
