@@ -370,6 +370,17 @@
   .shelf{display:flex;align-items:stretch;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;
     padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .shelf::-webkit-scrollbar{display:none}
+  /* --- スマホでは棚だけ画面いっぱいに広げる ---
+     .wrap の左右余白(18px)を打ち消して、カードが画面の端まで流れていくようにする。
+     ・margin を左右にマイナス18px … 棚の幅を画面ぴったりに広げる
+     ・padding を左右に18px       … 1枚目と最後の1枚は本文と同じ位置から始める
+     ・scroll-padding-left        … スナップで止まる位置も同じ18pxに合わせる
+     この3つをセットにしないと、端でカードが切れたり、位置がずれたりします */
+  @media(max-width:859px){
+    .shelf{margin-left:-18px;margin-right:-18px;
+      padding-left:18px;padding-right:18px;
+      scroll-padding-left:18px}
+  }
   .shelfnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px}
   .shelfcount{font-size:.8rem;font-weight:700;color:#a99cb8;min-width:52px;text-align:center}
   .shelfhint{text-align:center;font-size:.76rem;font-weight:700;color:#c78ab0;margin-top:5px}
@@ -437,6 +448,22 @@
   /* タイトルとジャンルを1行に並べる。ジャンルは右端 */
   .gtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
   .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;margin:0}
+  /* --- ゲーム名の1文字ずつの色分け ---
+     細い縁取り（text-stroke）を付けているのは、黄色など明るい色が
+     白い背景だと薄くて読めなくなるため。色はそのまま鮮やかに保てる。
+     paint-order は「縁取りを文字の外側に描く」指定（無いと文字が細って見える） */
+  .gttl .ch{-webkit-text-stroke:.6px rgba(70,45,15,.5);paint-order:stroke fill}
+  /* 間取りすと：アイコンのお部屋から取った色 */
+  .t-madori .ch:nth-child(1){color:#d08234}  /* 洋室のオレンジ */
+  .t-madori .ch:nth-child(2){color:#8fb02f}  /* 和室のグリーン */
+  .t-madori .ch:nth-child(3){color:#d06868}  /* キッチンの赤 */
+  .t-madori .ch:nth-child(4){color:#3482d0}  /* トイレのブルー */
+  .t-madori .ch:nth-child(5){color:#4eb6b6}  /* お風呂の水色 */
+  /* ABC雪合戦：A赤・Bオレンジ・C黄色、「雪合戦」は水色 */
+  .t-abc .ch:nth-child(1){color:#e03131}
+  .t-abc .ch:nth-child(2){color:#f76707}
+  .t-abc .ch:nth-child(3){color:#f2c200}
+  .t-abc .ch:nth-child(n+4){color:#35a7cc}
   /* .b / .c は色違い。ジャンルを増やしたくなったときに使えます */
   .gtag{font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:99px;background:#ffe8f4;color:#e0559d;
     white-space:nowrap;flex:0 0 auto}
@@ -694,7 +721,7 @@
       </div>
       <div class="gbody">
         <div class="gtop">
-          <h3 class="gttl">間取りすと</h3>
+          <h3 class="gttl t-madori"><span class="ch">間</span><span class="ch">取</span><span class="ch">り</span><span class="ch">す</span><span class="ch">と</span></h3>
           <span class="gtag">パズル</span>
         </div>
         <p class="gdesc">ランダムに渡されるお部屋を好きな所に置いて、自分だけの間取りを作る感覚パズルゲーム！</p>
@@ -707,7 +734,7 @@
       <div class="gmedia"><div class="gph abc"><span class="big">ABC雪合戦</span><small>🎬 プレイ動画つくり中</small></div></div>
       <div class="gbody">
         <div class="gtop">
-          <h3 class="gttl">ABC雪合戦</h3>
+          <h3 class="gttl t-abc"><span class="ch">A</span><span class="ch">B</span><span class="ch">C</span><span class="ch">雪</span><span class="ch">合</span><span class="ch">戦</span></h3>
           <span class="gtag b">対戦アクション</span>
         </div>
         <p class="gdesc">雪の中で、アルファベットを拾って、投げたり盾にしたりして、相手を倒す対戦ゲーム。現在はCOM対戦のみ。PCブラウザ推奨。</p>
