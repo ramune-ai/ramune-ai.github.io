@@ -12,17 +12,19 @@
      未指定なら iOS が背景色（薄ピンク）を拾いつつ、透過も効きます。 -->
 <title>らむね あい 🌈</title>
 <!-- ★アイコン（タブ・ブックマーク・ホーム画面に出る絵）★
-     これを書かないと、ブラウザは ramune-ai.github.io/favicon.ico を探しに行き、
-     同じ場所に置いてある別作品（間取りすと）のアイコンを拾ってしまう。
-     ここで指定しておけば必ずこちらが使われる。
+     指定がないと、ブラウザは ramune-ai.github.io/favicon.ico を探しに行き、
+     同じ場所にある別作品（間取りすと）のアイコンを拾ってしまう。
 
-     ファイルが2つあるのは、透過の扱いがiPhoneだけ違うため：
-       icon-180.png   … 背景が透明。タブやブックマークではこちらを使う
-       icon-touch.png … 背景が薄ピンク。ホーム画面に追加したとき用。
-                        iOSは透明部分を黒く塗りつぶしてしまうので、
-                        こちらだけ背景色を入れてある -->
-<link rel="icon" type="image/png" href="assets/icon-180.png">
-<link rel="apple-touch-icon" href="assets/icon-touch.png">
+     3行あるのは、ブラウザによって見に行く先が違うため：
+       favicon.ico     … 昔からの置き場所。iPhoneのSafariはまずここを見る。
+                         index.html と同じ階層に置くこと（サイトの一番上）
+       icon-180.png    … 背景が透明。PCのタブやブックマーク用
+       icon-touch.png  … 背景が薄ピンク。ホーム画面に追加したとき用。
+                         iOSは透明部分を黒く塗りつぶすので、これだけ背景色入り -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="180x180" href="assets/icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-touch.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Hachi+Maru+Pop&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
@@ -300,12 +302,12 @@
   .statuscard{margin-top:26px;border-radius:20px;padding:15px 16px 13px;background:#fff;border:2.5px dashed #ffb3d9;
     box-shadow:var(--card-shadow);position:relative;opacity:0;transform:scale(.86)}
   /* 拡大縮小だけで弾ませる。上下移動を混ぜるとカードの位置が飛んでガクッとずれる */
-  .statuscard.in{animation:popcard .6s cubic-bezier(.34,1.56,.64,1) forwards}
+  .statuscard.in{animation:popcard .6s cubic-bezier(.34,1.56,.64,1) both;animation-delay:var(--rd,0s)}
   @keyframes popcard{0%{opacity:0;transform:scale(.86)}55%{opacity:1;transform:scale(1.045)}100%{opacity:1;transform:scale(1)}}
   .upd{position:absolute;top:-15px;right:12px;font-size:.88rem;font-weight:900;letter-spacing:.01em;
     color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);padding:7px 16px;border-radius:99px;
     box-shadow:0 4px 10px rgba(157,123,255,.35);transform:rotate(3deg) scale(0);opacity:0}
-  .statuscard.in .upd{animation:stamp .4s .35s cubic-bezier(.34,1.56,.64,1) forwards}
+  .statuscard.in .upd{animation:stamp .4s cubic-bezier(.34,1.56,.64,1) both;animation-delay:calc(var(--rd,0s) + .35s)}
   @keyframes stamp{0%{transform:rotate(-18deg) scale(0);opacity:0}70%{transform:rotate(6deg) scale(1.08);opacity:1}100%{transform:rotate(3deg) scale(1);opacity:1}}
   @media(prefers-reduced-motion:reduce){
     .statuscard{opacity:1;transform:none}.statuscard.in{animation:none}
@@ -339,7 +341,10 @@
   #work .en{color:#1f2d55}  #work{--line:#98a4c4}   /* ネイビー */
 
   /* --- 画面に入ったらふわっと現れる（控えめ） --- */
-  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease}
+  /* --rd は「同じ瞬間にまとめて出るとき、上から順に少しずつ遅らせる」ための待ち時間。
+     JSが入れる（下のupdateRevealsを参照）。単独で出るときは0秒なので影響しない */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease;
+    transition-delay:var(--rd,0s)}
   .reveal.in{opacity:1;transform:none}
   /* NEWSカードだけは「ポンッ」と弾む専用アニメを持っている。
      .reveal の上下移動（translateY）と重なると、出た瞬間に位置が飛んでガクッとずれるため、
@@ -394,7 +399,12 @@
     white-space:pre-wrap;border-left:3px solid #ffdaee;padding-left:12px}
   .lbody .video{width:100%;height:100%;border-radius:12px;overflow:hidden;background:#000}
   .lbody .video iframe{width:100%;height:100%;border:0;display:block}
-  .lfoot{margin-top:10px;font-size:.74rem;font-weight:700;color:#c78ab0;min-height:1.2em}
+  .lfoot{margin-top:10px;font-size:.74rem;font-weight:700;color:#c78ab0;min-height:1.2em;text-align:center}
+  /* 「MV製作中」は控えめな注釈ではなく、カードの状態表示として目立たせる。
+     ★MVを公開したら★ songs配列にyoutubeIdを足せば、この表示は自動で動画に置き換わる */
+  .making{display:inline-block;font-family:'Mochiy Pop One',sans-serif;font-size:.9rem;letter-spacing:.04em;
+    color:#fff;background:linear-gradient(100deg,#f77bbb,#a98bf0);
+    padding:7px 20px;border-radius:99px;box-shadow:0 4px 10px rgba(157,123,255,.3)}
 
   /* --- GAME カード --- */
   .gcard{flex:0 0 82%;max-width:330px;scroll-snap-align:start;background:#fff;border-radius:22px;overflow:hidden;
@@ -469,10 +479,10 @@
   .snsgrid .snscard{opacity:0;transform:translateY(16px);
     transition:opacity .7s ease, transform .7s ease}
   .snsgrid.in .snscard{opacity:1;transform:none}
-  .snsgrid.in .snscard:nth-child(1){transition-delay:.05s}
-  .snsgrid.in .snscard:nth-child(2){transition-delay:.17s}
-  .snsgrid.in .snscard:nth-child(3){transition-delay:.29s}
-  .snsgrid.in .snscard:nth-child(4){transition-delay:.41s}
+  .snsgrid.in .snscard:nth-child(1){transition-delay:calc(var(--rd,0s) + .05s)}
+  .snsgrid.in .snscard:nth-child(2){transition-delay:calc(var(--rd,0s) + .17s)}
+  .snsgrid.in .snscard:nth-child(3){transition-delay:calc(var(--rd,0s) + .29s)}
+  .snsgrid.in .snscard:nth-child(4){transition-delay:calc(var(--rd,0s) + .41s)}
   /* 出たあとは hover の動きを邪魔しないよう、遅延を消す */
   .snsgrid.in .snscard:hover{transition-delay:0s}
   @media(prefers-reduced-motion:reduce){
@@ -526,6 +536,7 @@
     .lcard .num{font-size:1.45rem}
     .lcard .stat{font-size:.88rem;padding:6px 15px}
     .lfoot{font-size:.96rem}
+    .making{font-size:1.1rem;padding:9px 26px}
     .gcard{border-radius:24px}
     .gttl{font-size:1.5rem}
     .gdesc{font-size:1.12rem;line-height:1.8}
@@ -667,8 +678,8 @@
       <div class="gbody">
         <h3 class="gttl">間取りすと</h3>
         <div class="gtags"><span class="gtag">パズル</span><span class="gtag b">間取り</span><span class="gtag c">ブラウザ</span></div>
-        <p class="gdesc">部屋をならべて理想のお部屋を完成させる間取りパズル。ぴったりハマる配置を探そう。</p>
-        <a class="gplay" href="https://ramune-ai.github.io/madori-st/" target="_blank" rel="noopener">▶ あそぶ</a>
+        <p class="gdesc">ランダムに渡されるお部屋を好きな所に置いて、自分だけの間取りを作る感覚パズルゲーム！</p>
+        <a class="gplay" href="https://ramune-ai.github.io/madori-st/" target="_blank" rel="noopener">今すぐ無料で遊ぶ！</a>
       </div>
     </article>
 
@@ -678,7 +689,7 @@
       <div class="gbody">
         <h3 class="gttl">ABC雪合戦</h3>
         <div class="gtags"><span class="gtag">バトル</span><span class="gtag b">アクション</span><span class="gtag c">対戦</span></div>
-        <p class="gdesc">アルファベットを投げ合う、見たことのない雪合戦バトル。公開をおたのしみに！</p>
+        <p class="gdesc">アルファベットを拾って、投げたり盾にしたりして、相手を倒す対戦ゲーム。現在はCOM対戦のみ。PCブラウザ推奨。</p>
         <span class="gplay disabled">🚧 もうすぐ公開</span>
       </div>
     </article>
@@ -709,12 +720,13 @@
   <!-- ABOUT -->
   <h2 class="seclabel reveal" id="about"><span class="en">ABOUT ME</span><span class="ja">わたしのこと</span></h2>
   <div class="about reveal frost">
-    <p>創作しないと、<span class="accent">頭パンクしちゃう</span>タイプです。音楽もゲームもアートも、ジャンルはバラバラだけど、ぜんぶ「カワイイ＆夢」でつながってる。ここは、わたしの作品がぜんぶ集まる創作のお花畑です🌷</p>
+    <p>ここは、私「らむね あい」の作品がぜんぶ集まる<span class="accent">「創作のデジタルお花畑」</span>🌷<br>ジャンル問わず、作りたいものを自由に🤍創作しないと頭パンクしちゃうタイプ\( ᐛ )/</p>
   </div>
 
   <!-- SNS -->
   <h2 class="seclabel reveal" id="sns"><span class="en">SNS</span><span class="ja">フォローしてね</span></h2>
-  <div class="snsgrid reveal">
+  <!-- data-reveal-tail：中のアイコン4つが順に出るぶんの時間。次の要素がこれを追い越さないように -->
+  <div class="snsgrid reveal" data-reveal-tail="0.38">
     <a class="snscard b-x" href="https://x.com/ramune_aiai" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
       <span>X</span>
@@ -766,9 +778,9 @@
      例) {lyric:`...`, youtubeId:"abc123XYZ", title:"曲のタイトル"} */
   const songs=[
     {lyric:`信じられなかった\nこんな日が来るなんて\nドラえもんの世界が\n現実になっちゃった！`},
-    {lyric:`振って！振って！\nサイリウム！\nもっと！もっと！\n高くして！\n優勝！優勝！\n圧倒的タイパ！\nコスパじゃ測れない！\n大優勝！`},
-    {lyric:`AI×あい×愛×アイ\n（AI！あい！愛！アイ！）\n∞のトキメキクリエイター\nI'm Ai♡`},
     {lyric:`「え・え・え、AI三銃士を連れてきたよ。」\n「え、AI三銃士？」\n「相談の専門家〜？chatGPT！」\n「結論からいうね。👉それ、正解」\n「画像の専門家〜？Gemini！」\n「めちゃくちゃかっこいいですね！鳥肌立ちました！」\n「コーディング、スキルなど長文処理の専門家〜？Claude！」\n「こんばんは、夜更かしさん。」\n＼３人合わせて！最強AI三銃士★／`},
+    {lyric:`AI×あい×愛×アイ\n（AI！あい！愛！アイ！）\n∞のトキメキクリエイター\nI'm Ai♡`},
+    {lyric:`振って！振って！\nサイリウム！\nもっと！もっと！\n高くして！\n優勝！優勝！\n圧倒的タイパ！\nコスパじゃ測れない！\n大優勝！`},
     {lyric:`ド・パ・ミン （Hey！！！）\nチ・シ・リョウ （Hey！！！）\nド・パ・ミン （Hey！！）\nチ・シ・リョウ （Hey！！！）\n回せ回せ ガチャ回せ〜！！！\n生成しまくり 神曲出まくり～！！！（作りまくり～！！）`},
     {lyric:`ずっとしまってた　小さな宝物\n見ないふりしてた　ふたをそっと開けて\n透き通るわたしの色　あぁ\nこのままでいいんだ`},
     {lyric:`むいてないなあって思いながら\nなぜか 諦められなかった\n何度転んでも立ち上がって\nその強さが 自信になった`},
@@ -793,9 +805,9 @@
         <div class="lfoot">🎬 ${s.title||''}</div>`;
     }else{
       el.innerHTML=`
-        <div class="lhead"><span class="num">${num}</span><span class="stat">REC・MV制作中</span></div>
+        <div class="lhead"><span class="num">${num}</span></div>
         <div class="lbody"><blockquote class="lyric">${s.lyric}</blockquote></div>
-        <div class="lfoot">🔒 タイトルと音源は公開までひみつ</div>`;
+        <div class="lfoot"><span class="making">MV製作中</span></div>`;
     }
     deck.appendChild(el);
   });
@@ -1180,23 +1192,45 @@
      最初の1回は「画面に入っているものは全部出す」でよい。 */
   let firstRun=true;
 
+  /* まとめて出るときの、1つあたりの間隔と、待ち時間の上限 */
+  const STEP=0.09, MAX_WAIT=0.95;
+
   function updateReveals(){
     const h=window.innerHeight;
+    /* このひと回しで新しく出るものに、上にあるものから順に待ち時間をつける。
+       速くスクロールして何個も同時に判定されたとき、上から順に現れるようにするため。
+       これがないと、中で順番待ちをするSNSより、待ちのないNEWSが先に出てしまう。 */
+    let wait=0;
     revealEls.forEach(el=>{
-      const top=el.getBoundingClientRect().top;
+      const r=el.getBoundingClientRect();
       const shown=el.classList.contains('in');
       if(shown){
-        if(top >= h){
+        if(r.top >= h){
           el.classList.remove('in');
+          el.style.removeProperty('--rd');
           void el.offsetWidth;   /* ここで一度描画を確定させる。
                                     これを挟まないと、消してすぐ付け直したときに
                                     ブラウザが「変化なし」とみなしてアニメが再生されない */
         }
-      }else{
-        const line = firstRun ? h
-          : h * (el.classList.contains('seclabel') ? LINE_LABEL : LINE_BODY);
-        if(top < line) el.classList.add('in');
+        return;
       }
+      const line = firstRun ? h
+        : h * (el.classList.contains('seclabel') ? LINE_LABEL : LINE_BODY);
+      if(r.top >= line) return;
+
+      /* 待ち時間をつけるのは「実際に画面に見えているもの」だけ。
+         メニューから飛んだときなど、画面より上にあるものまで数えると
+         待ち行列が伸びきってしまい、順番の意味がなくなる */
+      const 見えている = r.bottom > 0;
+      el.style.setProperty('--rd', (見えている ? wait : 0).toFixed(2)+'s');
+      if(見えている){
+        /* data-reveal-tail は「この要素は中でさらに順番待ちをする」という申告。
+           SNSは4つのアイコンが順に出るので、その分を足しておかないと
+           次のNEWSが最後のアイコンを追い越してしまう */
+        const tail=parseFloat(el.dataset.revealTail)||0;
+        wait=Math.min(wait+STEP+tail, MAX_WAIT);
+      }
+      el.classList.add('in');
     });
     firstRun=false;
   }
