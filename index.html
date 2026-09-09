@@ -51,7 +51,16 @@
   body{font-family:'Zen Maru Gothic',sans-serif;color:var(--ink);min-height:100vh;overflow-x:hidden;
     background:#ffeaf4}
 
-  .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  /* ★スマホのチラつき対策★
+     .sky は position:fixed なので、ページをスクロールするたびに
+     「動かない背景」と「動く本文」をブラウザが合成し直す。
+     中の図形もそれぞれ動いているため、この合成が重なると描き直しが追いつかず、
+     一瞬白く飛んだように見えることがある。
+     translateZ(0) で .sky を独立した層として固定し、
+     contain で「この中の変化は外に影響しない」とブラウザに伝えて、
+     スクロールのたびに巻き込まれないようにしている。 */
+  .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+    transform:translateZ(0);will-change:transform;contain:strict}
   /* --w が線の太さ。JS が図形ごとにランダムで入れる（既定値は保険） */
   .sky i{position:absolute;display:block;animation:drift linear infinite;--w:3.5px}
   @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-15vh) rotate(360deg)}}
@@ -235,9 +244,11 @@
   /* ※iOSでは mask-image がアニメーションと重なると再描画がチラつくので、
      ぼかしフェードはPCだけに適用（スマホは端で潔く切る） */
   /* position/z-index を持たせて、背景の幾何学模様（.sky）より確実に手前に置く。
-     こうしないと、動く図形が写真の上を横切って重なり合い、描き直しが増える */
+     こうしないと、動く図形が写真の上を横切って重なり合い、描き直しが増える。
+     contain:paint は「はみ出しはここで切れる」とブラウザに約束するもの。
+     スクロール中に写真の段を計算し直す範囲が狭まり、チラつきが出にくくなる */
   .marquee{--th:146px;margin:2px 0 0;display:flex;flex-direction:column;gap:7px;overflow:hidden;
-    position:relative;z-index:1;cursor:grab;touch-action:pan-y}
+    position:relative;z-index:1;cursor:grab;touch-action:pan-y;contain:paint}
   .marquee.dragging{cursor:grabbing}
   @media(min-width:860px){
     .marquee{--th:206px;margin-top:6px;gap:9px;
@@ -354,7 +365,9 @@
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 
   /* --- 共通：横スワイプの棚 --- */
-  .shelf{display:flex;align-items:stretch;gap:13px;overflow-x:auto;scroll-snap-type:x proximity;
+  /* mandatory＝どこで指を離しても必ずカードの左端で止まる。
+     proximity だと「近ければ吸い付く」なので、少しだけ滑らせると中途半端な位置で止まってしまう */
+  .shelf{display:flex;align-items:stretch;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;
     padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .shelf::-webkit-scrollbar{display:none}
   .shelfnav{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px}
@@ -421,12 +434,15 @@
   .gph .big{font-size:1.6rem;font-family:'Mochiy Pop One',sans-serif;text-shadow:0 2px 6px rgba(0,0,0,.25)}
   .gph small{font-size:.7rem;opacity:.95;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.25)}
   .gbody{padding:13px 15px 15px;display:flex;flex-direction:column;flex:1}
-  .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;margin-bottom:6px}
-  .gtags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-  .gtag{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:99px;background:#ffe8f4;color:#e0559d}
+  /* タイトルとジャンルを1行に並べる。ジャンルは右端 */
+  .gtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+  .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;margin:0}
+  /* .b / .c は色違い。ジャンルを増やしたくなったときに使えます */
+  .gtag{font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:99px;background:#ffe8f4;color:#e0559d;
+    white-space:nowrap;flex:0 0 auto}
   .gtag.b{background:#e6f0ff;color:#2f8ec4}
   .gtag.c{background:#e2fbf3;color:#0d8168}
-  .gdesc{font-size:.85rem;line-height:1.65;color:#6a5a7a;margin-bottom:12px;flex:1}
+  .gdesc{font-size:.95rem;line-height:1.72;color:#6a5a7a;margin-bottom:12px;flex:1}
   .gplay{align-self:center;display:inline-flex;align-items:center;gap:6px;font-family:'Mochiy Pop One',sans-serif;
     font-size:.95rem;text-decoration:none;color:#b8356f;padding:11px 26px;border-radius:99px;
     background:linear-gradient(100deg,#ffdaee,#e8d8ff);border:2.5px solid #fff;box-shadow:0 6px 0 #f3b7d7;
@@ -539,8 +555,9 @@
     .making{font-size:1.1rem;padding:9px 26px}
     .gcard{border-radius:24px}
     .gttl{font-size:1.5rem}
-    .gdesc{font-size:1.12rem;line-height:1.8}
-    .gtag{font-size:.9rem;padding:5px 13px}
+    .gtop{margin-bottom:10px}
+    .gdesc{font-size:1.22rem;line-height:1.85}
+    .gtag{font-size:.95rem;padding:5px 14px}
     .gplay{font-size:1.22rem;padding:15px 36px}
     .gph .big{font-size:2.3rem}
     .gph small{font-size:.95rem}
@@ -676,8 +693,10 @@
         <div class="gph madori"><span class="big">間取りすと</span><small>🎬 プレイ動画つくり中</small></div>
       </div>
       <div class="gbody">
-        <h3 class="gttl">間取りすと</h3>
-        <div class="gtags"><span class="gtag">パズル</span><span class="gtag b">間取り</span><span class="gtag c">ブラウザ</span></div>
+        <div class="gtop">
+          <h3 class="gttl">間取りすと</h3>
+          <span class="gtag">パズル</span>
+        </div>
         <p class="gdesc">ランダムに渡されるお部屋を好きな所に置いて、自分だけの間取りを作る感覚パズルゲーム！</p>
         <a class="gplay" href="https://ramune-ai.github.io/madori-st/" target="_blank" rel="noopener">今すぐ無料で遊ぶ！</a>
       </div>
@@ -687,9 +706,11 @@
       <div class="gribbon">準備中</div>
       <div class="gmedia"><div class="gph abc"><span class="big">ABC雪合戦</span><small>🎬 プレイ動画つくり中</small></div></div>
       <div class="gbody">
-        <h3 class="gttl">ABC雪合戦</h3>
-        <div class="gtags"><span class="gtag">バトル</span><span class="gtag b">アクション</span><span class="gtag c">対戦</span></div>
-        <p class="gdesc">アルファベットを拾って、投げたり盾にしたりして、相手を倒す対戦ゲーム。現在はCOM対戦のみ。PCブラウザ推奨。</p>
+        <div class="gtop">
+          <h3 class="gttl">ABC雪合戦</h3>
+          <span class="gtag b">対戦アクション</span>
+        </div>
+        <p class="gdesc">雪の中で、アルファベットを拾って、投げたり盾にしたりして、相手を倒す対戦ゲーム。現在はCOM対戦のみ。PCブラウザ推奨。</p>
         <span class="gplay disabled">🚧 もうすぐ公開</span>
       </div>
     </article>
@@ -813,6 +834,8 @@
   });
 
   /* 棚の「いま何枚目 / 全部で何枚」表示 */
+  /* 「いま何枚目」の表示。矢印から直接呼べるよう、棚ごとに更新関数を控えておく */
+  const shelfUpdaters={};
   function bindCounter(shelfId,countId){
     const shelf=document.getElementById(shelfId), out=document.getElementById(countId);
     if(!shelf||!out||!shelf.firstElementChild) return;
@@ -822,6 +845,7 @@
       const idx=Math.round(shelf.scrollLeft/step);
       out.textContent=Math.min(idx+1,total)+' / '+total;
     }
+    shelfUpdaters[shelfId]=update;
     shelf.addEventListener('scroll',()=>window.requestAnimationFrame(update),{passive:true});
     update();
   }
@@ -857,6 +881,13 @@
     const gap=parseFloat(getComputedStyle(shelf).gap)||13;
     return shelf.firstElementChild.getBoundingClientRect().width+gap;
   }
+  /* 矢印で動かしたあとの後始末。scrollイベント待ちにせず、押した側から直接更新する。
+     （端末によっては、プログラムで動かしたときにscrollイベントが来ないことがあるため） */
+  function afterShelfMove(shelf){
+    if(typeof syncArrows==='function') syncArrows(shelf);
+    const up=shelfUpdaters[shelf.id];
+    if(up) up();
+  }
   document.querySelectorAll('.shelfarrow').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const shelf=document.getElementById(btn.dataset.shelf);
@@ -866,7 +897,25 @@
       // 送り先を「何枚目」で明示的に決める（scrollByだとスナップに打ち消される）
       const idx=Math.round(shelf.scrollLeft/step)+Number(btn.dataset.dir);
       const max=shelf.scrollWidth-shelf.clientWidth;
-      shelf.scrollTo({left:Math.max(0,Math.min(idx*step,max)),behavior:'smooth'});
+      const target=Math.max(0,Math.min(idx*step,max));
+      const before=shelf.scrollLeft;
+      /* スナップが mandatory のままだと、なめらかスクロールが途中で打ち消されて
+         矢印が効かなくなることがある。動かしている間だけスナップを外し、着いたら戻す */
+      shelf.style.scrollSnapType='none';
+      shelf.scrollTo({left:target,behavior:'smooth'});
+      /* 保険：なめらかスクロールが止められた端末では、少し待って動いていなければ即座に飛ばす。
+         こうしておけば、どんな端末でも矢印は必ず反応する */
+      clearTimeout(shelf._snapBack);
+      setTimeout(()=>{
+        if(Math.abs(shelf.scrollLeft-before)<2 && Math.abs(target-before)>=2){
+          shelf.scrollTo({left:target,behavior:'auto'});
+        }
+        afterShelfMove(shelf);
+      },320);
+      shelf._snapBack=setTimeout(()=>{
+        shelf.style.scrollSnapType='';
+        afterShelfMove(shelf);
+      },700);
     });
   });
 
@@ -1089,7 +1138,23 @@
 
   /* ★浮遊する幾何学シェイプ★
      消したいときは false にするだけでOK（透過とは無関係なので通常は true のまま）。 */
-  const SHOW_SHAPES = true;
+  /* ★チラつきの原因しらべ用スイッチ★（普段は何もしなくてOK）
+     スマホでチラつくとき、URLの後ろに次を付けて開くと、動くものを1つずつ止められます。
+       ?test=noshapes … 背景の幾何学模様だけ止める
+       ?test=nophoto  … ヒーローの写真の流れだけ止める
+       ?test=none     … 両方止める
+     例) https://ramune-ai.github.io/?test=noshapes
+     どれで直ったかが分かれば、原因を1回で特定できます。 */
+  const TEST = new URLSearchParams(location.search).get('test') || '';
+  const STOP_SHAPES = TEST==='noshapes' || TEST==='none';
+  const STOP_PHOTO  = TEST==='nophoto'  || TEST==='none';
+  if(STOP_PHOTO){
+    const st=document.createElement('style');
+    st.textContent='.mrow,.tickrow{animation:none!important}';
+    document.head.appendChild(st);
+  }
+
+  const SHOW_SHAPES = !STOP_SHAPES;
 
   const sky=document.getElementById('sky');
   const shapes=['sh-ring','sh-sq','sh-dia','sh-tri','sh-plus','sh-hex'];
