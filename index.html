@@ -523,6 +523,10 @@
   .gtag.b{background:#e6f0ff;color:#2f8ec4}
   .gtag.c{background:#e2fbf3;color:#0d8168}
   .gdesc{font-size:.95rem;line-height:1.72;color:#6a5a7a;margin-bottom:12px;flex:1}
+  /* 紹介文の下に置く小さい注釈（遊ぶ条件など）。
+     紹介文と役割が違うので、文字を小さく・色を薄くして主張を下げてある。
+     flex:1 は付けない（伸びるのは紹介文の役目） */
+  .gnote{font-size:.76rem;line-height:1.6;color:#a99cb8;margin:-6px 0 12px}
   .gplay{align-self:center;display:inline-flex;align-items:center;gap:6px;font-family:'Mochiy Pop One',sans-serif;
     font-size:.95rem;text-decoration:none;color:#b8356f;padding:11px 26px;border-radius:99px;
     background:linear-gradient(100deg,#ffdaee,#e8d8ff);border:2.5px solid #fff;box-shadow:0 6px 0 #f3b7d7;
@@ -638,6 +642,7 @@
     .gttl{font-size:clamp(1.6rem, 2.2vw, 2.15rem)}
     .gtop{margin-bottom:10px}
     .gdesc{font-size:1.22rem;line-height:1.85}
+    .gnote{font-size:.92rem;margin:-8px 0 14px}
     .gtag{font-size:.95rem;padding:5px 14px}
     .gplay{font-size:1.22rem;padding:15px 36px}
     .gph .big{font-size:2.5rem}
@@ -795,7 +800,9 @@
           <h3 class="gttl t-abc"><span class="ch">A</span><span class="ch">B</span><span class="ch">C</span><span class="ch">雪</span><span class="ch">合</span><span class="ch">戦</span></h3>
           <span class="gtag b">対戦アクション</span>
         </div>
-        <p class="gdesc">雪玉じゃない、アルファベットで殴り合う対戦アクション。拾って、投げて、防いで、生き残れ。現在はCOM対戦のみ。PCブラウザ推奨。</p>
+        <p class="gdesc">雪の代わりにアルファベットが降ってくる！拾った文字を武器や盾にして、文字の特性を活かして戦うポップな雪合戦ゲーム！</p>
+        <!-- gnote：遊ぶ前に知っておいてほしい条件。紹介文の勢いを削がないよう、小さく控えめに置く -->
+        <p class="gnote">※現在はCOM対戦のみ／PCブラウザ推奨</p>
         <span class="gplay disabled">🚧 もうすぐ公開</span>
       </div>
     </article>
