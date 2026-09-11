@@ -480,27 +480,30 @@
      隙間を塗りつぶしたように見せていた。文字が大きくても関係なく起きる。
      ぼかし影をやめて、文字サイズに連動する細い縁取り(em単位)に変更。
      縁取りはにじまずクッキリ切れるので、画数が多くても内側の隙間が潰れない */
-  .gph .big{font-size:1.6rem;font-family:'Mochiy Pop One',sans-serif;
-    -webkit-text-stroke:.02em rgba(40,25,60,.4);paint-order:stroke fill;
+  /* ここも .gttl と同じ理由で Zen Maru Gothic。
+     Mochiy Pop One だと「雪」「戦」が潰れて読めなかった */
+  .gph .big{font-size:1.75rem;font-family:'Zen Maru Gothic',sans-serif;font-weight:900;
+    letter-spacing:.04em;
+    -webkit-text-stroke:.012em rgba(40,25,60,.45);paint-order:stroke fill;
     text-shadow:0 1px 1px rgba(0,0,0,.18)}
   .gph small{font-size:.7rem;opacity:.95;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.2)}
   .gbody{padding:13px 15px 15px;display:flex;flex-direction:column;flex:1}
   /* flex-wrap：カードが細いときはタグが下の行に落ちて、タイトルが全幅を使えるようにする */
   .gtop{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 10px;margin-bottom:7px}
   /* nowrap：ゲーム名が途中で改行されると読めなくなるので、絶対に折り返さない */
-  /* 文字サイズを少し上げ、字間も広げた。「間」「雪」のような画数の多い字は、
-     枠自体が小さいと縁取りの太さに関係なく内側の隙間が詰まって見えるため、
-     まず文字そのものに呼吸できる大きさを与えるのが先。 */
-  .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.55rem;margin:0;letter-spacing:.045em;
-    line-height:1.25;white-space:nowrap}
-  /* --- ゲーム名の1文字ずつの色分け ---
-     縁取り(text-stroke)を em で指定しているのがポイント。
-     px で固定すると、文字が小さいときだけ縁が相対的に太くなり、
-     「間」「取」「戦」のような画数の多い漢字の内側の隙間が埋まって潰れて見える。
-     em にすると文字サイズに比例して縁も細くなるので、どの大きさでも同じ見え方になる。
-     太さも .022em → .014em に控えめにして、縁自体が隙間を食う量を減らした。
-     ★縁取りを消したいとき★ 下の1行を消すだけ。ただし黄色のCは白背景で読めなくなります */
-  .gttl .ch{-webkit-text-stroke:.014em rgba(70,50,20,.38);paint-order:stroke fill}
+  /* ★ゲーム名だけフォントを Zen Maru Gothic にしている理由★
+     サイトの他の見出しは Mochiy Pop One を使っているが、この書体は
+     漢字の画が非常に太く、内側のすき間がほとんど無い設計になっている。
+     そのため「間」「雪」「戦」のように画数が多い字は、
+     文字を大きくしても縁取りを細くしても潰れて見える（実際に何度やっても直らなかった）。
+     Zen Maru Gothic も同じ丸ゴシックで雰囲気は揃うが、画が細くすき間が広いので、
+     同じ大きさでも1画ずつはっきり読める。ゲーム名は漢字が主役なのでこちらを使う。 */
+  .gttl{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;
+    font-size:1.6rem;margin:0;letter-spacing:.045em;line-height:1.25;white-space:nowrap}
+  /* 縁取りは「黄色のCが白背景で消えないように」だけの役目なので、ごく薄くしてある。
+     .01em＝文字の1%。この細さなら画数の多い漢字のすき間を埋めない
+     ★縁取りを消したいとき★ 下の1行を消すだけ。ただし黄色のCは読みにくくなります */
+  .gttl .ch{-webkit-text-stroke:.01em rgba(70,50,20,.45);paint-order:stroke fill}
   /* 色はアイコンから拾った鮮やかな元の色に戻した（くすんで見えるとの声を反映）。
      読みやすさは上の縁取りが担当しているので、色自体は濃くしすぎなくてよい */
   /* 間取りすと：アイコンのお部屋から取った色 */
@@ -632,12 +635,12 @@
     .making{font-size:1.1rem;padding:9px 26px}
     .gcard{border-radius:24px}
     /* 画面幅に合わせて伸縮。狭いPCでは小さめ、広い画面では大きく表示される */
-    .gttl{font-size:clamp(1.55rem, 2.2vw, 2.1rem)}
+    .gttl{font-size:clamp(1.6rem, 2.2vw, 2.15rem)}
     .gtop{margin-bottom:10px}
     .gdesc{font-size:1.22rem;line-height:1.85}
     .gtag{font-size:.95rem;padding:5px 14px}
     .gplay{font-size:1.22rem;padding:15px 36px}
-    .gph .big{font-size:2.3rem}
+    .gph .big{font-size:2.5rem}
     .gph small{font-size:.95rem}
     .morebtn{font-size:1.15rem;padding:14px 36px}
     .about{padding:34px 38px 32px;border-radius:26px}
@@ -780,7 +783,7 @@
           <span class="gtag">パズル</span>
         </div>
         <p class="gdesc">ランダムに渡されるお部屋を好きな所に置いて、自分だけの間取りを作る感覚パズルゲーム！</p>
-        <a class="gplay" href="https://ramune-ai.github.io/madori-st/" target="_blank" rel="noopener">今すぐ無料で遊ぶ！</a>
+        <a class="gplay" href="https://ramune-ai.github.io/madori-st/?start=1" target="_blank" rel="noopener">今すぐ無料で遊ぶ！</a>
       </div>
     </article>
 
@@ -792,7 +795,7 @@
           <h3 class="gttl t-abc"><span class="ch">A</span><span class="ch">B</span><span class="ch">C</span><span class="ch">雪</span><span class="ch">合</span><span class="ch">戦</span></h3>
           <span class="gtag b">対戦アクション</span>
         </div>
-        <p class="gdesc">雪の中で、アルファベットを拾って、投げたり盾にしたりして、相手を倒す対戦ゲーム。現在はCOM対戦のみ。PCブラウザ推奨。</p>
+        <p class="gdesc">雪玉じゃない、アルファベットで殴り合う対戦アクション。拾って、投げて、防いで、生き残れ。現在はCOM対戦のみ。PCブラウザ推奨。</p>
         <span class="gplay disabled">🚧 もうすぐ公開</span>
       </div>
     </article>
