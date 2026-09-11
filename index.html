@@ -175,7 +175,7 @@
     .topbar .tnlinks{display:flex;gap:30px;flex:1;justify-content:center}
     /* 色は n-* クラスが持つ --c から。スマホのメニューと同じ色が並ぶ */
     .topbar .tnlinks a{text-decoration:none;color:var(--c,#7a6a8a);font-weight:700;font-size:.95rem;
-      letter-spacing:.03em;transition:opacity .15s}
+      letter-spacing:.03em;transition:opacity .15s;white-space:nowrap}
     .topbar .tnlinks a:hover{opacity:.6}
     .topsns{gap:10px;flex:0 0 auto;margin-left:0}
     .topsns a{width:40px;height:40px;border-radius:13px}
@@ -445,25 +445,29 @@
   .gph .big{font-size:1.6rem;font-family:'Mochiy Pop One',sans-serif;text-shadow:0 2px 6px rgba(0,0,0,.25)}
   .gph small{font-size:.7rem;opacity:.95;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.25)}
   .gbody{padding:13px 15px 15px;display:flex;flex-direction:column;flex:1}
-  /* タイトルとジャンルを1行に並べる。ジャンルは右端 */
-  .gtop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
-  .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.08rem;margin:0}
+  /* flex-wrap：カードが細いときはタグが下の行に落ちて、タイトルが全幅を使えるようにする */
+  .gtop{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 10px;margin-bottom:7px}
+  /* nowrap：ゲーム名が途中で改行されると読めなくなるので、絶対に折り返さない */
+  .gttl{font-family:'Mochiy Pop One',sans-serif;font-size:1.4rem;margin:0;letter-spacing:.03em;
+    line-height:1.25;white-space:nowrap}
   /* --- ゲーム名の1文字ずつの色分け ---
-     細い縁取り（text-stroke）を付けているのは、黄色など明るい色が
-     白い背景だと薄くて読めなくなるため。色はそのまま鮮やかに保てる。
-     paint-order は「縁取りを文字の外側に描く」指定（無いと文字が細って見える） */
-  .gttl .ch{-webkit-text-stroke:.6px rgba(70,45,15,.5);paint-order:stroke fill}
+     縁取り(text-stroke)を em で指定しているのがポイント。
+     px で固定すると、文字が小さいときだけ縁が相対的に太くなり、
+     「間」「取」「戦」のような画数の多い漢字の内側の隙間が埋まって潰れて見える。
+     em にすると文字サイズに比例して縁も細くなるので、どの大きさでも同じ見え方になる。
+     ★縁取りを消したいとき★ 下の1行を消すだけ。ただし黄色のCは白背景で読めなくなります */
+  .gttl .ch{-webkit-text-stroke:.022em rgba(80,55,25,.42);paint-order:stroke fill}
   /* 間取りすと：アイコンのお部屋から取った色 */
-  .t-madori .ch:nth-child(1){color:#d08234}  /* 洋室のオレンジ */
-  .t-madori .ch:nth-child(2){color:#8fb02f}  /* 和室のグリーン */
-  .t-madori .ch:nth-child(3){color:#d06868}  /* キッチンの赤 */
-  .t-madori .ch:nth-child(4){color:#3482d0}  /* トイレのブルー */
-  .t-madori .ch:nth-child(5){color:#4eb6b6}  /* お風呂の水色 */
+  .t-madori .ch:nth-child(1){color:#c47519}  /* 洋室のオレンジ */
+  .t-madori .ch:nth-child(2){color:#7d9c22}  /* 和室のグリーン */
+  .t-madori .ch:nth-child(3){color:#c4544a}  /* キッチンの赤 */
+  .t-madori .ch:nth-child(4){color:#2f76bd}  /* トイレのブルー */
+  .t-madori .ch:nth-child(5){color:#2f9494}  /* お風呂の水色 */
   /* ABC雪合戦：A赤・Bオレンジ・C黄色、「雪合戦」は水色 */
-  .t-abc .ch:nth-child(1){color:#e03131}
-  .t-abc .ch:nth-child(2){color:#f76707}
-  .t-abc .ch:nth-child(3){color:#f2c200}
-  .t-abc .ch:nth-child(n+4){color:#35a7cc}
+  .t-abc .ch:nth-child(1){color:#d92d2d}
+  .t-abc .ch:nth-child(2){color:#e35d05}
+  .t-abc .ch:nth-child(3){color:#dba800}
+  .t-abc .ch:nth-child(n+4){color:#2a9ac2}
   /* .b / .c は色違い。ジャンルを増やしたくなったときに使えます */
   .gtag{font-size:.72rem;font-weight:700;padding:4px 11px;border-radius:99px;background:#ffe8f4;color:#e0559d;
     white-space:nowrap;flex:0 0 auto}
@@ -581,7 +585,8 @@
     .lfoot{font-size:.96rem}
     .making{font-size:1.1rem;padding:9px 26px}
     .gcard{border-radius:24px}
-    .gttl{font-size:1.5rem}
+    /* 画面幅に合わせて伸縮。狭いPCでは小さめ、広い画面では大きく表示される */
+    .gttl{font-size:clamp(1.4rem, 2.2vw, 2rem)}
     .gtop{margin-bottom:10px}
     .gdesc{font-size:1.22rem;line-height:1.85}
     .gtag{font-size:.95rem;padding:5px 14px}
