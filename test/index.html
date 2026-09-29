@@ -10,7 +10,7 @@
      指定すると iOS が上下バーを「不透明のベタ1色」で塗ってしまい、
      バーの向こうにページが透けて見える表示になりません。
      未指定なら iOS が背景色（薄ピンク）を拾いつつ、透過も効きます。 -->
-<title>らむね あい 🌈</title>
+<title>【テスト版】らむね あい 🌈</title>
 <!-- ★アイコン（タブ・ブックマーク・ホーム画面に出る絵）★
      指定がないと、ブラウザは ramune-ai.github.io/favicon.ico を探しに行き、
      同じ場所にある別作品（間取りすと）のアイコンを拾ってしまう。
@@ -21,9 +21,9 @@
        icon-180.png    … 背景が透明。PCのタブやブックマーク用
        icon-touch.png  … 背景が薄ピンク。ホーム画面に追加したとき用。
                          iOSは透明部分を黒く塗りつぶすので、これだけ背景色入り -->
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="180x180" href="assets/icon-180.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/icon-touch.png">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="180x180" href="../assets/icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/icon-touch.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -677,6 +677,14 @@
 </style>
 </head>
 <body>
+<!-- ★これはテスト版だけの目印★ 本番(index.html)には無い。
+     画面を見ただけで「テスト版を見ている」と分かるように、常に画面下に固定表示している。
+     本番へ反映するときは、このdivごと消してから index.html にコピーすること -->
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:9999;
+  background:#3b2a4a;color:#fff;text-align:center;font-weight:700;font-size:.78rem;
+  padding:6px 10px;letter-spacing:.05em">
+  🧪 これはテスト版です（本番には反映されていません）
+</div>
 <div class="sky" id="sky" aria-hidden="true"></div>
 
 <!-- 上部バー：モバイル[SNS｜☰] / PC[ロゴ｜リンク｜SNS] -->
@@ -792,7 +800,7 @@
              動画ができたら、この <img> を消して
              <video src="madori.mp4" autoplay muted loop playsinline poster="game-madori-share.jpg"></video>
              に差し替えればOK -->
-        <img src="assets/game-madori-share.jpg" alt="間取りすとのプレイ画面（賃貸物件情報風のシェアカード）" loading="lazy" class="gshot">
+        <img src="../assets/game-madori-share.jpg" alt="間取りすとのプレイ画面（賃貸物件情報風のシェアカード）" loading="lazy" class="gshot">
         <span class="gmedia-badge">🎬 動画つくり中</span>
       </div>
       <div class="gbody">
@@ -1086,7 +1094,7 @@
      url   … （任意）Instagramの投稿URL。書くとタップでその投稿に飛べる。
              省略するとリンクなしの写真として表示されるだけ。
      例) {photo:'resin-07.jpg', ar:1, url:'https://www.instagram.com/p/XXXXXXXX/'} */
-  const T='assets/web/thumb/';
+  const T='../assets/web/thumb/';
   const rowA=[
     {photo:'fluid-01.jpg',ar:0.75},
     {photo:'resin-07.jpg',ar:1},
