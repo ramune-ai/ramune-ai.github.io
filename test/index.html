@@ -1200,7 +1200,10 @@
   /* タイルは全部ボタン。押すと拡大ビューが開く（Instagramへは直接飛ばさない）。
      url を設定した写真には📷の目印が付き、拡大ビューの中にInstagramボタンが出る */
   function tileHTML(item){
-    const inner=`<img src="${T}${item.photo}" alt="" decoding="async">`;
+    /* draggable="false"：PCでマウスで写真をつかんだとき、ブラウザ標準の
+       「画像をドラッグして持ち出す」動作が起きないようにする。
+       HTMLに直接書いてある初期表示の写真と同じ指定にそろえている */
+    const inner=`<img src="${T}${item.photo}" alt="" decoding="async" draggable="false">`;
     const mark=item.url ? '<span class="tilemark">📷</span>' : '';
     return `<button type="button" class="mtile" style="--ar:${item.ar}" data-photo="${item.photo}" aria-label="写真を大きく見る">${inner}${mark}</button>`;
   }
