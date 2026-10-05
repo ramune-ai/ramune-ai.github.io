@@ -265,16 +265,70 @@
   /* 高さ固定・幅は写真の比率まかせ（切り取りゼロ）。
      aspect-ratio を先に指定しているので画像読み込み前でも幅が確定し、
      読み込み時のガタつき・チカつきが起きない */
-  .mtile{position:relative;flex:0 0 auto;height:var(--th);aspect-ratio:var(--ar,1);border-radius:16px;overflow:hidden;
-    box-shadow:0 6px 14px var(--shadow);border:2.5px solid #fff;background:#f4eeff;text-decoration:none;display:block}
-  .mtile img{width:100%;height:100%;object-fit:cover;display:block}
-  /* Instagramの投稿リンクが付いている写真だけ、押せることが分かるようにする */
-  .mtile.linked{cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
-  .mtile.linked:hover{transform:translateY(-5px);box-shadow:0 12px 26px rgba(168,140,205,.3)}
+  /* タイルは<button>。押すと拡大ビューが開く。
+     ボタンの初期スタイル（枠・余白・文字設定）は打ち消しておく */
+  .mtile{position:relative;flex:0 0 auto;height:var(--th);width:calc(var(--th) * var(--ar,1));aspect-ratio:var(--ar,1);border-radius:16px;overflow:hidden;
+    box-shadow:0 6px 14px var(--shadow);border:2.5px solid #fff;background:#f4eeff;text-decoration:none;display:block;
+    padding:0;margin:0;font:inherit;color:inherit;appearance:none;-webkit-appearance:none;
+    cursor:zoom-in;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+  .mtile img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  @media(hover:hover){
+    .mtile:hover{transform:translateY(-5px);box-shadow:0 12px 26px rgba(168,140,205,.3)}
+  }
+  /* Instagramの投稿が紐づいている写真だけ付く目印 */
   .tilemark{position:absolute;right:7px;bottom:7px;font-size:.72rem;line-height:1;
     background:rgba(255,255,255,.9);padding:5px 6px;border-radius:9px;
     box-shadow:0 2px 6px rgba(120,90,160,.2)}
   @media(min-width:860px){.tilemark{right:10px;bottom:10px;font-size:.9rem;padding:6px 8px;border-radius:11px}}
+
+  /* ===== 写真の拡大ビュー =====
+     スマホで写真を長押しして拡大しようとする人が多かったので、
+     タップ（PCはクリック）で大きく見られるようにした。
+     Instagramへは勝手に飛ばさず、この中のボタンを押したときだけ開く。 */
+  .lb{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+    background:rgba(40,26,54,.82);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    padding:calc(16px + var(--safe-top)) 12px calc(16px + var(--safe-bottom));
+    /* 表示された瞬間に自動で再生されるアニメでふわっと出す。
+       JS側で「表示→少し待ってクラスを足す」とやると、
+       その待ちが動かない環境で出てこなくなるため、CSSだけで完結させている */
+    animation:lbfade .18s ease}
+  @keyframes lbfade{from{opacity:0}to{opacity:1}}
+  .lb[hidden]{display:none}
+  .lbinner{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;
+    max-width:min(1100px,100%);max-height:100%}
+  /* 小さいサムネを下敷きにして、大きい画像が届くまでの間も真っ白にならないようにする */
+  .lbframe{position:relative;border-radius:18px;overflow:hidden;background:#2a1b38 center/contain no-repeat;
+    box-shadow:0 18px 50px rgba(0,0,0,.45);max-width:100%;
+    width:min(1100px,calc(100vw - 32px),calc((100dvh - 190px - var(--safe-top) - var(--safe-bottom)) * var(--photo-ar,1)));
+    aspect-ratio:var(--photo-ar,1)}
+  .lbframe img{display:block;width:100%;height:100%;object-fit:contain;
+    visibility:hidden;opacity:0;transition:opacity .25s ease}
+  .lbframe img.ready{visibility:visible;opacity:1}
+  .lbbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+  .lbcount{color:#fff;font-weight:700;font-size:.85rem;opacity:.85;letter-spacing:.04em}
+  /* Instagramへ行くかどうかは本人が決める。押さなければ飛ばない */
+  .lbig{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:700;font-size:.85rem;
+    color:#fff;background:linear-gradient(100deg,#fd5949,#d6249f);
+    padding:9px 18px;border-radius:99px;box-shadow:0 4px 12px rgba(214,36,159,.4)}
+  .lbig[hidden]{display:none}
+  .lbbtn{width:42px;height:42px;border:none;border-radius:50%;cursor:pointer;
+    background:rgba(255,255,255,.92);color:#3b2a4a;font-size:1rem;font-weight:900;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+  .lbbtn:active{transform:scale(.92)}
+  .lbclose{position:absolute;top:calc(8px + var(--safe-top));right:10px;z-index:2}
+  /* 前へ／次へ。画面の左右端に置く */
+  .lbprev,.lbnext{position:absolute;top:50%;transform:translateY(-50%);z-index:2}
+  .lbprev:active,.lbnext:active{transform:translateY(-50%) scale(.92)}
+  .lbprev{left:10px} .lbnext{right:10px}
+  @media(min-width:860px){
+    .lbprev{left:24px} .lbnext{right:24px}
+    .lbbtn{width:50px;height:50px;font-size:1.15rem}
+    .lbcount{font-size:.95rem}
+    .lbig{font-size:.95rem;padding:11px 22px}
+  }
+  /* 拡大中は背面のページを動かさない */
+  body.lbopen{overflow:hidden}
+  @media(prefers-reduced-motion:reduce){.lb,.lbframe img{transition:none}}
 
   /* 歌詞は白地×ピンク文字。単語の途中で改行しない */
   /* 歌詞は正方形にせず、文字の量に合わせた横長タイルにする（余白が目立たない） */
@@ -762,7 +816,11 @@
 </div>
 
 <!-- 1. まず世界観と作品を見せる（.wrapの外＝画面幅ぴったり） -->
-<div class="marquee" id="marquee"></div>
+<!-- 初期表示はJavaScriptの実行を待たずに写真を読み込む。写真を変更するときは下のrowA/rowBと揃える。 -->
+<div class="marquee" id="marquee">
+<div class="mrow"><button type="button" class="mtile" style="--ar:0.75" data-photo="fluid-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/fluid-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="resin-07.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-07.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="nail-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/nail-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="daily-04.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/daily-04.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1.333" data-photo="resin-05.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-05.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.707" data-photo="portrait-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/portrait-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="fluid-02.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/fluid-02.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1.333" data-photo="resin-04.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-04.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="daily-05.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/daily-05.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.75" data-photo="fluid-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/fluid-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="resin-07.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-07.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="nail-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/nail-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="daily-04.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/daily-04.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1.333" data-photo="resin-05.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-05.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.707" data-photo="portrait-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/portrait-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="fluid-02.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/fluid-02.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1.333" data-photo="resin-04.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-04.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="daily-05.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/daily-05.jpg" alt="" decoding="async" draggable="false"></button></div>
+<div class="mrow"><button type="button" class="mtile" style="--ar:1" data-photo="resin-08.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-08.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.75" data-photo="fluid-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/fluid-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="resin-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="nail-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/nail-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.707" data-photo="portrait-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/portrait-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="nail-02.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/nail-02.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.75" data-photo="resin-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1.333" data-photo="resin-06.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-06.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.707" data-photo="portrait-02.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/portrait-02.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="resin-08.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-08.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.75" data-photo="fluid-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/fluid-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="resin-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="nail-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/nail-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.707" data-photo="portrait-03.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/portrait-03.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1" data-photo="nail-02.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/nail-02.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.75" data-photo="resin-01.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-01.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:1.333" data-photo="resin-06.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/resin-06.jpg" alt="" decoding="async" draggable="false"></button><button type="button" class="mtile" style="--ar:0.707" data-photo="portrait-02.jpg" aria-label="写真を大きく見る"><img src="assets/web/thumb/portrait-02.jpg" alt="" decoding="async" draggable="false"></button></div>
+</div>
 
 <!-- 2. 名前と自己紹介：画面を横断するリボン。
      マーキーと同じく .wrap の外に置いてあるので、小細工なしで画面幅ぴったりになる -->
@@ -896,6 +954,19 @@
   <footer>© らむね あい</footer>
 </div>
 
+<!-- 写真の拡大ビュー。ふだんは hidden で隠れている -->
+<div class="lb" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="写真の拡大表示">
+  <button class="lbbtn lbclose" id="lbclose" type="button" aria-label="閉じる">✕</button>
+  <button class="lbbtn lbprev" id="lbprev" type="button" aria-label="前の写真">◀</button>
+  <button class="lbbtn lbnext" id="lbnext" type="button" aria-label="次の写真">▶</button>
+  <div class="lbinner">
+    <div class="lbframe" id="lbframe"><img id="lbimg" alt=""></div>
+    <div class="lbbar">
+      <span class="lbcount" id="lbcount"></span>
+      <a class="lbig" id="lbig" href="#" target="_blank" rel="noopener" hidden>📷 Instagramで見る</a>
+    </div>
+  </div>
+</div>
 <script>
   /* ★ 曲を増やすときはこの配列に { lyric:`...` } を追加するだけでOK。
      MVが公開されたら、その曲に youtubeId:"動画ID" と title:"曲名" を足すと
@@ -1118,13 +1189,15 @@
     'ずるいよ 織姫と彦星',
     '透き通る わたしの色',
   ];
-  /* url があるものはリンク（タップでInstagramの投稿へ）、無ければただの画像 */
+  /* タイルは全部ボタン。押すと拡大ビューが開く（Instagramへは直接飛ばさない）。
+     url を設定した写真には📷の目印が付き、拡大ビューの中にInstagramボタンが出る */
   function tileHTML(item){
-    const inner=`<img src="${T}${item.photo}" alt="" decoding="async">`;
-    if(item.url){
-      return `<a class="mtile linked" style="--ar:${item.ar}" href="${item.url}" target="_blank" rel="noopener">${inner}<span class="tilemark">📷</span></a>`;
-    }
-    return `<span class="mtile" style="--ar:${item.ar}">${inner}</span>`;
+    /* draggable="false"：PCでマウスで写真をつかんだとき、ブラウザ標準の
+       「画像をドラッグして持ち出す」動作が起きないようにする。
+       HTMLに直接書いてある初期表示の写真と同じ指定にそろえている */
+    const inner=`<img src="${T}${item.photo}" alt="" decoding="async" draggable="false">`;
+    const mark=item.url ? '<span class="tilemark">📷</span>' : '';
+    return `<button type="button" class="mtile" style="--ar:${item.ar}" data-photo="${item.photo}" aria-label="写真を大きく見る">${inner}${mark}</button>`;
   }
 
   const marquee=document.getElementById('marquee');
@@ -1138,6 +1211,7 @@
   function buildLoop(row,oneHTML){
     let reps=1;
     row.innerHTML=oneHTML;
+    row.style.paddingRight=getComputedStyle(row).gap;
     // まず1セットが画面幅を超えるまで足す（多すぎないよう上限あり）
     while(row.scrollWidth < window.innerWidth && reps < 8){
       reps++;
@@ -1147,10 +1221,10 @@
     row.innerHTML=oneHTML.repeat(reps*2);
   }
 
-  const marqueeRows=rowDefs.map(def=>{
-    const row=document.createElement('div');
+  const marqueeRows=rowDefs.map((def,i)=>{
+    const row=marquee.children[i] || document.createElement('div');
     row.className='mrow';
-    marquee.appendChild(row);
+    if(!row.parentNode) marquee.appendChild(row);
     buildLoop(row,def.items.map(tileHTML).join(''));
     const st={el:row, dir:def.dir, dur:def.dur, half:0, base:0};
     play(st,0);
@@ -1188,45 +1262,51 @@
     if(!t || t==='none') return 0;
     const m=t.match(/matrix.*\((.+)\)/);
     if(!m) return 0;
-    const v=m[1].split(', ');
+    const v=m[1].split(',');
     return parseFloat(v.length>6 ? v[12] : v[4]) || 0;
   }
 
   /* ドラッグは「つかんだ段だけ」動かす（上下は独立して動かせる） */
-  let activeRow=null, dragStartX=0, dragMoved=0;
-  function dragStart(st,x){
-    activeRow=st; dragStartX=x; dragMoved=0;
+  let activeRow=null, dragStartX=0, dragStartY=0, dragMoved=0, activePointer=null;
+  function dragStart(st,e){
+    if(activeRow || !e.isPrimary || e.button!==0) return;
+    activePointer=e.pointerId;
+    activeRow=st; dragStartX=e.clientX; dragStartY=e.clientY; dragMoved=0;
     marquee.classList.add('dragging');
     st.half=st.el.scrollWidth/2 || 1;
     st.base=currentX(st.el);
     st.el.style.animation='none';
     st.el.style.transform=`translate3d(${st.base}px,0,0)`;
   }
-  function dragMove(x){
-    if(!activeRow) return;
+  function dragMove(e){
+    if(!activeRow || e.pointerId!==activePointer) return;
     const st=activeRow;
-    const dx=x-dragStartX;
-    dragMoved=Math.abs(dx);
+    const dx=e.clientX-dragStartX;
+    dragMoved=Math.max(dragMoved,Math.hypot(dx,e.clientY-dragStartY));
     let nx=st.base+dx;
     while(nx<=-st.half) nx+=st.half;
     while(nx>0) nx-=st.half;
     st.el.style.transform=`translate3d(${nx}px,0,0)`;
   }
-  function dragEnd(){
-    if(!activeRow) return;
+  function dragEnd(e){
+    if(!activeRow || (e && e.pointerId!==activePointer)) return;
+    if(e){
+      if(e.type==='pointercancel') dragMoved=Infinity;
+      else dragMove(e);
+    }
     play(activeRow,currentX(activeRow.el));
-    activeRow=null;
+    activeRow=null; activePointer=null;
     marquee.classList.remove('dragging');
   }
 
   marqueeRows.forEach(st=>{
-    st.el.addEventListener('pointerdown',e=>{ dragStart(st,e.clientX); });
+    st.el.addEventListener('pointerdown',e=>{ dragStart(st,e); });
   });
-  window.addEventListener('pointermove',e=>{ if(activeRow) dragMove(e.clientX); });
+  window.addEventListener('pointermove',e=>{ if(activeRow) dragMove(e); });
   window.addEventListener('pointerup',dragEnd);
   window.addEventListener('pointercancel',dragEnd);
   // ドラッグしたあとに歌詞リンクが誤爆しないように
-  marquee.addEventListener('click',e=>{ if(dragMoved>8) e.preventDefault(); },true);
+  marquee.addEventListener('click',e=>{ if(e.detail!==0 && dragMoved>8) e.preventDefault(); },true);
 
   /* お仕事ボタン：Googleフォームを作ったらここにURLを貼ると自動で切り替わります */
   const WORK_FORM_URL = "";
@@ -1439,6 +1519,126 @@
   new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{
     if(n.nodeType===1) openExternalInNewTab(n.parentNode);
   }))).observe(document.body,{childList:true,subtree:true});
+
+  /* ============================================================
+     写真の拡大ビュー
+     スマホで写真を長押しして拡大しようとする人が多かったので、
+     タップ（PCはクリック）で大きく見られるようにした。
+     ★Instagramへは勝手に飛ばさない★
+     中の「Instagramで見る」を押したときだけ開く。
+     （リンクを設定した写真にだけボタンが出る。未設定なら出ない）
+     ============================================================ */
+  (function(){
+    /* ヒーローに並べた写真を、表示している順に1本のリストにする */
+    const photos=[...rowA,...rowB];
+    if(!photos.length) return;
+    /* サムネのフォルダ(.../thumb/)から、大きい版のフォルダ(.../)を作る */
+    const BIG = T.replace(/thumb\/$/,'');
+
+    const lb=document.getElementById('lightbox');
+    const img=document.getElementById('lbimg');
+    const frame=document.getElementById('lbframe');
+    const count=document.getElementById('lbcount');
+    const iglink=document.getElementById('lbig');
+    const btnPrev=document.getElementById('lbprev');
+    const btnNext=document.getElementById('lbnext');
+    const btnClose=document.getElementById('lbclose');
+    if(!lb) return;
+
+    let idx=0, lastFocus=null, pendingImage=null;
+    const background=[...document.body.children].filter(el=>el!==lb && el.tagName!=='SCRIPT');
+    let previousInert=[];
+
+    function show(i){
+      idx=(i+photos.length)%photos.length;
+      const p=photos[idx];
+      /* 先に小さいサムネを下敷きに敷く。大きい画像が届くまで真っ白にならない */
+      frame.style.setProperty('--photo-ar',p.ar);
+      frame.style.backgroundImage=`url("${T}${p.photo}")`;
+      img.classList.remove('ready');
+      img.alt=p.alt||'らむね あい の作品写真';
+      img.removeAttribute('src');
+      if(pendingImage) pendingImage.onload=pendingImage.onerror=null;
+      const request=new Image();
+      pendingImage=request;
+      request.onload=async()=>{
+        if(pendingImage!==request || lb.hidden) return;
+        img.src=request.src;
+        /* 取得完了と描画準備完了は別。代替テキストが見えないよう、
+           実際に表示する画像のデコードが終わるまで隠しておく。 */
+        try{ await img.decode(); }
+        catch{
+          if(pendingImage===request && !lb.hidden)
+            count.textContent=(idx+1)+' / '+photos.length+'（プレビュー表示）';
+          return;
+        }
+        if(pendingImage!==request || lb.hidden) return;
+        img.classList.add('ready');
+      };
+      request.onerror=()=>{
+        if(pendingImage===request) count.textContent=(idx+1)+' / '+photos.length+'（プレビュー表示）';
+      };
+      request.src=BIG+p.photo;
+      count.textContent=(idx+1)+' / '+photos.length;
+      /* Instagramのリンクがある写真のときだけボタンを出す */
+      if(p.url){ iglink.href=p.url; iglink.hidden=false; }
+      else{ iglink.hidden=true; }
+    }
+
+
+    function open(i){
+      lastFocus=document.activeElement;
+      lb.hidden=false;
+      show(i);
+      previousInert=background.map(el=>el.inert);
+      background.forEach(el=>{el.inert=true;});
+      document.body.classList.add('lbopen');
+      btnClose.focus();
+      /* 拡大中は後ろの写真の流れを止める（読み込みと描画を拡大側に回す） */
+      marqueeRows.forEach(st=>{ st.el.style.animationPlayState='paused'; });
+    }
+    function close(){
+      lb.hidden=true;
+      if(pendingImage) pendingImage.onload=pendingImage.onerror=null;
+      pendingImage=null;
+      background.forEach((el,i)=>{el.inert=previousInert[i];});
+      img.classList.remove('ready');
+      img.removeAttribute('src');
+      document.body.classList.remove('lbopen');
+      marqueeRows.forEach(st=>{ st.el.style.animationPlayState=''; });
+      if(lastFocus&&lastFocus.focus) lastFocus.focus({preventScroll:true});
+    }
+
+    /* タイルを押したら開く。
+       ただし「流すためにドラッグした」ときは開かない（dragMovedで判定） */
+    marquee.addEventListener('click',e=>{
+      const tile=e.target.closest('.mtile');
+      if(!tile) return;
+      if(e.defaultPrevented || (e.detail!==0 && dragMoved>8)) return;
+      const i=photos.findIndex(p=>p.photo===tile.dataset.photo);
+      if(i>=0) open(i);
+    });
+
+    btnClose.addEventListener('click',close);
+    btnPrev.addEventListener('click',()=>show(idx-1));
+    btnNext.addEventListener('click',()=>show(idx+1));
+    /* 写真の外側（暗いところ）を押したら閉じる */
+    lb.addEventListener('click',e=>{ if(e.target===lb || e.target.classList.contains('lbinner') || e.target.classList.contains('lbbar')) close(); });
+    /* キーボードでも操作できるように */
+    window.addEventListener('keydown',e=>{
+      if(lb.hidden) return;
+      if(e.key==='Escape'){ e.preventDefault(); close(); }
+      else if(e.key==='ArrowLeft'){ e.preventDefault(); show(idx-1); }
+      else if(e.key==='ArrowRight'){ e.preventDefault(); show(idx+1); }
+      else if(e.key==='Tab'){
+        const buttons=[btnClose,btnPrev,btnNext,...(iglink.hidden?[]:[iglink])];
+        const current=buttons.indexOf(document.activeElement);
+        e.preventDefault();
+        buttons[(current+(e.shiftKey?-1:1)+buttons.length)%buttons.length].focus();
+      }
+    });
+  })();
 </script>
+
 </body>
 </html>
