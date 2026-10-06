@@ -243,24 +243,18 @@
         100vw を使わないのでページ自体が横スクロールしません --- */
   /* ※iOSでは mask-image がアニメーションと重なると再描画がチラつくので、
      ぼかしフェードはPCだけに適用（スマホは端で潔く切る） */
-  /* position/z-index を持たせて、背景の幾何学模様（.sky）より確実に手前に置く。
-     こうしないと、動く図形が写真の上を横切って重なり合い、描き直しが増える。
-     contain:paint は「はみ出しはここで切れる」とブラウザに約束するもの。
-     スクロール中に写真の段を計算し直す範囲が狭まり、チラつきが出にくくなる */
+  /* 背景の幾何学模様より手前に配置。写真・歌詞は各段の枠内でスクロールする。 */
   .marquee{--th:146px;margin:2px 0 0;display:flex;flex-direction:column;gap:7px;overflow:hidden;
-    position:relative;z-index:1;cursor:grab;touch-action:pan-y;contain:paint}
+    position:relative;z-index:1;cursor:grab;touch-action:pan-y}
   .marquee.dragging{cursor:grabbing}
   @media(min-width:860px){
     .marquee{--th:206px;margin-top:6px;gap:9px;
       -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
       mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
   }
-  .mrow{display:flex;gap:7px;width:max-content;will-change:transform;
-    transform:translateZ(0);backface-visibility:hidden}
+  /* 長い列全体をGPUレイヤーとして移動せず、表示枠のスクロール位置を動かす。 */
+  .mrow{display:flex;gap:7px;width:100%;overflow:hidden;scroll-behavior:auto;overflow-anchor:none}
   @media(min-width:860px){.mrow{gap:9px}}
-  @keyframes scrollL{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
-  @keyframes scrollR{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
-  @media(prefers-reduced-motion:reduce){.mrow{animation:none!important}}
 
   /* 高さ固定・幅は写真の比率まかせ（切り取りゼロ）。
      aspect-ratio を先に指定しているので画像読み込み前でも幅が確定し、
@@ -335,12 +329,10 @@
   /* --- 歌詞：写真2段の下を流れる「吹き出しタイル」。
      写真タイルと同じ白フチ・角丸・影で、同じ棚の仲間に見えるようにしてある --- */
   /* 写真の段と同じくドラッグでスライドできる（触っても止まらない） */
-  .ticker{overflow:hidden;position:relative;padding:2px 0 11px;cursor:grab;touch-action:pan-y}
-  /* translateZ / backface は、写真の段と同じくスマホのチカつき対策 */
-  .tickrow{display:flex;width:max-content;align-items:flex-start;gap:12px;
-    animation:scrollL 56s linear infinite;will-change:transform;
-    transform:translateZ(0);backface-visibility:hidden}
-  @media(prefers-reduced-motion:reduce){.tickrow{animation:none}}
+  .ticker{overflow:hidden;position:relative;padding:2px 0 0;cursor:grab;touch-action:pan-y}
+  /* しっぽの余白をスクロール枠の内側に確保する。 */
+  .tickrow{display:flex;width:100%;align-items:flex-start;gap:12px;padding-bottom:11px;
+    overflow:hidden;scroll-behavior:auto;overflow-anchor:none}
   @media(min-width:860px){.tickrow{gap:10px}}
 
   /* Hachi Maru Pop は文字が字面の下寄りに来るので、
@@ -350,7 +342,7 @@
     font-size:1.05rem;line-height:1.2;color:#e0559d;white-space:nowrap;
     background:#fff;border:2.5px solid #fff;border-radius:16px;
     padding:13px 20px 9px;box-shadow:0 5px 16px rgba(168,140,205,.16);
-    -webkit-tap-highlight-color:transparent;backface-visibility:hidden;
+    -webkit-tap-highlight-color:transparent;
     transition:transform .18s cubic-bezier(.34,1.56,.64,1),color .15s}
   .bubble:hover,.bubble:active{transform:translateY(-5px);color:#b8356f}
   /* 吹き出しのしっぽ（白い三角を下にちょこんと）。影は付けず、浮いて見えないようにする */
@@ -1216,11 +1208,13 @@
   /* 1セットが画面幅より短いと、流れている途中で右側に空白ができてしまう。
      常に「1セット ≧ 画面幅」になるようセットを増やしてから2周ぶん並べる。 */
   function buildLoop(row,oneHTML){
+    row._oneHTML=oneHTML;
     let reps=1;
     row.innerHTML=oneHTML;
     row.style.paddingRight=getComputedStyle(row).gap;
     // まず1セットが画面幅を超えるまで足す（多すぎないよう上限あり）
-    while(row.scrollWidth < window.innerWidth && reps < 8){
+    while(row.lastElementChild.getBoundingClientRect().right-row.firstElementChild.getBoundingClientRect().left
+      + parseFloat(getComputedStyle(row).gap) < row.clientWidth && reps < 8){
       reps++;
       row.innerHTML=oneHTML.repeat(reps);
     }
@@ -1253,25 +1247,50 @@
     marqueeRows.push(st);
   })();
 
-  /* 自動の流れはCSSアニメーション（コンポジタで動くので滑らか＆省電力）。
-     ドラッグ中だけJSで手動位置に切り替え、離したら今の位置から自然に再開する */
+  /* 写真と歌詞は同じ時計で、枠内のスクロール位置だけを更新する。
+     画像・文字を含む巨大なtransformレイヤーを作らない。 */
+  function loopWidth(el){
+    const first=el.firstElementChild, second=el.children[el.children.length/2];
+    return first && second ? second.getBoundingClientRect().left-first.getBoundingClientRect().left : 1;
+  }
   function play(st,offsetPx){
-    const half=st.el.scrollWidth/2 || 1;
-    // いまの位置が一周のどのあたりかを出して、その分だけ再生開始位置をずらす
-    let p = st.dir==='L' ? (-offsetPx/half) : (1 + offsetPx/half);
-    if(!isFinite(p)) p=0;
-    p=((p%1)+1)%1;
-    st.el.style.transform='';
-    st.el.style.animation=`scroll${st.dir} ${st.dur}s linear ${-(p*st.dur)}s infinite`;
+    st.half=loopWidth(st.el);
+    st.position=(((-offsetPx)%st.half)+st.half)%st.half;
+    st.el.scrollLeft=st.position;
   }
-  function currentX(el){
-    const t=getComputedStyle(el).transform;
-    if(!t || t==='none') return 0;
-    const m=t.match(/matrix.*\((.+)\)/);
-    if(!m) return 0;
-    const v=m[1].split(',');
-    return parseFloat(v.length>6 ? v[12] : v[4]) || 0;
+  function currentX(el){ return -el.scrollLeft; }
+  const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+  let lastFrame=0;
+  function advanceMarquee(now){
+    const elapsed=lastFrame ? Math.min(now-lastFrame,50)/1000 : 0;
+    lastFrame=now;
+    if(!document.hidden && !motionPreference.matches && !STOP_PHOTO && !document.body.classList.contains('lbopen')){
+      marqueeRows.forEach(st=>{
+        if(st===activeRow) return;
+        const delta=st.half/st.dur*elapsed*(st.dir==='L'?1:-1);
+        st.position=((st.position+delta)%st.half+st.half)%st.half;
+        st.el.scrollLeft=st.position;
+      });
+    }
+    requestAnimationFrame(advanceMarquee);
   }
+  requestAnimationFrame(advanceMarquee);
+  document.addEventListener('visibilitychange',()=>{lastFrame=0;});
+  function resizeMarquee(){
+    if(activeRow) dragEnd();
+    marqueeRows.forEach(st=>{
+      const phase=st.position/st.half;
+      buildLoop(st.el,st.el._oneHTML);
+      play(st,-phase*loopWidth(st.el));
+    });
+  }
+  let marqueeWidth=window.innerWidth;
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth===marqueeWidth) return;
+    marqueeWidth=window.innerWidth;
+    resizeMarquee();
+  });
+  if(document.fonts) document.fonts.ready.then(resizeMarquee);
 
   /* ドラッグは「つかんだ段だけ」動かす（上下は独立して動かせる） */
   let activeRow=null, dragStartX=0, dragStartY=0, dragMoved=0, activePointer=null;
@@ -1280,10 +1299,9 @@
     activePointer=e.pointerId;
     activeRow=st; dragStartX=e.clientX; dragStartY=e.clientY; dragMoved=0;
     marquee.classList.add('dragging');
-    st.half=st.el.scrollWidth/2 || 1;
+    st.half=loopWidth(st.el);
     st.base=currentX(st.el);
-    st.el.style.animation='none';
-    st.el.style.transform=`translate3d(${st.base}px,0,0)`;
+    st.el.scrollLeft=-st.base;
   }
   function dragMove(e){
     if(!activeRow || e.pointerId!==activePointer) return;
@@ -1293,7 +1311,7 @@
     let nx=st.base+dx;
     while(nx<=-st.half) nx+=st.half;
     while(nx>0) nx-=st.half;
-    st.el.style.transform=`translate3d(${nx}px,0,0)`;
+    st.el.scrollLeft=-nx;
   }
   function dragEnd(e){
     if(!activeRow || (e && e.pointerId!==activePointer)) return;
@@ -1342,11 +1360,7 @@
   const TEST = new URLSearchParams(location.search).get('test') || '';
   const STOP_SHAPES = TEST==='noshapes' || TEST==='none';
   const STOP_PHOTO  = TEST==='nophoto'  || TEST==='none';
-  if(STOP_PHOTO){
-    const st=document.createElement('style');
-    st.textContent='.mrow,.tickrow{animation:none!important}';
-    document.head.appendChild(st);
-  }
+  /* STOP_PHOTO は advanceMarquee で判定する。 */
 
   const SHOW_SHAPES = !STOP_SHAPES;
 
